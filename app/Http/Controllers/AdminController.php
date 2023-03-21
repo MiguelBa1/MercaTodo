@@ -20,9 +20,7 @@ class AdminController extends Controller
     // The view is rendered using Inertia.js.
     public function manageUsers(): Response
     {
-        $users = User::with(['role' => function ($query) {
-            $query->select('id', 'name', 'description');
-        }])->get();
+        $users = User::all();
         return Inertia::render('Admin/Users', ['users' => $users]);
     }
 
