@@ -26,10 +26,4 @@ class AdminController extends Controller
         return Inertia::render('Admin/Users', ['users' => $users]);
     }
 
-    // Returns an array of roles that the user has
-    // Used in the user model to determine what permissions the user has
-    public function roles(): array
-    {
-        return ['admin', 'user'];
-    }
 }
