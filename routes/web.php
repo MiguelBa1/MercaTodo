@@ -1,7 +1,8 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\AdminController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -37,8 +38,7 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::middleware(['auth', 'role:admin'])->group(function () {
-    Route::get('/admin', [AdminController::class, 'index']);
-    Route::get('/admin/users', [AdminController::class, 'manageUsers']);
+    Route::get('/admin/users', [UserController::class, 'index']);
 });
 
 require __DIR__.'/auth.php';
