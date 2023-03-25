@@ -27,18 +27,22 @@ Route::get('/', function () {
     ]);
 });
 
+//TODO: Add middleware to check if user status is active
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+//TODO: Add middleware to check if user status is active
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+//TODO: Add middleware to check if user status is active
 Route::middleware(['auth', 'role:admin'])->group(function () {
-    Route::get('/admin/users', [UserController::class, 'index']);
+    Route::get('/admin/users', [UserController::class, 'index'])->name('admin.users');
+    Route::get('/admin/list-users', [UserController::class, 'list'])->name('admin.list-users');
 });
 
 require __DIR__.'/auth.php';

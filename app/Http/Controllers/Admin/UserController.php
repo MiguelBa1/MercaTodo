@@ -6,16 +6,20 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Inertia\Inertia;
 use Inertia\Response;
+use \Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class UserController extends Controller
 {
 
     public function index(): Response
     {
-        // Users with roles paginated 10 per page
-        $users = User::with('roles')->paginate(10);
-
         // Render the Admin/Users.vue file
-        return Inertia::render('Admin/Users', ['users' => $users]);
+        return Inertia::render('Admin/Users');
+    }
+
+    public function list(): LengthAwarePaginator
+    {
+        // Users with roles paginated 10 per page
+        return User::with('roles')->paginate(10);
     }
 }
