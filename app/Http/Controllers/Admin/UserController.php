@@ -14,8 +14,8 @@ class UserController extends Controller
 
     public function index(): Response
     {
-        // Render the Admin/Users.vue file
-        return Inertia::render('Admin/Users');
+        // Render the Admin/Index.vue file
+        return Inertia::render('Admin/Users/Index');
     }
 
     public function list(): LengthAwarePaginator
@@ -33,5 +33,13 @@ class UserController extends Controller
         $user->save();
 
         return response()->json(['message' => 'User status updated successfully']);
+    }
+
+    public function edit(User $user): Response
+    {
+        // Render the Admin/EditUser.vue file
+        return Inertia::render('Admin/Users/EditUser', [
+            'user' => $user
+        ]);
     }
 }

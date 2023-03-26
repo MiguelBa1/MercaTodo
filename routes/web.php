@@ -43,6 +43,8 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/users', [UserController::class, 'index'])->name('admin.users');
     Route::get('/admin/list-users', [UserController::class, 'list'])->name('admin.list-users');
     Route::patch('/admin/manage-user-status/{user}', [UserController::class, 'manageStatus'])->name('admin.manage-user-status');
+    // Route to edit user
+    Route::get('/admin/edit-user/{user}', [UserController::class, 'edit'])->name('admin.edit-user');
 });
 
 require __DIR__.'/auth.php';

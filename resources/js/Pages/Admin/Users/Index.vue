@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {usePage} from '@inertiajs/vue3'
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
-import UsersTable from "@/Pages/Admin/Partials/UsersTable.vue";
+import UsersTable from "@/Pages/Admin/Users/Partials/UsersTable.vue";
 
 defineProps({
     auth: {
