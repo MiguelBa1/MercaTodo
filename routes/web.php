@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
@@ -43,6 +42,7 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/users', [UserController::class, 'index'])->name('admin.users');
     Route::get('/admin/list-users', [UserController::class, 'list'])->name('admin.list-users');
+    Route::patch('/admin/manage-user-status/{user}', [UserController::class, 'manageStatus'])->name('admin.manage-user-status');
 });
 
 require __DIR__.'/auth.php';
