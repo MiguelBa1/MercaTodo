@@ -1,9 +1,11 @@
 <script setup>
 import {Link} from '@inertiajs/vue3'
 import {TailwindPagination} from 'laravel-vue-pagination';
+import {useToast} from "vue-toast-notification";
 import axios from "axios";
 import {ref} from 'vue';
 
+const $toast = useToast();
 const usersData = ref({});
 const pageNumber = ref(1);
 
@@ -19,6 +21,9 @@ const manageUserStatus = async (id, name) => {
     const response = await axios.patch(`/admin/manage-user-status/${id}`)
     if (response.status === 200) {
         await getUsers(pageNumber.value);
+        $toast.success(`${name} status has been updated successfully`);
+    } else {
+        $toast.error(`Something went wrong, please try again later`);
     }
 }
 
