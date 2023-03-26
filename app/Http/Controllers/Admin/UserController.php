@@ -20,8 +20,11 @@ class UserController extends Controller
 
     public function list(): LengthAwarePaginator
     {
-        // Users with roles paginated 10 per page
-        return User::with('roles')->paginate(10);
+        // Get all users with their roles
+        return User::query()->join('model_has_roles', 'model_has_roles.model_id', '=', 'users.id')
+            ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
+            ->select('users.*', 'roles.name as role_name')->orderBy('users.id', 'asc')
+            ->paginate(10);
     }
     public function manageStatus(User $user): JsonResponse
     {

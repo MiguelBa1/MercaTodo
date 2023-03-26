@@ -47,7 +47,7 @@ const manageUserStatus = async (id, name) => {
                         user.status === 1 ? "Active" : user.status === 0 ? "Inactive" : "Null"
                     }}
                 </td>
-                <td class="border px-4 py-2 text-center">{{ user.roles[0].name }}</td>
+                <td class="border px-4 py-2 text-center">{{ user.role_name }}</td>
                 <td class="border px-4 py-2">
                     <div class="flex justify-evenly">
                         <Link href="#" title="Edit user">
