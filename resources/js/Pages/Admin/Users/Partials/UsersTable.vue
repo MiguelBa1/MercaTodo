@@ -18,6 +18,7 @@ const getUsers = async (page = 1) => {
 getUsers();
 
 const manageUserStatus = async (id, name) => {
+    $toast.clear();
     const response = await axios.patch(`/admin/manage-user-status/${id}`)
     if (response.status === 200) {
         await getUsers(pageNumber.value);
@@ -56,7 +57,7 @@ const manageUserStatus = async (id, name) => {
                 <td class="border px-4 py-2">
                     <div class="flex justify-evenly">
                         <Link :href="route('admin.edit-user', user.id)" title="Edit user">
-                            <svg class="h-6 w-6 text-black"
+                            <svg class="h-6 w-6 text-blue-500"
                                  viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"
                                  fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                  stroke-linejoin="round">
@@ -67,7 +68,7 @@ const manageUserStatus = async (id, name) => {
                         <!--Disable user button patch to /admin/disable-user/{id}-->
                         <button v-if="user.status === 1" @click="manageUserStatus(user.id, user.name)"
                                 title="Disable user">
-                            <svg class="h-6 w-6 text-black" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            <svg class="h-6 w-6 text-red-500" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
                                 <circle cx="8.5" cy="7" r="4"/>
@@ -77,7 +78,7 @@ const manageUserStatus = async (id, name) => {
                         </button>
                         <button v-if="user.status === 0" @click="manageUserStatus(user.id, user.name)"
                                 title="Enable user">
-                            <svg class="h-6 w-6 text-black" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            <svg class="h-6 w-6 text-green-500" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
                                 <circle cx="8.5" cy="7" r="4"/>
