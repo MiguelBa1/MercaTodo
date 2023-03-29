@@ -1,7 +1,8 @@
 <?php
 
+use App\Http\Controllers\Admin\RoleController;
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\AdminController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -26,19 +27,31 @@ Route::get('/', function () {
     ]);
 });
 
+//TODO: Add middleware to check if user status is active
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+//TODO: Add middleware to check if user status is active
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+//TODO: Add middleware to check if user status is active
 Route::middleware(['auth', 'role:admin'])->group(function () {
-    Route::get('/admin', [AdminController::class, 'index']);
-    Route::get('/admin/users', [AdminController::class, 'manageUsers']);
+    // Route to get roles
+    Route::get('/admin/roles', [RoleController::class, 'index'])->name('admin.roles');
+    Route::get('/admin/users', [UserController::class, 'index'])->name('admin.users');
+    Route::get('/admin/list-users', [UserController::class, 'list'])->name('admin.list-users');
+    Route::patch('/admin/manage-user-status/{user}', [UserController::class, 'manageStatus'])->name('admin.manage-user-status');
+    // Route to edit user
+    Route::get('/admin/edit-user/{user}', [UserController::class, 'edit'])->name('admin.edit-user');
+    // Route to update user password
+    Route::patch('/admin/update-user-password/{user}', [UserController::class, 'updatePassword'])->name('admin.update-user-password');
+    // Route to update user profile
+    Route::patch('/admin/update-user-profile/{user}', [UserController::class, 'updateProfile'])->name('admin.update-user-profile');
 });
 
 require __DIR__.'/auth.php';

@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
 //use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use App\Models\User;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -11,17 +12,13 @@ class AdminController extends Controller
 {
     // This function returns an Inertia response
     // that will render the Admin/Users.vue file.
-    public function index(): Response
-    {
-        return Inertia::render('Admin/Index');
-    }
 
     // This function returns a view contain
     // The view is rendered using Inertia.js.
-    public function manageUsers(): Response
+    public function index(): Response
     {
-        $users = User::all();
-        return Inertia::render('Admin/Users', ['users' => $users]);
+        // TODO: Add this view
+        return Inertia::render('Admin/Index');
     }
 
 }
