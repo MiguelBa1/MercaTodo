@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
@@ -40,11 +41,17 @@ Route::middleware('auth')->group(function () {
 
 //TODO: Add middleware to check if user status is active
 Route::middleware(['auth', 'role:admin'])->group(function () {
+    // Route to get roles
+    Route::get('/admin/roles', [RoleController::class, 'index'])->name('admin.roles');
     Route::get('/admin/users', [UserController::class, 'index'])->name('admin.users');
     Route::get('/admin/list-users', [UserController::class, 'list'])->name('admin.list-users');
     Route::patch('/admin/manage-user-status/{user}', [UserController::class, 'manageStatus'])->name('admin.manage-user-status');
     // Route to edit user
     Route::get('/admin/edit-user/{user}', [UserController::class, 'edit'])->name('admin.edit-user');
+    // Route to update user password
+    Route::patch('/admin/update-user-password/{user}', [UserController::class, 'updatePassword'])->name('admin.update-user-password');
+    // Route to update user profile
+    Route::patch('/admin/update-user-profile/{user}', [UserController::class, 'updateProfile'])->name('admin.update-user-profile');
 });
 
 require __DIR__.'/auth.php';

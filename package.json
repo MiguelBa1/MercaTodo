@@ -17,6 +17,7 @@
         "vue": "^3.2.41"
     },
     "dependencies": {
-        "laravel-vue-pagination": "^4.1.0"
+        "laravel-vue-pagination": "^4.1.0",
+        "vue-toast-notification": "^3.1.1"
     }
 }
