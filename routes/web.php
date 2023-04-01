@@ -19,17 +19,19 @@ use Inertia\Inertia;
 */
 
 Route::get('/', function () {
-    return Inertia::render('Welcome', [
+    return Inertia::render('Home', [
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
     ]);
-});
+})->name('home');
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard')->middleware(['auth', 'checkStatus', 'verified']);
+Route::get('/admin', function () {
+    return Inertia::render('Admin/Dashboard');
+})->middleware(['auth', 'role:admin', 'checkStatus', 'verified'])->name('admin.dashboard');
+
+//Route::get('/dashboard', function () {
+//    return Inertia::render('Dashboard');
+//})->middleware(['auth', 'verified'])->name('dashboard')->middleware(['auth', 'checkStatus', 'verified']);
 
 Route::middleware(['auth', 'checkStatus', 'verified'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
