@@ -67,10 +67,8 @@ class UserControllerTest extends TestCase
                 ->where('id', $this->customerUser->id)
                 ->where('name', $this->customerUser->name)
                 ->where('email', $this->customerUser->email)
-                ->has('roles', 1, fn(AssertableInertia $page) => $page
-                    ->where('name', $this->customerUser->roles->first()->name)
-                    ->etc()
-                )
+                ->where('role_name', $this->customerUser->roles->first()->name)
+                ->etc()
             )
         );
     }
@@ -89,7 +87,7 @@ class UserControllerTest extends TestCase
         $newName = 'John Doe';
         $newEmail = 'johndoe@example.com';
         $newRole = 'admin';
-        $response = $this->actingAs($this->adminUser)->patch(route('admin.update-user-profile', $this->customerUser->id), ['name' => $newName, 'email' => $newEmail, 'roles' => $newRole]);
+        $response = $this->actingAs($this->adminUser)->patch(route('admin.update-user-profile', $this->customerUser->id), ['name' => $newName, 'email' => $newEmail, 'role_name' => $newRole]);
         $response->assertStatus(200);
         $this->assertEquals($newName, $this->customerUser->fresh()->name);
         $this->assertEquals($newEmail, $this->customerUser->fresh()->email);

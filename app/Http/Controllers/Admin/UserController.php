@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
@@ -27,7 +28,8 @@ class UserController extends Controller
         // Get all users with their roles
         return User::query()->join('model_has_roles', 'model_has_roles.model_id', '=', 'users.id')
             ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
-            ->select('users.*', 'roles.name as role_name')->orderBy('users.id', 'asc')
+            ->select('users.id', 'users.name', 'users.email', DB::raw('IF(users.status = 1, "Active", "Inactive") as status'),
+                'roles.name as role_name')->orderBy('users.id', 'asc')
             ->paginate(10);
     }
     public function manageStatus(User $user): JsonResponse
@@ -43,13 +45,15 @@ class UserController extends Controller
     {
         if ($user->getAttribute('id') === auth()->user()->getAttribute('id')) {
             // Render the Profile/Edit.vue file
-            return Inertia::render('Profile/Edit', [
-                'user' => $user->load('roles')->only('id', 'name', 'email', 'roles.name')
-            ]);
+            return Inertia::render('Profile/Edit');
         }
+        // User with his first role
+        $user->setAttribute('role_name', $user->getAttribute('roles')->first()->getAttribute('name'));
+
         // Render the Admin/Edit.vue file
         return Inertia::render('Admin/Users/Edit', [
-            'user' => $user->load('roles')->only('id', 'name', 'email', 'roles')
+            // Pass the user without roles to the view
+            'user' => $user->withoutRelations()
         ]);
     }
 
@@ -91,13 +95,13 @@ class UserController extends Controller
         $this->validate(request(), [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,' . $user->getAttribute('id')],
-            'roles' => ['required', 'string']
+            'role_name' => ['required', 'string']
         ]);
 
         // Update the profile
         $user->setAttribute('name', request()->get('name'));
         $user->setAttribute('email', request()->get('email'));
-        $user->syncRoles(request()->get('roles'));
+        $user->syncRoles(request()->get('role_name'));
         $user->save();
 
         return response()->json(['message' => 'Profile updated successfully']);
