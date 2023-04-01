@@ -17,10 +17,10 @@ class DatabaseSeeder extends Seeder
         $role = new Role();
 
         $adminRole = $role->create(['name' => 'admin']);
-        $userRole = $role->create(['name' => 'user']);
+        $customerRole = $role->create(['name' => 'customer']);
 
-        User::factory(200)->create()->each(function ($user) use ($userRole) {
-            $user->assignRole($userRole);
+        User::factory(200)->create()->each(function ($user) use ($customerRole) {
+            $user->assignRole($customerRole);
         });
 
 //      Crea un usuario administrador
@@ -38,7 +38,7 @@ class DatabaseSeeder extends Seeder
             'password' => bcrypt('password'),
         ]);
 
-        $testUser->assignRole($userRole);
+        $testUser->assignRole($customerRole);
 
     }
 }
