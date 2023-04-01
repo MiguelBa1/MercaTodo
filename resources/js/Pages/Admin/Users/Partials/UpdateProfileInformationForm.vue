@@ -15,7 +15,7 @@ const user = usePage().props.user;
 const form = useForm({
     name: user.name,
     email: user.email,
-    roles: user.roles[0].name,
+    role_name: user.role_name,
 });
 
 const updateProfileInformation = () => {
@@ -74,7 +74,7 @@ getRoles();
                 <select
                     id="role"
                     class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
-                    v-model="form.roles"
+                    v-model="form.role_name"
                     required
                     autocomplete="role"
                 >

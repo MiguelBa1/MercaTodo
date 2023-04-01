@@ -6,7 +6,6 @@ import { Head } from '@inertiajs/vue3';
 
 import { usePage } from '@inertiajs/vue3';
 const user = usePage().props.user;
-const roles = usePage().props.roles;
 
 </script>
 
