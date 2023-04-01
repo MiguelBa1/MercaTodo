@@ -49,10 +49,7 @@ const manageUserStatus = async (id, name) => {
                 <td class="border px-4 py-2 text-center">{{ user.id }}</td>
                 <td class="border px-4 py-2">{{ user.name }}</td>
                 <td class="border px-4 py-2">{{ user.email }}</td>
-                <td class="border px-4 py-2 text-center">{{
-                        user.status === 1 ? "Active" : user.status === 0 ? "Inactive" : "Null"
-                    }}
-                </td>
+                <td class="border px-4 py-2 text-center">{{ user.status }}</td>
                 <td class="border px-4 py-2 text-center">{{ user.role_name }}</td>
                 <td class="border px-4 py-2">
                     <div class="flex justify-evenly">
@@ -66,7 +63,7 @@ const manageUserStatus = async (id, name) => {
                             </svg>
                         </Link>
                         <!--Disable user button patch to /admin/disable-user/{id}-->
-                        <button v-if="user.status === 1" @click="manageUserStatus(user.id, user.name)"
+                        <button v-if="user.status === 'Active'" @click="manageUserStatus(user.id, user.name)"
                                 title="Disable user">
                             <svg class="h-6 w-6 text-red-500" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -76,7 +73,7 @@ const manageUserStatus = async (id, name) => {
                                 <line x1="23" y1="8" x2="18" y2="13"/>
                             </svg>
                         </button>
-                        <button v-if="user.status === 0" @click="manageUserStatus(user.id, user.name)"
+                        <button v-if="user.status === 'Inactive'" @click="manageUserStatus(user.id, user.name)"
                                 title="Enable user">
                             <svg class="h-6 w-6 text-green-500" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round">

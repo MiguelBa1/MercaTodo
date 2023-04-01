@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
@@ -27,7 +28,8 @@ class UserController extends Controller
         // Get all users with their roles
         return User::query()->join('model_has_roles', 'model_has_roles.model_id', '=', 'users.id')
             ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
-            ->select('users.*', 'roles.name as role_name')->orderBy('users.id', 'asc')
+            ->select('users.id', 'users.name', 'users.email', DB::raw('IF(users.status = 1, "Active", "Inactive") as status'),
+                'roles.name as role_name')->orderBy('users.id', 'asc')
             ->paginate(10);
     }
     public function manageStatus(User $user): JsonResponse
