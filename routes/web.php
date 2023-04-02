@@ -29,10 +29,6 @@ Route::get('/admin', function () {
     return Inertia::render('Admin/Dashboard');
 })->middleware(['auth', 'role:admin', 'checkStatus', 'verified'])->name('admin.dashboard');
 
-//Route::get('/dashboard', function () {
-//    return Inertia::render('Dashboard');
-//})->middleware(['auth', 'verified'])->name('dashboard')->middleware(['auth', 'checkStatus', 'verified']);
-
 Route::middleware(['auth', 'checkStatus', 'verified'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -44,13 +40,19 @@ Route::middleware(['auth', 'role:admin', 'checkStatus', 'verified'])->group(func
     Route::get('/admin/roles', [RoleController::class, 'index'])->name('admin.roles');
     Route::get('/admin/users', [UserController::class, 'index'])->name('admin.users');
     Route::get('/admin/list-users', [UserController::class, 'list'])->name('admin.list-users');
-    Route::patch('/admin/manage-user-status/{user}', [UserController::class, 'manageStatus'])->name('admin.manage-user-status');
+    Route::patch('/admin/manage-user-status/{user}', [UserController::class, 'manageStatus'])->name(
+        'admin.manage-user-status'
+    );
     // Route to edit user
     Route::get('/admin/edit-user/{user}', [UserController::class, 'edit'])->name('admin.edit-user');
     // Route to update user password
-    Route::patch('/admin/update-user-password/{user}', [UserController::class, 'updatePassword'])->name('admin.update-user-password');
+    Route::patch('/admin/update-user-password/{user}', [UserController::class, 'updatePassword'])->name(
+        'admin.update-user-password'
+    );
     // Route to update user profile
-    Route::patch('/admin/update-user-profile/{user}', [UserController::class, 'updateProfile'])->name('admin.update-user-profile');
+    Route::patch('/admin/update-user-profile/{user}', [UserController::class, 'updateProfile'])->name(
+        'admin.update-user-profile'
+    );
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

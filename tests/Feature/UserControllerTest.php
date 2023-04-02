@@ -53,7 +53,9 @@ class UserControllerTest extends TestCase
 
     public function testManageStatusUpdatesUserStatus()
     {
-        $response = $this->actingAs($this->adminUser)->patch(route('admin.manage-user-status', $this->customerUser->id));
+        $response = $this->actingAs($this->adminUser)->patch(
+            route('admin.manage-user-status', $this->customerUser->id)
+        );
         $response->assertStatus(200);
         $this->assertEquals(!$this->customerUser->status, $this->customerUser->fresh()->status);
     }
@@ -77,7 +79,10 @@ class UserControllerTest extends TestCase
     {
         $newPassword = 'newpassword123';
         $response = $this->actingAs($this->adminUser)
-            ->patch(route('admin.update-user-password', $this->customerUser->id), ['password' => $newPassword, 'password_confirmation' => $newPassword]);
+            ->patch(
+                route('admin.update-user-password', $this->customerUser->id),
+                ['password' => $newPassword, 'password_confirmation' => $newPassword]
+            );
         $response->assertStatus(200);
         $this->assertTrue(Hash::check($newPassword, $this->customerUser->fresh()->password));
     }
@@ -87,7 +92,10 @@ class UserControllerTest extends TestCase
         $newName = 'John Doe';
         $newEmail = 'johndoe@example.com';
         $newRole = 'admin';
-        $response = $this->actingAs($this->adminUser)->patch(route('admin.update-user-profile', $this->customerUser->id), ['name' => $newName, 'role_name' => $newRole]);
+        $response = $this->actingAs($this->adminUser)->patch(
+            route('admin.update-user-profile', $this->customerUser->id),
+            ['name' => $newName, 'role_name' => $newRole]
+        );
         $response->assertStatus(200);
         $this->assertEquals($newName, $this->customerUser->fresh()->name);
         $this->assertTrue($this->customerUser->fresh()->hasRole($newRole));
