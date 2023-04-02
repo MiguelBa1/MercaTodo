@@ -2,8 +2,8 @@ name: Laravel CI
 
 on:
   push:
-#    branches:
-#      - "develop"
+    branches:
+      - "dev"
 
 jobs:
   phpunit:
