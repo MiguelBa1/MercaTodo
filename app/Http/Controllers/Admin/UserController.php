@@ -28,10 +28,16 @@ class UserController extends Controller
         // Get all users with their roles
         return User::query()->join('model_has_roles', 'model_has_roles.model_id', '=', 'users.id')
             ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
-            ->select('users.id', 'users.name', 'users.email', DB::raw('IF(users.status = 1, "Active", "Inactive") as status'),
-                'roles.name as role_name')->orderBy('users.id', 'asc')
+            ->select(
+                'users.id',
+                'users.name',
+                'users.email',
+                DB::raw('IF(users.status = 1, "Active", "Inactive") as status'),
+                'roles.name as role_name'
+            )->orderBy('users.id', 'asc')
             ->paginate(10);
     }
+
     public function manageStatus(User $user): JsonResponse
     {
         // Disable the user
@@ -90,7 +96,6 @@ class UserController extends Controller
      */
     public function updateProfile(User $user): JsonResponse
     {
-
         // Validate the request
         $this->validate(request(), [
             'name' => ['required', 'string', 'max:255'],
