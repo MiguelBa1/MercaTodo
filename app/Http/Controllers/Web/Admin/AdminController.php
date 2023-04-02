@@ -1,10 +1,8 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Web\Admin;
 
-//use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\User;
 use Inertia\Inertia;
 use Inertia\Response;
 
