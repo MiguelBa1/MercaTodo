@@ -40,23 +40,17 @@ Route::middleware(['auth', 'checkStatus', 'verified'])->group(function () {
 
 // Render views
 Route::middleware(['auth', 'role:admin', 'checkStatus', 'verified'])->prefix('admin')->group(function () {
-    Route::get('users', [UserController::class, 'index'])->name('admin.users');
-    Route::get('edit-user/{user}', [UserController::class, 'edit'])->name('admin.edit-user');
+    Route::get('users', [UserController::class, 'index'])->name('admin.view.users');
+    Route::get('users/edit/{user}', [UserController::class, 'edit'])->name('admin.edit.user');
 });
 
 // API calls
-Route::middleware(['auth', 'role:admin', 'checkStatus', 'verified'])->prefix('admin')->group(function () {
-    Route::get('roles', [RoleController::class, 'index'])->name('admin.roles');
-    Route::get('list-users', [ApiUserController::class, 'list'])->name('admin.list-users');
-    Route::patch('manage-user-status/{user}', [ApiUserController::class, 'update'])->name(
-        'admin.manage-user-status'
-    );
-    Route::patch('update-user-password/{user}', [ApiPasswordController::class, 'update'])->name(
-        'admin.update-user-password'
-    );
-    Route::patch('update-user-profile/{user}', [ApiProfileController::class, 'update'])->name(
-        'admin.update-user-profile'
-    );
+Route::middleware(['auth', 'role:admin', 'checkStatus', 'verified'])->prefix('admin/api')->group(function () {
+    Route::get('roles', [RoleController::class, 'list'])->name('admin.api.list.roles');
+    Route::get('users', [ApiUserController::class, 'list'])->name('admin.api.list.users');
+    Route::patch('users/status/{user}', [ApiUserController::class, 'update'])->name('admin.api.update.user.status');
+    Route::patch('users/password/{user}', [ApiPasswordController::class, 'update'])->name('admin.api.update.user.password');
+    Route::patch('users/profile/{user}', [ApiProfileController::class, 'update'])->name('admin.api.update.user.profile');
 });
 
 require __DIR__ . '/auth.php';

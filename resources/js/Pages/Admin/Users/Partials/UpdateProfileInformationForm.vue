@@ -21,7 +21,7 @@ const form = useForm({
 const updateProfileInformation = () => {
     $toast.info('Updating profile information...');
 
-    axios.patch(route('admin.update-user-profile', user.id), form.data())
+    axios.patch(route('admin.api.update.user.profile', user.id), form.data())
         .then(response => {
             $toast.success(response.data.message);
         })
@@ -33,7 +33,7 @@ const updateProfileInformation = () => {
 
 const roles = ref([]);
 const getRoles = async () => {
-    await axios.get(route('admin.roles'))
+    await axios.get(route('admin.api.list.roles'))
         .then(response => {
             roles.value = response.data;
         });

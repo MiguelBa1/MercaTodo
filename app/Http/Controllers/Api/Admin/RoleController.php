@@ -8,7 +8,7 @@ use Spatie\Permission\Models\Role;
 
 class RoleController extends Controller
 {
-    public function index(): JsonResponse
+    public function list(): JsonResponse
     {
         // Role names
         $roles = Role::all()->pluck('name');

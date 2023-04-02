@@ -59,7 +59,7 @@ const showingNavigationDropdown = ref(false);
                                     <DropdownLink v-if="$page.props.auth.isAdmin" :href="route('admin.dashboard')">
                                         Administrator
                                     </DropdownLink>
-                                    <DropdownLink :href="route('admin.users')" class="pl-8 flex">
+                                    <DropdownLink :href="route('admin.view.users')" class="pl-8 flex">
                                         <div class="border border-indigo-100 mr-3"></div>
                                         Users
                                     </DropdownLink>
@@ -138,7 +138,7 @@ const showingNavigationDropdown = ref(false);
                 <div class="mt-3 space-y-1">
                     <ResponsiveNavLink v-if="$page.props.auth.isAdmin" :href="route('admin.dashboard')"> Administrator
                     </ResponsiveNavLink>
-                    <ResponsiveNavLink v-if="$page.props.auth.isAdmin" :href="route('admin.users')"><span
+                    <ResponsiveNavLink v-if="$page.props.auth.isAdmin" :href="route('admin.view.users')"><span
                         class="border-l-4 pl-2">Users</span></ResponsiveNavLink>
                     <ResponsiveNavLink :href="route('logout')" method="post" as="button">
                         Log Out

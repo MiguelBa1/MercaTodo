@@ -35,7 +35,7 @@ class UserControllerTest extends TestCase
     {
         $response = $this
             ->actingAs($this->adminUser)
-            ->get(route('admin.users'));
+            ->get(route('admin.view.users'));
 
         $response->assertOk();
         $response->assertStatus(200);
@@ -46,7 +46,7 @@ class UserControllerTest extends TestCase
 
     public function testListReturnsJson()
     {
-        $response = $this->actingAs($this->adminUser)->get(route('admin.list-users'));
+        $response = $this->actingAs($this->adminUser)->get(route('admin.api.list.users'));
         $response->assertStatus(200);
         $response->assertJsonStructure(['data', 'links']);
     }
@@ -54,7 +54,7 @@ class UserControllerTest extends TestCase
     public function testManageStatusUpdatesUserStatus()
     {
         $response = $this->actingAs($this->adminUser)->patch(
-            route('admin.manage-user-status', $this->customerUser->id)
+            route('admin.api.update.user.status', $this->customerUser->id)
         );
         $response->assertStatus(200);
         $this->assertEquals(!$this->customerUser->status, $this->customerUser->fresh()->status);
@@ -62,7 +62,7 @@ class UserControllerTest extends TestCase
 
     public function testEditRendersCorrectView()
     {
-        $response = $this->actingAs($this->adminUser)->get(route('admin.edit-user', $this->customerUser->id));
+        $response = $this->actingAs($this->adminUser)->get(route('admin.edit.user', $this->customerUser->id));
         $response->assertStatus(200);
         $response->assertInertia(fn(AssertableInertia $page) => $page
             ->component('Admin/Users/Edit')->has('user', fn(AssertableInertia $page) => $page
@@ -80,7 +80,7 @@ class UserControllerTest extends TestCase
         $newPassword = 'newpassword123';
         $response = $this->actingAs($this->adminUser)
             ->patch(
-                route('admin.update-user-password', $this->customerUser->id),
+                route('admin.api.update.user.password', $this->customerUser->id),
                 ['password' => $newPassword, 'password_confirmation' => $newPassword]
             );
         $response->assertStatus(200);
@@ -93,7 +93,7 @@ class UserControllerTest extends TestCase
         $newEmail = 'johndoe@example.com';
         $newRole = 'admin';
         $response = $this->actingAs($this->adminUser)->patch(
-            route('admin.update-user-profile', $this->customerUser->id),
+            route('admin.api.update.user.profile', $this->customerUser->id),
             ['name' => $newName, 'role_name' => $newRole]
         );
         $response->assertStatus(200);
