@@ -10,7 +10,8 @@ const usersData = ref({});
 const pageNumber = ref(1);
 
 const getUsers = async (page = 1) => {
-    const response = await fetch(`/admin/list-users?page=${page}`);
+    console.log(route('admin.api.list.users', {page: page}));
+    const response = await fetch(route('admin.api.list.users', {page: page}));
     usersData.value = await response.json();
     pageNumber.value = page;
 }
@@ -19,7 +20,7 @@ getUsers();
 
 const manageUserStatus = async (id, name) => {
     $toast.clear();
-    const response = await axios.patch(`/admin/manage-user-status/${id}`)
+    const response = await axios.patch(route('admin.api.update.user.status', id));
     if (response.status === 200) {
         await getUsers(pageNumber.value);
         $toast.success(`${name} status has been updated successfully`);
@@ -53,7 +54,7 @@ const manageUserStatus = async (id, name) => {
                 <td class="border px-4 py-2 text-center">{{ user.role_name }}</td>
                 <td class="border px-4 py-2">
                     <div class="flex justify-evenly">
-                        <Link :href="route('admin.edit-user', user.id)" title="Edit user">
+                        <Link :href="route('admin.edit.user', user.id)" title="Edit user">
                             <svg class="h-6 w-6 text-blue-500"
                                  viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"
                                  fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"

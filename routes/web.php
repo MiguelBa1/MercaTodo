@@ -1,9 +1,12 @@
 <?php
 
-use App\Http\Controllers\Admin\RoleController;
-use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\ProfileController;
-use Illuminate\Foundation\Application;
+use App\Http\Controllers\Web\Admin\UserController;
+use App\Http\Controllers\Web\Admin\AdminController;
+use App\Http\Controllers\Api\Admin\UserController as ApiUserController;
+use App\Http\Controllers\Api\Admin\RoleController as ApiRoleController;
+use App\Http\Controllers\Api\Admin\ProfileController as ApiProfileController;
+use \App\Http\Controllers\Api\Admin\PasswordController as ApiPasswordController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -25,34 +28,26 @@ Route::get('/', function () {
     ]);
 })->name('home');
 
-Route::get('/admin', function () {
-    return Inertia::render('Admin/Dashboard');
-})->middleware(['auth', 'role:admin', 'checkStatus', 'verified'])->name('admin.dashboard');
-
 Route::middleware(['auth', 'checkStatus', 'verified'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::middleware(['auth', 'role:admin', 'checkStatus', 'verified'])->group(function () {
-    // Route to get roles
-    Route::get('/admin/roles', [RoleController::class, 'index'])->name('admin.roles');
-    Route::get('/admin/users', [UserController::class, 'index'])->name('admin.users');
-    Route::get('/admin/list-users', [UserController::class, 'list'])->name('admin.list-users');
-    Route::patch('/admin/manage-user-status/{user}', [UserController::class, 'manageStatus'])->name(
-        'admin.manage-user-status'
-    );
-    // Route to edit user
-    Route::get('/admin/edit-user/{user}', [UserController::class, 'edit'])->name('admin.edit-user');
-    // Route to update user password
-    Route::patch('/admin/update-user-password/{user}', [UserController::class, 'updatePassword'])->name(
-        'admin.update-user-password'
-    );
-    // Route to update user profile
-    Route::patch('/admin/update-user-profile/{user}', [UserController::class, 'updateProfile'])->name(
-        'admin.update-user-profile'
-    );
+// Render views
+Route::middleware(['auth', 'role:admin', 'checkStatus', 'verified'])->prefix('admin')->group(function () {
+    Route::get('/', [AdminController::class, 'index'])->name('admin.dashboard');
+    Route::get('users', [UserController::class, 'index'])->name('admin.view.users');
+    Route::get('users/edit/{user}', [UserController::class, 'edit'])->name('admin.edit.user');
+});
+
+// API calls
+Route::middleware(['auth', 'role:admin', 'checkStatus', 'verified'])->prefix('admin/api')->group(function () {
+    Route::get('roles', [ApiRoleController::class, 'list'])->name('admin.api.list.roles');
+    Route::get('users', [ApiUserController::class, 'list'])->name('admin.api.list.users');
+    Route::patch('users/status/{user}', [ApiUserController::class, 'update'])->name('admin.api.update.user.status');
+    Route::patch('users/password/{user}', [ApiPasswordController::class, 'update'])->name('admin.api.update.user.password');
+    Route::patch('users/profile/{user}', [ApiProfileController::class, 'update'])->name('admin.api.update.user.profile');
 });
 
 require __DIR__ . '/auth.php';

@@ -24,7 +24,7 @@ const updatePassword = () => {
         $toast.error('Passwords do not match.');
         return;
     }
-    axios.patch(route('admin.update-user-password', user.id), form.data())
+    axios.patch(route('admin.api.update.user.password', user.id), form.data())
         .then(response => {
             $toast.success(response.data.message);
             form.reset();
