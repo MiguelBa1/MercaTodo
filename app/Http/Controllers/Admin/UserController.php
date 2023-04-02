@@ -94,13 +94,11 @@ class UserController extends Controller
         // Validate the request
         $this->validate(request(), [
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,' . $user->getAttribute('id')],
             'role_name' => ['required', 'string']
         ]);
 
         // Update the profile
         $user->setAttribute('name', request()->get('name'));
-        $user->setAttribute('email', request()->get('email'));
         $user->syncRoles(request()->get('role_name'));
         $user->save();
 
