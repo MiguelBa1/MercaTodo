@@ -1,7 +1,7 @@
 <template>
     <div class="flex gap-1 items-center">
         MercaTodo
-        <svg class="w-6 h-6 text-black" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        <svg class="text-black" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
              stroke-linecap="round" stroke-linejoin="round">
             <circle cx="9" cy="21" r="1"/>
             <circle cx="20" cy="21" r="1"/>
