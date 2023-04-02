@@ -87,10 +87,9 @@ class UserControllerTest extends TestCase
         $newName = 'John Doe';
         $newEmail = 'johndoe@example.com';
         $newRole = 'admin';
-        $response = $this->actingAs($this->adminUser)->patch(route('admin.update-user-profile', $this->customerUser->id), ['name' => $newName, 'email' => $newEmail, 'role_name' => $newRole]);
+        $response = $this->actingAs($this->adminUser)->patch(route('admin.update-user-profile', $this->customerUser->id), ['name' => $newName, 'role_name' => $newRole]);
         $response->assertStatus(200);
         $this->assertEquals($newName, $this->customerUser->fresh()->name);
-        $this->assertEquals($newEmail, $this->customerUser->fresh()->email);
         $this->assertTrue($this->customerUser->fresh()->hasRole($newRole));
     }
 }

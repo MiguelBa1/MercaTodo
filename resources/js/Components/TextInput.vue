@@ -1,7 +1,16 @@
 <script setup>
 import { onMounted, ref } from 'vue';
 
-defineProps(['modelValue']);
+defineProps({
+    modelValue: {
+        type: String,
+        required: true,
+    },
+    disabled: {
+        type: Boolean,
+        default: false,
+    },
+});
 
 defineEmits(['update:modelValue']);
 
@@ -22,5 +31,6 @@ defineExpose({ focus: () => input.value.focus() });
         :value="modelValue"
         @input="$emit('update:modelValue', $event.target.value)"
         ref="input"
+        :disabled="disabled"
     />
 </template>

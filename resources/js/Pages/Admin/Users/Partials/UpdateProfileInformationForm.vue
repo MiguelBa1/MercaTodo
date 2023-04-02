@@ -79,7 +79,7 @@ getRoles();
                     autocomplete="role"
                 >
                     <option v-for="role in roles" :value="role">
-                        {{ role }}
+                        {{ role.charAt(0).toUpperCase() + role.slice(1) }}
                     </option>
                 </select>
 
@@ -92,10 +92,11 @@ getRoles();
                 <TextInput
                     id="email"
                     type="email"
-                    class="mt-1 block w-full"
+                    class="mt-1 block w-full bg-gray-100 cursor-not-allowed"
                     v-model="form.email"
                     required
                     autocomplete="username"
+                    :disabled="true"
                 />
 
                 <InputError class="mt-2" :message="form.errors.email"/>
