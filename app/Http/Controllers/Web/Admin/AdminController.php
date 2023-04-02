@@ -10,7 +10,7 @@ class AdminController extends Controller
 {
     public function index(): Response
     {
-        return Inertia::render('Admin/Index');
+        return Inertia::render('Admin/Dashboard');
     }
 
 }
