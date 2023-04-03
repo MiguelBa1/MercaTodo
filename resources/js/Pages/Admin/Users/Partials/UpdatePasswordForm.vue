@@ -33,6 +33,7 @@ const updatePassword = () => {
             if (error.response.data.errors.password) {
                 form.reset('password', 'password_confirmation');
                 passwordInput.value.focus();
+                $toast.error(error.response.data.errors.password[0]);
             }
         });
 };
