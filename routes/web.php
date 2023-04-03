@@ -1,7 +1,12 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
-use Illuminate\Foundation\Application;
+use App\Http\Controllers\Web\Admin\UserController;
+use App\Http\Controllers\Web\Admin\AdminController;
+use App\Http\Controllers\Api\Admin\UserController as ApiUserController;
+use App\Http\Controllers\Api\Admin\RoleController as ApiRoleController;
+use App\Http\Controllers\Api\Admin\ProfileController as ApiProfileController;
+use \App\Http\Controllers\Api\Admin\PasswordController as ApiPasswordController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -17,22 +22,32 @@ use Inertia\Inertia;
 */
 
 Route::get('/', function () {
-    return Inertia::render('Welcome', [
+    return Inertia::render('Home', [
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
     ]);
-});
+})->name('home');
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
-
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'checkStatus', 'verified'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
+// Render views
+Route::middleware(['auth', 'role:admin', 'checkStatus', 'verified'])->prefix('admin')->group(function () {
+    Route::get('/', [AdminController::class, 'index'])->name('admin.dashboard');
+    Route::get('users', [UserController::class, 'index'])->name('admin.view.users');
+    Route::get('users/edit/{user}', [UserController::class, 'edit'])->name('admin.edit.user');
+});
+
+// API calls
+Route::middleware(['auth', 'role:admin', 'checkStatus', 'verified'])->prefix('admin/api')->group(function () {
+    Route::get('roles', [ApiRoleController::class, 'list'])->name('admin.api.list.roles');
+    Route::get('users', [ApiUserController::class, 'list'])->name('admin.api.list.users');
+    Route::patch('users/status/{user}', [ApiUserController::class, 'update'])->name('admin.api.update.user.status');
+    Route::patch('users/password/{user}', [ApiPasswordController::class, 'update'])->name('admin.api.update.user.password');
+    Route::patch('users/profile/{user}', [ApiProfileController::class, 'update'])->name('admin.api.update.user.profile');
+});
+
+require __DIR__ . '/auth.php';

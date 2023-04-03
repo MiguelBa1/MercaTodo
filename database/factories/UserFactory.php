@@ -10,6 +10,7 @@ use Illuminate\Support\Str;
  */
 class UserFactory extends Factory
 {
+    protected $str;
     /**
      * Define the model's default state.
      *
@@ -17,12 +18,16 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
+
+        $this->str = new Str();
+
         return [
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
+            'status' => '1',
             'email_verified_at' => now(),
             'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
-            'remember_token' => Str::random(10),
+            'remember_token' => $this->str->random(10),
         ];
     }
 
