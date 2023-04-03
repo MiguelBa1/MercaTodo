@@ -31,14 +31,6 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $admin->assignRole($adminRole);
-
-        $testUser = User::factory()->create([
-            'name' => 'miguel',
-            'email' => 'miguel@mail.com',
-            'password' => bcrypt('password'),
-        ]);
-
-        $testUser->assignRole($customerRole);
-
+        
     }
 }
