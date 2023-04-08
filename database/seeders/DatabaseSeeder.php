@@ -19,18 +19,18 @@ class DatabaseSeeder extends Seeder
         $adminRole = $role->create(['name' => 'admin']);
         $customerRole = $role->create(['name' => 'customer']);
 
-        User::factory(200)->create()->each(function ($user) use ($customerRole) {
+        User::factory(5)->create()->each(function ($user) use ($customerRole) {
             $user->assignRole($customerRole);
         });
 
 //      Crea un usuario administrador
         $admin = User::factory()->create([
-            'name' => env('ADMIN_NAME'),
-            'email' => env('ADMIN_EMAIL'),
-            'password' => bcrypt(env('ADMIN_PASSWORD')),
+            'name' => config('app.admin_name'),
+            'email' => config('app.admin_email'),
+            'password' => bcrypt(config('app.admin_password')),
         ]);
 
         $admin->assignRole($adminRole);
-        
+
     }
 }
