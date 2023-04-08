@@ -21,7 +21,7 @@ class UserController extends Controller
                 'users.email',
                 DB::raw('IF(users.status = 1, "Active", "Inactive") as status'),
                 'roles.name as role_name'
-            )->orderBy('users.id', 'asc')
+            )->latest('users.id')
             ->paginate(10);
     }
 
