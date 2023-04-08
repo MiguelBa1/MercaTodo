@@ -19,7 +19,7 @@ class UserController extends Controller
     public function edit(User $user): Response
     {
         // Check if the user is the current user
-        if ($user->getAttribute('id') === auth()->user()->getAttribute('id')) {
+        if ($user->getAttribute('id') === auth()->user()['id']) {
             return Inertia::render('Profile/Edit');
         }
         // User with his first role

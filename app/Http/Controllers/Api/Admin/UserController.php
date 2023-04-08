@@ -5,9 +5,7 @@ namespace App\Http\Controllers\Api\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Pagination\LengthAwarePaginator;
+use \Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
@@ -29,18 +27,8 @@ class UserController extends Controller
 
     public function update(User $user): JsonResponse
     {
-        // Disable the user
         $user->setAttribute('status', !$user->getAttribute('status'));
         $user->save();
-
-        // Make a log
-        Log::warning('[STATUS]', [
-            'admin_id' => auth()->user()->getAttribute('id'),
-            'user_id' => $user->getAttribute('id'),
-            'user_name' => $user->getAttribute('name'),
-            'user_email' => $user->getAttribute('email'),
-            'status' => $user->getAttribute('status') ? 'Active' : 'Inactive'
-        ]);
 
         return response()->json(['message' => 'User status updated successfully']);
     }
