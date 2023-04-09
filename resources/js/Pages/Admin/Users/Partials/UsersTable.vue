@@ -10,7 +10,6 @@ const usersData = ref({});
 const pageNumber = ref(1);
 
 const getUsers = async (page = 1) => {
-    console.log(route('admin.api.list.users', {page: page}));
     const response = await fetch(route('admin.api.list.users', {page: page}));
     usersData.value = await response.json();
     pageNumber.value = page;
