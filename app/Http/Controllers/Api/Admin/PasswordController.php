@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\AdminUpdatePasswordRequest;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\Rules\Password;
@@ -13,16 +14,14 @@ use Psr\Container\NotFoundExceptionInterface;
 class PasswordController extends Controller
 {
     /**
+     * @param AdminUpdatePasswordRequest $request
+     * @param User $user
+     * @return JsonResponse
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
-     * @throws ValidationException
      */
-    public function update(User $user): JsonResponse
+    public function update(AdminUpdatePasswordRequest $request, User $user): JsonResponse
     {
-        $this->validate(request(), [
-            'password' => ['required', Password::defaults(), 'confirmed']
-        ]);
-
         $user->setAttribute('password', bcrypt(request()->get('password')));
         $user->save();
 
