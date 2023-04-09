@@ -19,7 +19,7 @@ class UserController extends Controller
                 'users.id',
                 'users.name',
                 'users.email',
-                DB::raw('IF(users.status = 1, "Active", "Inactive") as status'),
+                'status',
                 'roles.name as role_name'
             )->latest('users.id')
             ->paginate(10);
@@ -27,7 +27,7 @@ class UserController extends Controller
 
     public function update(User $user): JsonResponse
     {
-        $user->setAttribute('status', !$user->getAttribute('status'));
+        $user->setAttribute('status', !$user->getRawOriginal('status'));
         $user->save();
 
         return response()->json(['message' => 'User status updated successfully']);

@@ -49,11 +49,21 @@ class UserControllerTest extends TestCase
      */
     public function testUpdateStatusUpdatesUserStatus(): void
     {
+        // User status is active
         $response = $this->actingAs($this->adminUser)->patch(
             route('admin.api.update.user.status', $this->customerUser->id)
         );
+        $this->customerUser->refresh();
         $response->assertStatus(200);
-        $this->assertEquals(!$this->customerUser->status, $this->customerUser->fresh()->status);
+        $this->assertEquals('Inactive', $this->customerUser->status);
+
+        // User status is inactive
+        $response = $this->actingAs($this->adminUser)->patch(
+            route('admin.api.update.user.status', $this->customerUser->id)
+        );
+        $this->customerUser->refresh();
+        $response->assertStatus(200);
+        $this->assertEquals('Active', $this->customerUser->status);
     }
 
 }

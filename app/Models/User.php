@@ -22,6 +22,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'name',
         'email',
         'password',
+        'status'
     ];
 
     /**
@@ -42,4 +43,14 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    /**
+     * @param $value
+     * @return string
+     */
+    public function getStatusAttribute($value): string
+    {
+        return $value ? 'Active' : 'Inactive';
+    }
+
 }
