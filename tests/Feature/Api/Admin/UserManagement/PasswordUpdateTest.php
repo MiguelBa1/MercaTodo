@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Api\Admin;
+namespace Tests\Feature\Api\Admin\UserManagement;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 
-class PasswordControllerTest extends TestCase
+class PasswordUpdateTest extends TestCase
 {
     use RefreshDatabase;
     protected User $customerUser;

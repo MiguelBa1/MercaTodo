@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Api\Admin;
+namespace Tests\Feature\Api\Admin\UserManagement;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -8,7 +8,7 @@ use Illuminate\Http\JsonResponse;
 use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 
-class RoleControllerTest extends TestCase
+class RoleListTest extends TestCase
 {
     use RefreshDatabase;
     protected User $adminUser;
