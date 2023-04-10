@@ -8,7 +8,7 @@ use Inertia\Testing\AssertableInertia;
 use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 
-class UserControllerTest extends TestCase
+class UserManagementTest extends TestCase
 {
     use RefreshDatabase;
 

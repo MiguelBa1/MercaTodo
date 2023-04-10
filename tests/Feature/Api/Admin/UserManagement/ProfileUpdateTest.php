@@ -1,13 +1,13 @@
 <?php
 
-namespace Tests\Feature\Api\Admin;
+namespace Tests\Feature\Api\Admin\UserManagement;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 
-class ProfileControllerTest extends TestCase
+class ProfileUpdateTest extends TestCase
 {
     use RefreshDatabase;
 
