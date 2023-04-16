@@ -193,7 +193,7 @@ const submit = () => {
                     >
                         <option value="" disabled selected>Select a department</option>
                         <option v-for="department in departments" :value="department.id" :key="department.id">
-                            {{ department.name.charAt(0).toUpperCase() + department.name.toLowerCase().slice(1) }}
+                            {{ department.name }}
                         </option>
                     </select>
                 </div>
