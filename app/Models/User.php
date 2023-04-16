@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -22,7 +23,12 @@ class User extends Authenticatable implements MustVerifyEmail
         'name',
         'email',
         'password',
-        'status'
+        'phone',
+        'document',
+        'document_type',
+        'status',
+        'address',
+        'city_id',
     ];
 
     /**
@@ -53,4 +59,8 @@ class User extends Authenticatable implements MustVerifyEmail
         return $value ? 'Active' : 'Inactive';
     }
 
+    public function city(): BelongsTo
+    {
+        return $this->belongsTo(City::class, 'city_id', 'id');
+    }
 }
