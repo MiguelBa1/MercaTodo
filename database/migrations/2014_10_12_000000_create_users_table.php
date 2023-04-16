@@ -18,8 +18,8 @@ return new class extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->string('password');
-            $table->string('phone')->nullable();
-            $table->string('document')->unique();
+            $table->bigInteger('phone');
+            $table->bigInteger('document')->unique();
             $table->enum('document_type', DocumentTypeEnum::getValues())->nullable();
             $table->boolean('status')->default(true);
             $table->string('address');

@@ -38,9 +38,9 @@ class RegisteredUserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:'.User::class,
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'document' => 'required|string|max:255|unique:'.User::class,
+            'document' => 'required|integer|unique:'.User::class,
             'document_type' => 'required|string|max:255',
-            'phone' => 'required|string|max:255',
+            'phone' => 'required|integer',
             'address' => 'required|string|max:255',
             'city_id' => 'required|integer',
         ]);
