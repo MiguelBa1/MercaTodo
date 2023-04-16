@@ -2,32 +2,10 @@
 
 namespace Tests\Feature\Api\Admin\UserManagement;
 
-use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Spatie\Permission\Models\Role;
-use Tests\TestCase;
+use Tests\Feature\Utilities\UserTestCase;
 
-class ProfileUpdateTest extends TestCase
+class ProfileUpdateTest extends UserTestCase
 {
-    use RefreshDatabase;
-
-    protected User $customerUser;
-    protected User $adminUser;
-
-    public function setUp(): void
-    {
-        parent::setUp();
-
-        $role = new Role();
-        $adminRole = $role->create(['name' => 'admin']);
-        $customerRole = $role->create(['name' => 'customer']);
-
-        $this->customerUser = User::factory()->create();
-        $this->customerUser->assignRole($customerRole);
-        $this->adminUser = User::factory()->create();
-        $this->adminUser->assignRole($adminRole);
-    }
-
     /**
      * @test
      * Update the user profile

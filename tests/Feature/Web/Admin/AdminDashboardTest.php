@@ -2,29 +2,11 @@
 
 namespace Tests\Feature\Web\Admin;
 
-use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Inertia\Testing\AssertableInertia;
-use Spatie\Permission\Models\Role;
-use Tests\TestCase;
+use Tests\Feature\Utilities\UserTestCase;
 
-class AdminDashboardTest extends TestCase
+class AdminDashboardTest extends UserTestCase
 {
-    use RefreshDatabase;
-
-    protected User $adminUser;
-
-    public function setUp(): void
-    {
-        parent::setUp();
-
-        $role = new Role();
-        $adminRole = $role->create(['name' => 'admin']);
-
-        $this->adminUser = User::factory()->create();
-        $this->adminUser->assignRole($adminRole);
-    }
-
     /**
      * @test
      * Render the admin dashboard view
