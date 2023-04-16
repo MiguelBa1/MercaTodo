@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Enums\DocumentTypeEnum;
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use App\Models\Role;
-use App\Providers\RouteServiceProvider;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -22,7 +21,10 @@ class RegisteredUserController extends Controller
      */
     public function create(): Response
     {
-        return Inertia::render('Auth/Register');
+        return Inertia::render('Auth/Register', [
+            'departments' => \App\Models\Department::all(),
+            'document_types' => DocumentTypeEnum::getValues(),
+        ]);
     }
 
     /**
@@ -36,12 +38,22 @@ class RegisteredUserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:'.User::class,
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'document' => 'required|string|max:255|unique:'.User::class,
+            'document_type' => 'required|string|max:255',
+            'phone' => 'required|string|max:255',
+            'address' => 'required|string|max:255',
+            'city_id' => 'required|integer',
         ]);
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'document' => $request->document,
+            'document_type' => $request->document_type,
+            'phone' => $request->phone,
+            'address' => $request->address,
+            'city_id' => $request->city_id,
         ]);
 
         $user->assignRole('customer');

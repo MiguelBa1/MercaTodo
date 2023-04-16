@@ -29,3 +29,7 @@ Route::middleware(['auth:sanctum', 'role:admin', 'checkStatus', 'verified'])->pr
     Route::patch('users/password/{user}', [ApiPasswordController::class, 'update'])->name('admin.api.update.user.password');
     Route::patch('users/profile/{user}', [ApiProfileController::class, 'update'])->name('admin.api.update.user.profile');
 });
+
+Route::get('cities/{department_id}', function (int $department_id) {
+    return \App\Models\City::where('department_id', $department_id)->get();
+})->name('api.list.cities');
