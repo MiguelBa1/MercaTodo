@@ -2,7 +2,10 @@
 
 namespace App\Http\Requests;
 
+use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
+use Illuminate\Http\Request;
 
 class UpdateProfileRequest extends FormRequest
 {
@@ -19,11 +22,22 @@ class UpdateProfileRequest extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\Rule|array|string>
      */
-    public function rules(): array
+    public function rules(Request $request): array
     {
+        $id = $request->route('user')['id'];
         return [
-            'name' => ['required', 'string', 'max:255'],
-            'role_name' => ['required', 'string']
+            'name' => 'required|string|max:255',
+            'role_name' => 'required|string',
+            'document' => [
+                'required',
+                'integer',
+                'digits_between:6,12',
+                Rule::unique(User::class)->ignore($id),
+            ],
+            'document_type' => 'required|string|max:255',
+            'phone' => 'required|integer|digits_between:6,12',
+            'address' => 'required|string|max:255',
+            'city_id' => 'required|integer',
         ];
     }
 }

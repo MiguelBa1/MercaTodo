@@ -6,9 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdateProfileRequest;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Validation\ValidationException;
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
 
 class ProfileController extends Controller
 {
@@ -19,7 +16,7 @@ class ProfileController extends Controller
      */
     public function update(UpdateProfileRequest $request, User $user): JsonResponse
     {
-        $user->setAttribute('name', $request->input('name'));
+        $user->update($request->validated());
         $user->syncRoles($request->input('role_name'));
         $user->save();
 

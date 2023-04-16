@@ -62,8 +62,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function getCityNameAttribute($value): string
     {
-        // return city name with the id of the city
-        return $value ? City::find($value)->name : 'N/A';
+        return $value ? City::query()->find($value)->getAttribute('name') : 'N/A';
     }
     public function city(): BelongsTo
     {
