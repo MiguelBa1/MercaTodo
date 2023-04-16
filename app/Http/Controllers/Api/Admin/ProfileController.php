@@ -3,18 +3,18 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\UpdateProfileRequest;
+use App\Http\Requests\Admin\Users\ProfileUpdateRequest;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 
 class ProfileController extends Controller
 {
     /**
-     * @param UpdateProfileRequest $request
+     * @param ProfileUpdateRequest $request
      * @param User $user
      * @return JsonResponse
      */
-    public function update(UpdateProfileRequest $request, User $user): JsonResponse
+    public function update(ProfileUpdateRequest $request, User $user): JsonResponse
     {
         $user->update($request->validated());
         $user->syncRoles($request->input('role_name'));
