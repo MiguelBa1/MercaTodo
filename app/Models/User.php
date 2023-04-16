@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\DocumentTypeEnum;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -59,6 +60,11 @@ class User extends Authenticatable implements MustVerifyEmail
         return $value ? 'Active' : 'Inactive';
     }
 
+    public function getCityNameAttribute($value): string
+    {
+        // return city name with the id of the city
+        return $value ? City::find($value)->name : 'N/A';
+    }
     public function city(): BelongsTo
     {
         return $this->belongsTo(City::class, 'city_id', 'id');

@@ -19,6 +19,11 @@ class UserController extends Controller
                 'users.id',
                 'users.name',
                 'users.email',
+                'users.document',
+                'users.document_type',
+                'users.phone',
+                'users.address',
+                'users.city_id as city_name',
                 'status',
                 'roles.name as role_name'
             )->latest('users.id')
