@@ -2,45 +2,31 @@
 
 namespace Tests\Feature\Api\Admin\UserManagement;
 
-use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Spatie\Permission\Models\Role;
-use Tests\TestCase;
+use Tests\Feature\Utilities\UserTestCase;
 
-class UserStatusUpdateTest extends TestCase
+class UserStatusUpdateTest extends UserTestCase
 {
-    use RefreshDatabase;
     /**
      * @test
      * Update the user status
      */
     public function testUpdateStatusUpdatesUserStatus(): void
     {
-        $role = new Role();
-        $adminRole = $role->create(['name' => 'admin']);
-        $customerRole = $role->create(['name' => 'customer']);
-
-        $customerUser = User::factory()->create();
-        $customerUser->assignRole($customerRole);
-
-        $adminUser = User::factory()->create();
-        $adminUser->assignRole($adminRole);
-
         // User status is active
-        $response = $this->actingAs($adminUser)->patch(
-            route('admin.api.update.user.status', $customerUser->id)
+        $response = $this->actingAs($this->adminUser)->patch(
+            route('admin.api.update.user.status', $this->customerUser->id)
         );
-        $customerUser->refresh();
+        $this->customerUser->refresh();
         $response->assertStatus(200);
-        $this->assertEquals('Inactive', $customerUser->status);
+        $this->assertEquals('Inactive', $this->customerUser->status);
 
         // User status is inactive
-        $response = $this->actingAs($adminUser)->patch(
-            route('admin.api.update.user.status', $customerUser->id)
+        $response = $this->actingAs($this->adminUser)->patch(
+            route('admin.api.update.user.status', $this->customerUser->id)
         );
-        $customerUser->refresh();
+        $this->customerUser->refresh();
         $response->assertStatus(200);
-        $this->assertEquals('Active', $customerUser->status);
+        $this->assertEquals('Active', $this->customerUser->status);
     }
 
 }

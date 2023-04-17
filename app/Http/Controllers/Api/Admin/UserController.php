@@ -12,6 +12,8 @@ class UserController extends Controller
 {
     public function list(): LengthAwarePaginator
     {
+        $currentUserId = auth()->user()['id'];
+
         // Get all users with their roles
         return User::query()->join('model_has_roles', 'model_has_roles.model_id', '=', 'users.id')
             ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
@@ -19,9 +21,15 @@ class UserController extends Controller
                 'users.id',
                 'users.name',
                 'users.email',
+                'users.document',
+                'users.document_type',
+                'users.phone',
+                'users.address',
+                'users.city_id as city_name',
                 'status',
                 'roles.name as role_name'
-            )->latest('users.id')
+            )->where('users.id', '!=', $currentUserId)
+            ->latest('users.id')
             ->paginate(10);
     }
 

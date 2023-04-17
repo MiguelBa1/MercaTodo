@@ -14,23 +14,29 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $role = new Role();
+        /**
+         * Insert the cities, states and roles in the database
+         */
+        $this->call([
+            DepartmentsCitiesSeeder::class,
+            RolesSeeder::class
+        ]);
 
-        $adminRole = $role->create(['name' => 'admin']);
-        $customerRole = $role->create(['name' => 'customer']);
-
-        User::factory(5)->create()->each(function ($user) use ($customerRole) {
-            $user->assignRole($customerRole);
+        User::factory(5)->create()->each(function ($user) {
+            $user->assignRole('customer');
         });
 
 //      Crea un usuario administrador
-        $admin = User::factory()->create([
-            'name' => config('app.admin_name'),
-            'email' => config('app.admin_email'),
-            'password' => bcrypt(config('app.admin_password')),
-        ]);
-
-        $admin->assignRole($adminRole);
+        User::factory()->create([
+            'name' => env('ADMIN_NAME'),
+            'document_type' => env('ADMIN_DOCUMENT_TYPE'),
+            'document' => env('ADMIN_DOCUMENT'),
+            'email' => env('ADMIN_EMAIL'),
+            'phone' => env('ADMIN_PHONE'),
+            'address' => env('ADMIN_ADDRESS'),
+            'password' => bcrypt(env('ADMIN_PASSWORD')),
+            'city_id' => env('ADMIN_CITY_ID'),
+        ])->assignRole('admin');
 
     }
 }

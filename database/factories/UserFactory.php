@@ -2,6 +2,9 @@
 
 namespace Database\Factories;
 
+use App\Enums\DocumentType;
+use App\Enums\DocumentTypeEnum;
+use App\Models\City;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
@@ -24,9 +27,17 @@ class UserFactory extends Factory
         return [
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
+            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
+            'document' => fake()->unique()->numberBetween(
+                1000000000,
+                9999999999
+            ),
+            'document_type' => DocumentTypeEnum::getRandomValue(),
+            'phone' => fake()->numberBetween(1000000000, 9999999999),
+            'address' => fake()->address(),
+            'city_id' => fake()->randomElement(City::select('id')->get())->id,
             'status' => '1',
             'email_verified_at' => now(),
-            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
             'remember_token' => $this->str->random(10),
         ];
     }

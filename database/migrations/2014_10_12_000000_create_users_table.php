@@ -1,5 +1,7 @@
 <?php
 
+use App\Enums\DocumentTypeEnum;
+use App\Models\City;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -15,9 +17,14 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
-            $table->boolean('status')->default(true);
-            $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->bigInteger('phone');
+            $table->bigInteger('document')->unique();
+            $table->enum('document_type', DocumentTypeEnum::getValues())->nullable();
+            $table->boolean('status')->default(true);
+            $table->string('address');
+            $table->foreignIdFor(City::class);
+            $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\Web\Admin;
 
+use App\Enums\DocumentTypeEnum;
 use App\Http\Controllers\Controller;
+use App\Models\City;
 use App\Models\User;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -22,8 +24,14 @@ class UserController extends Controller
         }
         $user->setAttribute('role_name', $user->getAttribute('roles')->first()->getAttribute('name'));
 
+        $userData = $user->withoutRelations()->toArray();
+        $userData['city_name'] = $user->getCityNameAttribute($userData['city_id']);
+        $userData['department_id'] = City::query()->where('id', $userData['city_id'])->first()->getAttribute('department_id');
+
         return Inertia::render('Admin/Users/Edit', [
-            'user' => $user->withoutRelations()
+            'user' => $userData,
+            'departments' => \App\Models\Department::all(),
+            'document_types' => DocumentTypeEnum::getValues(),
         ]);
     }
 
