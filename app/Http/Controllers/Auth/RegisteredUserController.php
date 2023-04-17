@@ -38,22 +38,22 @@ class RegisteredUserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:'.User::class,
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'document' => 'required|integer|unique:'.User::class,
+            'document' => 'required|integer|digits_between:6,12|unique:'.User::class,
             'document_type' => 'required|string|max:255',
-            'phone' => 'required|integer',
+            'phone' => 'required|integer|digits_between:6,12',
             'address' => 'required|string|max:255',
             'city_id' => 'required|integer',
         ]);
 
         $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'document' => $request->document,
-            'document_type' => $request->document_type,
-            'phone' => $request->phone,
-            'address' => $request->address,
-            'city_id' => $request->city_id,
+            'name' => $request['name'],
+            'email' => $request['email'],
+            'password' => Hash::make($request['password']),
+            'document' => $request['document'],
+            'document_type' => $request['document_type'],
+            'phone' => $request['phone'],
+            'address' => $request['address'],
+            'city_id' => $request['city_id'],
         ]);
 
         $user->assignRole('customer');
