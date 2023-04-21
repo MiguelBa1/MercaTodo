@@ -14,7 +14,7 @@ class UserStatusUpdateTest extends UserTestCase
     {
         // User status is active
         $response = $this->actingAs($this->adminUser)->patch(
-            route('admin.api.update.user.status', $this->customerUser->id)
+            route('admin.api.users.status.update', $this->customerUser->id)
         );
         $this->customerUser->refresh();
         $response->assertStatus(200);
@@ -22,7 +22,7 @@ class UserStatusUpdateTest extends UserTestCase
 
         // User status is inactive
         $response = $this->actingAs($this->adminUser)->patch(
-            route('admin.api.update.user.status', $this->customerUser->id)
+            route('admin.api.users.status.update', $this->customerUser->id)
         );
         $this->customerUser->refresh();
         $response->assertStatus(200);

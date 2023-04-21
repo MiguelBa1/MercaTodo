@@ -26,22 +26,22 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::middleware(['auth:sanctum', 'role:admin', 'checkStatus', 'verified'])->prefix('admin')->group(function () {
-    Route::get('roles', [ApiRoleController::class, 'list'])->name('admin.api.list.roles');
+    Route::get('roles', [ApiRoleController::class, 'index'])->name('admin.api.roles.index');
     Route::prefix('users')->group(function () {
-        Route::get('/', [ApiUserController::class, 'list'])->name('admin.api.list.users');
-        Route::patch('status/{user}', [ApiUserController::class, 'update'])->name('admin.api.update.user.status');
-        Route::patch('password/{user}', [ApiPasswordController::class, 'update'])->name('admin.api.update.user.password');
-        Route::patch('profile/{user}', [ApiProfileController::class, 'update'])->name('admin.api.update.user.profile');
+        Route::get('/', [ApiUserController::class, 'index'])->name('admin.api.users.index');
+        Route::patch('{user}/status', [ApiUserController::class, 'update'])->name('admin.api.users.status.update');
+        Route::patch('{user}/password', [ApiPasswordController::class, 'update'])->name('admin.api.users.password.update');
+        Route::patch('{user}/profile', [ApiProfileController::class, 'update'])->name('admin.api.users.profile.update');
     });
     Route::prefix('products')->group(function () {
         Route::get('/', [ApiProductController::class, 'index'])->name('admin.api.products.index');
         Route::post('/', [ApiProductController::class, 'store'])->name('admin.api.products.store');
         Route::post('{product}', [ApiProductController::class, 'update'])->name('admin.api.products.update');
         Route::delete('{product}', [ApiProductController::class, 'destroy'])->name('admin.api.products.destroy');
-        Route::patch('status/{product}', [ApiProductController::class, 'updateStatus'])->name('admin.api.products.updateStatus');
+        Route::patch('{product}/status', [ApiProductController::class, 'updateStatus'])->name('admin.api.products.updateStatus');
     });
 });
 
 Route::get('cities/{department_id}', function (int $department_id) {
-    return \App\Models\City::where('department_id', $department_id)->get();
+    return City::where('department_id', $department_id)->get();
 })->name('api.list.cities');

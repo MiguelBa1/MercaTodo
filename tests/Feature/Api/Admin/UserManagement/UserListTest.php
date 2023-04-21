@@ -12,7 +12,7 @@ class UserListTest extends UserTestCase
      */
     public function testListReturnsJson(): void
     {
-        $response = $this->actingAs($this->adminUser)->get(route('admin.api.list.users'));
+        $response = $this->actingAs($this->adminUser)->get(route('admin.api.users.index'));
         $response->assertStatus(200);
         $response->assertJsonStructure(['data', 'links']);
         $response->assertJsonFragment(['name' => $this->customerUser->name]);

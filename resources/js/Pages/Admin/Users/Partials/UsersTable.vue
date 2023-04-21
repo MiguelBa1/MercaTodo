@@ -10,7 +10,7 @@ const usersData = ref({});
 const pageNumber = ref(1);
 
 const getUsers = async (page = 1) => {
-    const response = await fetch(route('admin.api.list.users', {page: page}));
+    const response = await fetch(route('admin.api.users.index', {page: page}));
     usersData.value = await response.json();
     pageNumber.value = page;
 }
@@ -19,7 +19,7 @@ getUsers();
 
 const manageUserStatus = async (id, name) => {
     $toast.clear();
-    const response = await axios.patch(route('admin.api.update.user.status', id));
+    const response = await axios.patch(route('admin.api.users.status.update', id));
     if (response.status === 200) {
         await getUsers(pageNumber.value);
         $toast.success(`${name} status has been updated successfully`);

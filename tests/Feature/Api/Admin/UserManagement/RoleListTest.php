@@ -16,7 +16,7 @@ class RoleListTest extends UserTestCase
     public function testListReturnsJson(): void
     {
         // Act
-        $response = $this->actingAs($this->adminUser)->get(route('admin.api.list.roles'));
+        $response = $this->actingAs($this->adminUser)->get(route('admin.api.roles.index'));
 
         // Assert
         $response->assertStatus(200);
