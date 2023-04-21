@@ -34,19 +34,19 @@ const manageUserStatus = async (id, name) => {
     <div class="p-4 sm:p-6 shadow sm:rounded-lg">
         <div class="overflow-auto">
             <!-- Table of users from props -->
-            <table class="table-auto mx-auto w-full">
+            <table class="table-auto mx-auto w-full border">
                 <thead>
                 <tr>
-                    <th class="px-4 py-2">ID</th>
-                    <th class="px-4 py-2">Name</th>
-                    <th class="px-4 py-2">Email</th>
-                    <th class="px-4 py-2">Document</th>
-                    <th class="px-4 py-2">Document Type</th>
-                    <th class="px-4 py-2">City</th>
-                    <th class="px-4 py-2">Address</th>
-                    <th class="px-4 py-2">Status</th>
-                    <th class="px-4 py-2">Role</th>
-                    <th class="px-4 py-2">Actions</th>
+                    <th class="px-4 py-2 border">ID</th>
+                    <th class="px-4 py-2 border">Name</th>
+                    <th class="px-4 py-2 border">Email</th>
+                    <th class="px-4 py-2 border">Document</th>
+                    <th class="px-4 py-2 border">Document Type</th>
+                    <th class="px-4 py-2 border">City</th>
+                    <th class="px-4 py-2 border">Address</th>
+                    <th class="px-4 py-2 border">Status</th>
+                    <th class="px-4 py-2 border">Role</th>
+                    <th class="px-4 py-2 border">Actions</th>
                 </tr>
                 </thead>
                 <tbody>
