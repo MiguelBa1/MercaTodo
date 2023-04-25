@@ -25,9 +25,9 @@ class ProductFactory extends Factory
             'price' => fake()->randomFloat(2, 1, 1000),
             'stock' => fake()->numberBetween(1, 100),
             'status' => fake()->boolean(),
-            'brand_id' => Brand::factory()->create()->getAttribute('id'),
-            'category_id' => Category::factory()->create()->getAttribute('id'),
-            'image' => 'https://picsum.photos/200/300',
+            'brand_id' => Brand::query()->inRandomOrder()->first()->getAttribute('id'),
+            'category_id' => Category::query()->inRandomOrder()->first()->getAttribute('id'),
+            'image' => fake()->image('storage/app/public/images', 640, 480, null, false),
         ];
     }
 }

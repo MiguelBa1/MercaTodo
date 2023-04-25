@@ -31,7 +31,8 @@ class ProductTestCase extends UserTestCase
 
     public function tearDown(): void
     {
-        Storage::deleteDirectory('public/images');
+        $files = Storage::files('public/images');
+        Storage::delete($files);
         parent::tearDown();
     }
 }
