@@ -45,3 +45,9 @@ Route::middleware(['auth:sanctum', 'role:admin', 'checkStatus', 'verified'])->pr
 Route::get('cities/{department_id}', function (int $department_id) {
     return City::where('department_id', $department_id)->get();
 })->name('api.list.cities');
+
+Route::get('images/{image}', [ApiImageController::class, 'getImage'])->name('api.get.image')->middleware(
+    'auth:sanctum',
+    'checkStatus',
+    'verified'
+);
