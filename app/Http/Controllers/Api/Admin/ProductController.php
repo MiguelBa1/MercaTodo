@@ -26,15 +26,10 @@ class ProductController extends Controller
             $data['image'] = $imageName;
         }
 
-        try {
-            $product = Product::create($data);
-            return response()->json(['message' => 'Product created successfully', 'product' => $product]);
-        } catch (\Exception $e) {
-            if (isset($imageName)) {
-                $this->deleteImage($imageName);
-            }
-            return response()->json(['message' => $e->getMessage()], 500);
-        }
+        $data['status'] = true;
+
+        $product = Product::create($data);
+        return response()->json(['message' => 'Product created successfully', 'product' => $product]);
     }
 
     /**
@@ -46,20 +41,17 @@ class ProductController extends Controller
     {
         $data = $request->validated();
 
+        if (isset($data['image']) && $product->getAttribute('image') !== $data['image']) {
+            $this->deleteImage($product->getAttribute('image'));
+        }
+
         if (isset($data['image'])) {
             $imageName = $this->storeImage($data['image']);
             $data['image'] = $imageName;
         }
 
-        try {
-            $product->update($data);
-            return response()->json(['message' => 'Product updated successfully']);
-        } catch (\Exception $e) {
-            if (isset($imageName)) {
-                $this->deleteImage($imageName);
-            }
-            return response()->json(['message' => $e->getMessage()], 500);
-        }
+        $product->update($data);
+        return response()->json(['message' => 'Product updated successfully']);
     }
 
     /**
@@ -76,13 +68,9 @@ class ProductController extends Controller
      */
     public function destroy(Product $product): JsonResponse
     {
-        try {
-            $product->delete();
-            $this->deleteImage($product->getAttribute('image'));
-            return response()->json(['message' => 'Product deleted successfully']);
-        } catch (\Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 500);
-        }
+        $product->delete();
+        $this->deleteImage($product->getAttribute('image'));
+        return response()->json(['message' => 'Product deleted successfully']);
     }
 
     /**
@@ -91,20 +79,16 @@ class ProductController extends Controller
      */
     public function updateStatus(Product $product): JsonResponse
     {
-        try {
-            $product->setAttribute('status', !$product->getRawOriginal('status'));
-            $product->save();
-            return response()->json(['message' => 'Product status updated successfully']);
-        } catch (\Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 500);
-        }
+        $product->setAttribute('status', !$product->getRawOriginal('status'));
+        $product->save();
+        return response()->json(['message' => 'Product status updated successfully']);
     }
 
     /**
      * @param UploadedFile $image
      * @return string
      */
-    protected function storeImage(UploadedFile $image) : string
+    protected function storeImage(UploadedFile $image): string
     {
         $imageIntervention = Image::make($image);
         $imageName = time() . '_' . $image->getClientOriginalName();

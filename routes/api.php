@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Api\BrandController;
+use App\Http\Controllers\Api\CategoryController;
 use App\Models\City;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -46,8 +48,16 @@ Route::get('cities/{department_id}', function (int $department_id) {
     return City::where('department_id', $department_id)->get();
 })->name('api.list.cities');
 
-Route::get('images/{image}', [ApiImageController::class, 'getImage'])->name('api.get.image')->middleware(
+Route::get('images/{filename}', [ApiImageController::class, 'getImage'])->name('api.get.image')->middleware(
     'auth:sanctum',
     'checkStatus',
     'verified'
 );
+
+Route::get('/brands', [BrandController::class, 'index'])
+    ->middleware(['auth:sanctum', 'verified'])
+    ->name('api.brands.index');
+
+Route::get('/categories', [CategoryController::class, 'index'])
+    ->middleware(['auth:sanctum', 'verified'])
+    ->name('api.categories.index');
