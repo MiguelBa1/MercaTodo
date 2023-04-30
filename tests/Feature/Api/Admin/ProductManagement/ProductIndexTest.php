@@ -11,6 +11,7 @@ class ProductIndexTest extends UserTestCase
 {
     public function testAdminCanGetAllProducts(): void
     {
+        Storage::fake('public');
         Brand::factory()->create();
         Category::factory()->create();
         Product::factory()->count(5)->create();

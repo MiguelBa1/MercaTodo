@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Api\Admin\ProductManagement;
 
+use Illuminate\Support\Facades\Storage;
 use Tests\Feature\Utilities\ProductTestCase;
 use Illuminate\Http\UploadedFile;
 
@@ -34,7 +35,7 @@ class ProductStoreTest extends ProductTestCase
 
         $response->assertStatus(200);
         $response->assertJson(['message' => 'Product created successfully']);
-        $this->assertFileExists(storage_path('app/public/images/' . time() . '_test-image.png'));
+        $this->assertFileExists(Storage::disk('public')->path('images/' . time() . '_test-image.png'));
     }
 
     public function testAdminCanNotCreateProductWithInvalidData(): void

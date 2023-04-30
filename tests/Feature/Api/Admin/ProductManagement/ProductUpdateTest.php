@@ -3,6 +3,7 @@
 namespace Tests\Feature\Api\Admin\ProductManagement;
 
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Tests\Feature\Utilities\ProductTestCase;
 
 class ProductUpdateTest extends ProductTestCase
@@ -31,7 +32,7 @@ class ProductUpdateTest extends ProductTestCase
 
         $response->assertStatus(200);
         $response->assertJson(['message' => 'Product updated successfully']);
-        $this->assertFileExists(storage_path('app/public/images/' . time() . '_test-image.png'));
+        $this->assertFileExists(Storage::disk('public')->path('images/' . time() . '_test-image.png'));
     }
 
     public function testAdminCanUpdateProductWithoutAnImage(): void

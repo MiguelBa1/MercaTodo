@@ -20,19 +20,10 @@ class ProductTestCase extends UserTestCase
     protected function setUp(): void
     {
         parent::setUp();
+        Storage::fake('public');
         $this->brand = Brand::factory()->create();
         $this->category = Category::factory()->create();
-
-        $this->product = Product::factory()->create([
-            'brand_id' => $this->brand->getAttribute('id'),
-            'category_id' => $this->category->getAttribute('id')
-        ]);
+        $this->product = Product::factory()->create();
     }
 
-    public function tearDown(): void
-    {
-        $files = Storage::files('public/images');
-        Storage::delete($files);
-        parent::tearDown();
-    }
 }
