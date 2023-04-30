@@ -28,7 +28,6 @@ const manageProductStatus = async (id) => {
 
 onMounted(() => {
     getProducts();
-    console.log('productsData', productsData)
 })
 </script>
 

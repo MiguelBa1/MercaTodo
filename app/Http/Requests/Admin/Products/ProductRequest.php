@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests\Admin\Products;
 
-use Illuminate\Contracts\Validation\Rule;
+use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ProductRequest extends FormRequest
@@ -23,13 +23,17 @@ class ProductRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'sku' => 'required|string|max:255|unique:products',
+            'sku' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('products')->ignore($this->product),
+            ],
             'name' => 'required|string|max:255',
             'description' => 'required|string',
             'price' => 'required|numeric',
-            'image' => 'nullable|image',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'stock' => 'required|numeric',
-            'status' => 'required|boolean',
             'category_id' => 'required|exists:categories,id',
             'brand_id' => 'required|exists:brands,id',
         ];
