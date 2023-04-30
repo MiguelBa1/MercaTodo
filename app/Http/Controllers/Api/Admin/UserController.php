@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
-    public function list(): LengthAwarePaginator
+    public function index(): LengthAwarePaginator
     {
         $currentUserId = auth()->user()['id'];
 

@@ -23,7 +23,7 @@ class ProfileUpdateTest extends UserTestCase
         $newAddress = '1234 Example Street';
 
         $response = $this->actingAs($this->adminUser)->patch(
-            route('admin.api.update.user.profile', $this->customerUser->id),
+            route('admin.api.users.profile.update', $this->customerUser->id),
             [
                 'name' => $newName,
                 'role_name' => $newRole,
@@ -50,7 +50,7 @@ class ProfileUpdateTest extends UserTestCase
         $oldDocument = $this->customerUser->document;
 
         $response = $this->actingAs($this->adminUser)->patch(
-            route('admin.api.update.user.profile', $this->customerUser->id),
+            route('admin.api.users.profile.update', $this->customerUser->id),
             [
                 'name' => $this->customerUser->getAttribute('name'),
                 'role_name' => $this->customerUser->roles->first()->name,
@@ -69,7 +69,7 @@ class ProfileUpdateTest extends UserTestCase
     public function testUpdateProfileFailWithOtherUserDocument() {
         $secondCustomerUser = User::factory()->create();
         $response = $this->actingAs($this->adminUser)->patch(
-            route('admin.api.update.user.profile', $this->customerUser->id),
+            route('admin.api.users.profile.update', $this->customerUser->id),
             [
                 'name' => $this->customerUser->getAttribute('name'),
                 'role_name' => $this->customerUser->roles->first()->name,

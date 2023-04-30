@@ -2,9 +2,7 @@
 
 namespace Database\Seeders;
 
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Spatie\Permission\Models\Role;
 use \App\Models\User;
 
 class DatabaseSeeder extends Seeder
@@ -19,14 +17,17 @@ class DatabaseSeeder extends Seeder
          */
         $this->call([
             DepartmentsCitiesSeeder::class,
-            RolesSeeder::class
+            RolesSeeder::class,
+            BrandsSeeder::class,
+            CategoriesSeeder::class,
+            ProductsSeeder::class,
         ]);
 
         User::factory(5)->create()->each(function ($user) {
             $user->assignRole('customer');
         });
 
-//      Crea un usuario administrador
+        // Create the admin user
         User::factory()->create([
             'name' => env('ADMIN_NAME'),
             'document_type' => env('ADMIN_DOCUMENT_TYPE'),
