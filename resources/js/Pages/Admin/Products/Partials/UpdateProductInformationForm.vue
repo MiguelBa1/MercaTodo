@@ -6,6 +6,7 @@ import {useToast} from "vue-toast-notification";
 import {useForm} from "@inertiajs/vue3";
 import {onMounted, ref} from "vue";
 import axios from "axios";
+import PrimaryButton from "@/Components/PrimaryButton.vue";
 
 const $toast = useToast()
 
@@ -137,7 +138,7 @@ onMounted(() => {
 
             <div class="grid place-items-center md:grid-cols-2 mb-6">
                 <div class="flex flex-col justify-center">
-                    <InputLabel for="image" value="Image"/>
+                    <InputLabel for="image" value="Image (800x800px)"/>
                     <input id="image" type="file" ref="image" @change="onFileChange"
                            class="w-full px-3 py-2 text-gray-700 border rounded-md focus:outline-none focus:border-indigo-500"
                            accept="image/jpeg, image/png, image/jpg"
@@ -190,9 +191,9 @@ onMounted(() => {
 
         </div>
 
-        <button type="submit" class="w-full px-4 py-2 text-white bg-indigo-500 rounded-md hover:bg-indigo-600">
-            Update
-        </button>
+        <PrimaryButton type="submit" class="mt-4">
+            Update Product
+        </PrimaryButton>
     </form>
 </template>
 

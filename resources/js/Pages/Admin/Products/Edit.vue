@@ -1,13 +1,17 @@
 <script setup>
 import MainLayout from "@/Layouts/MainLayout.vue";
 import UpdateProductInformationForm from "@/Pages/Admin/Products/Partials/UpdateProductInformationForm.vue";
-import {usePage} from "@inertiajs/vue3";
+import {usePage, Head} from "@inertiajs/vue3";
 import DeleteProductForm from "@/Pages/Admin/Products/Partials/DeleteProductForm.vue";
 
 const {product} = usePage().props;
 </script>
 
 <template>
+    <Head>
+        <title>Edit product: {{ product.sku }}</title>
+    </Head>
+
     <MainLayout>
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">Edit product: {{ product.sku }}</h2>

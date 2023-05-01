@@ -58,7 +58,7 @@ onMounted(() => {
                     <td class="border px-4 py-2">{{ product.brand_name }}</td>
                     <td class="border px-4 py-2 text-center">{{ product.status }}</td>
                     <td class="border px-4 py-2">
-                        <div class="grid grid-cols-2 gap-1">
+                        <div class="grid grid-rows-2 xl:grid-cols-2 xl:grid-rows-1 gap-1">
                             <Link :href="route('admin.products.edit', product.id)" title="Edit Product"
                                 class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-2 rounded text-center"
                             >

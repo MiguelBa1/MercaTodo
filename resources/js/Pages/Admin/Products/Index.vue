@@ -2,6 +2,7 @@
 import {usePage} from '@inertiajs/vue3'
 import MainLayout from "@/Layouts/MainLayout.vue";
 import ProductsTable from "@/Pages/Admin/Products/Partials/ProductsTable.vue";
+import {Link, Head} from "@inertiajs/vue3";
 
 defineProps({
     auth: {
@@ -15,8 +16,11 @@ const {auth} = usePage().props
 </script>
 
 <template>
-    <MainLayout>
+    <Head>
+        <title>Product Administration</title>
+    </Head>
 
+    <MainLayout>
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">Product Administration</h2>
         </template>
