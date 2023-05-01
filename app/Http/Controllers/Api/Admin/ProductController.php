@@ -105,6 +105,10 @@ class ProductController extends Controller
     protected function storeImage(UploadedFile $image): string
     {
         $imageIntervention = Image::make($image);
+        $imageIntervention->resize(800, 800, function ($constraint) {
+            $constraint->aspectRatio();
+            $constraint->upsize();
+        });
         $imageName = time() . '_' . $image->getClientOriginalName();
         Storage::disk('public')->put('images/' . $imageName, $imageIntervention->stream());
 

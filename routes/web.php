@@ -39,6 +39,7 @@ Route::middleware(['auth', 'role:admin', 'checkStatus', 'verified'])->prefix('ad
     });
     Route::prefix('products')->group(function () {
         Route::get('/', [ProductController::class, 'index'])->name('admin.view.products');
+        Route::get('create', [ProductController::class, 'create'])->name('admin.products.create');
         Route::get('{product}/edit', [ProductController::class, 'edit'])->name('admin.products.edit');
     });
 });
