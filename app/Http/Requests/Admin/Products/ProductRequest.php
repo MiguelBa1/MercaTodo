@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Admin\Products;
 
+use App\Models\Product;
 use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -20,14 +21,14 @@ class ProductRequest extends FormRequest
      *
      * @return array<string, Rule|array|string>
      */
-    public function rules(): array
+    public function rules(Product $product): array
     {
         return [
             'sku' => [
                 'required',
                 'string',
                 'max:255',
-                Rule::unique('products')->ignore($this->product),
+                Rule::unique('products')->ignore($product),
             ],
             'name' => 'required|string|max:255',
             'description' => 'required|string',

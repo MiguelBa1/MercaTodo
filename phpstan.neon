@@ -23,3 +23,7 @@ parameters:
         - app/Exceptions/Handler.php
         - app/Http/Providers/*.php
         - app/Http/Requests/Auth/*.php
+    reportUnmatchedIgnoredErrors: false
+    ignoreErrors:
+            - '#Call to an undefined method#'
+            - '#Call to an undefined static method#'

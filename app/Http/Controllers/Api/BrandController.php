@@ -10,7 +10,7 @@ class BrandController extends Controller
 {
     public function index(): JsonResponse
     {
-        $brands = Brand::select('id', 'name')->get();
+        $brands = Brand::query()->select('id', 'name')->get();
 
         return response()->json([
             'brands' => $brands,

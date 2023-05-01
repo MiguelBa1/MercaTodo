@@ -7,7 +7,7 @@ use App\Http\Requests\Admin\Products\ProductRequest;
 use App\Models\Product;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
 
@@ -28,7 +28,7 @@ class ProductController extends Controller
 
         $data['status'] = true;
 
-        $product = Product::create($data);
+        $product = Product::query()->create($data);
         return response()->json(['message' => 'Product created successfully', 'product' => $product]);
     }
 
@@ -59,7 +59,21 @@ class ProductController extends Controller
      */
     public function index(): LengthAwarePaginator
     {
-        return Product::index()->paginate(10);
+        return Product::query()->join('categories', 'categories.id', '=', 'products.category_id')
+            ->join('brands', 'brands.id', '=', 'products.brand_id')
+            ->select(
+                'products.id',
+                'products.sku',
+                'products.name',
+                'products.description',
+                'products.price',
+                'products.image',
+                'products.stock',
+                'products.status',
+                'categories.name as category_name',
+                'brands.name as brand_name'
+            )
+            ->orderBy('products.id', 'desc')->paginate(10);
     }
 
     /**
