@@ -5,6 +5,7 @@ namespace App\Http\Requests\Admin\Products;
 use App\Models\Product;
 use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Request;
 
 class ProductRequest extends FormRequest
 {
@@ -21,14 +22,16 @@ class ProductRequest extends FormRequest
      *
      * @return array<string, Rule|array|string>
      */
-    public function rules(Product $product): array
+    public function rules(Request $request): array
     {
+        // If the request is for updating a product, we need to ignore the current product id
+        $id = $request->route('product')['id'] ?? null;
         return [
             'sku' => [
                 'required',
                 'string',
                 'max:255',
-                Rule::unique('products')->ignore($product),
+                Rule::unique(Product::class)->ignore($id),
             ],
             'name' => 'required|string|max:255',
             'description' => 'required|string',
