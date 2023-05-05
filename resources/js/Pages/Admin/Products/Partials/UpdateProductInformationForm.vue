@@ -50,6 +50,7 @@ const updateProduct = () => {
         $toast.success('Product information updated successfully!')
     }).catch(error => {
         form.setError(error.response.data.errors);
+        $toast.error('Something went wrong, please verify the information and try again.')
     })
 
 }
@@ -118,7 +119,8 @@ onMounted(() => {
             <div class="flex flex-col mb-6">
                 <InputLabel for="description" value="Description"/>
                 <textarea id="description" v-model="form.description"
-                          class="resize-none w-full px-3 py-2 text-gray-700 border rounded-md focus:outline-none focus:border-indigo-500"></textarea>
+                          class="resize-none w-full mt-1 px-3 py-2 text-gray-700 border rounded-md focus:outline-none border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 shadow-sm">
+                </textarea>
                 <InputError class="mt-2" :message="form.errors.description"/>
             </div>
 
@@ -169,7 +171,7 @@ onMounted(() => {
                 <InputLabel for="brand_id" value="Brand"/>
 
                 <select id="brand_id" v-model="form.brand_id"
-                        class="w-full px-3 py-2 text-gray-700 border rounded-md focus:outline-none focus:border-indigo-500">
+                        class="w-full px-3 py-2 text-gray-700 border rounded-md focus:outline-none border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 shadow-sm">
                     <option v-for="brand in brands" :key="brand.id" :value="brand.id">{{ brand.name }}
                     </option>
                 </select>
@@ -180,7 +182,7 @@ onMounted(() => {
             <div class="flex flex-col mb-6">
                 <InputLabel for="category_id" value="Category"/>
                 <select id="category_id" v-model="product.category_id"
-                        class="w-full px-3 py-2 text-gray-700 border rounded-md focus:outline-none focus:border-indigo-500">
+                        class="w-full px-3 py-2 text-gray-700 border rounded-md focus:outline-none border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 shadow-sm">
                     <option v-for="category in categories" :key="category.id" :value="category.id">{{
                             category.name
                         }}

@@ -59,7 +59,8 @@ class ProductController extends Controller
      */
     public function index(): LengthAwarePaginator
     {
-        return Product::query()->join('categories', 'categories.id', '=', 'products.category_id')
+        return Product::query()
+            ->join('categories', 'categories.id', '=', 'products.category_id')
             ->join('brands', 'brands.id', '=', 'products.brand_id')
             ->select(
                 'products.id',
@@ -73,7 +74,9 @@ class ProductController extends Controller
                 'categories.name as category_name',
                 'brands.name as brand_name'
             )
-            ->orderBy('products.id', 'desc')->paginate(10);
+            ->orderBy('products.id', 'desc')
+            ->latest('products.id')
+            ->paginate(10);
     }
 
     /**
