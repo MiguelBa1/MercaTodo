@@ -14,7 +14,7 @@ const {product} = defineProps({
     product: Object
 })
 
-const imageUrl = ref(product.image ? route('api.get.image', product.image) : null)
+const imageUrl = ref(product.image ? `/storage/images/${product.image}` : null)
 
 const form = useForm(
     {

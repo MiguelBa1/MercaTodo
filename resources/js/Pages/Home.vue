@@ -7,13 +7,9 @@ import {TailwindPagination} from 'laravel-vue-pagination';
 const {brands, categories, products} = usePage().props;
 
 const productsData = ref(products.data);
-const category_id = ref( usePage().props.ziggy.query.category_id ?? 0);
-const brand_id = ref(usePage().props.ziggy.query.brand_id ?? 0);
+const category_id = ref(usePage().props.ziggy.query.category_id ?? '');
+const brand_id = ref(usePage().props.ziggy.query.brand_id ?? '');
 const searchQuery = ref(usePage().props.ziggy.query.search ?? '');
-
-const getImageUrl = (image) => {
-    return image ? route('api.get.image', image) : null
-}
 
 const changePage = (page) => {
     window.location.href = route('home', {
@@ -25,6 +21,7 @@ const changePage = (page) => {
 }
 
 const search = () => {
+    // TODO: CAMBIAR A AXIOS
     window.location.href = route('home', {
         category_id: category_id.value,
         brand_id: brand_id.value,
@@ -45,12 +42,13 @@ const search = () => {
         </template>
 
         <div class="py-12">
+            {{ usePage().props.errors }}
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-                <div class="flex flex-col justify-evenly px-7 sm:flex-row">
+                <form @submit.prevent="search" class="flex flex-col justify-evenly px-7 sm:flex-row">
                     <div class="flex items-center mb-4 justify-between">
                         <label for="category" class="mr-2">Category:</label>
                         <select id="category" class="p-2 rounded border" v-model="category_id">
-                            <option value="0" selected>All</option>
+                            <option selected value="">All</option>
                             <option v-for="category in categories" :key="category.id" :value="category.id">
                                 {{ category.name }}
                             </option>
@@ -59,7 +57,7 @@ const search = () => {
                     <div class="flex items-center mb-4 justify-between">
                         <label for="brand" class="mr-2">Brand:</label>
                         <select id="brand" class="p-2 rounded border" v-model="brand_id">
-                            <option value="0" selected>All</option>
+                            <option value="" selected>All</option>
                             <option v-for="brand in brands" :key="brand.id" :value="brand.id">{{ brand.name }}</option>
                         </select>
                     </div>
@@ -72,18 +70,19 @@ const search = () => {
 
                     <!-- Search Button -->
                     <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                            @click="search">
+                            type="submit">
                         Search
                     </button>
-                </div>
+                </form>
                 <!-- Product gallery -->
                 <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
                     <Link v-if="productsData.length > 0" v-for="product in productsData" :key="product.id"
-                         class="bg-white rounded-lg shadow-lg p-4 hover:scale-105 duration-75"
-                            :href="route('products.show', product.id)"
+                          class="bg-white rounded-lg shadow-lg p-4 hover:scale-105 duration-75"
+                          :href="route('products.show', product.id)"
                     >
                         <div class="w-full h-40">
-                            <img :src="getImageUrl(product.image)" :alt="product.name" class="w-full h-full object-cover mb-2">
+                            <img :src="'/storage/images/' + product.image" :alt="product.name"
+                                 class="w-full h-full object-cover mb-2">
                         </div>
                         <h2 class="text-xl font-semibold mb-2">{{ product.name }}</h2>
                         <p class="text-gray-600 text-sm mb-2">Price: $ {{ product.price }}</p>
