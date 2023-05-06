@@ -1,34 +1,43 @@
 <script setup>
 import {Head, usePage, Link} from '@inertiajs/vue3';
 import MainLayout from "@/Layouts/MainLayout.vue";
-import {onMounted, ref, computed} from 'vue'
+import {onMounted, ref} from 'vue'
 import {TailwindPagination} from 'laravel-vue-pagination';
+import axios from "axios";
 
-const {brands, categories, products} = usePage().props;
+const productsData = ref({});
+const brands = ref([]);
+const categories = ref([]);
 
-const productsData = ref(products.data);
-const category_id = ref(usePage().props.ziggy.query.category_id ?? '');
-const brand_id = ref(usePage().props.ziggy.query.brand_id ?? '');
-const searchQuery = ref(usePage().props.ziggy.query.search ?? '');
+const category_id = ref('');
+const brand_id = ref('');
+const searchQuery = ref('');
 
-const changePage = (page) => {
-    window.location.href = route('home', {
-        page: page,
+const fetchProducts = async (pageNumber = 1) => {
+    const response = await axios.get(route('api.home.index', {
+        page: pageNumber,
         category_id: category_id.value,
         brand_id: brand_id.value,
         search: searchQuery.value
-    });
+    }));
+    productsData.value = await response.data;
 }
 
-const search = () => {
-    // TODO: CAMBIAR A AXIOS
-    window.location.href = route('home', {
-        category_id: category_id.value,
-        brand_id: brand_id.value,
-        search: searchQuery.value
-    });
+const fetchBrands = async () => {
+    const response = await axios.get(route('api.brands.index'))
+    brands.value = response.data.brands
 }
 
+const fetchCategories = async () => {
+    const response = await axios.get(route('api.categories.index'))
+    categories.value = response.data.categories
+}
+
+onMounted(() => {
+    fetchBrands();
+    fetchCategories();
+    fetchProducts();
+})
 </script>
 
 <template>
@@ -42,9 +51,8 @@ const search = () => {
         </template>
 
         <div class="py-12">
-            {{ usePage().props.errors }}
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-                <form @submit.prevent="search" class="flex flex-col justify-evenly px-7 sm:flex-row">
+                <form @submit.prevent="fetchProducts" class="flex flex-col justify-evenly px-7 sm:flex-row">
                     <div class="flex items-center mb-4 justify-between">
                         <label for="category" class="mr-2">Category:</label>
                         <select id="category" class="p-2 rounded border" v-model="category_id">
@@ -76,7 +84,7 @@ const search = () => {
                 </form>
                 <!-- Product gallery -->
                 <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                    <Link v-if="productsData.length > 0" v-for="product in productsData" :key="product.id"
+                    <Link v-if="productsData.data && productsData.data.length > 0" v-for="product in productsData.data" :key="product.id"
                           class="bg-white rounded-lg shadow-lg p-4 hover:scale-105 duration-75"
                           :href="route('products.show', product.id)"
                     >
@@ -94,10 +102,9 @@ const search = () => {
                         <p class="text-xl font-semibold">No products found</p>
                     </div>
                 </div>
-
             </div>
             <div class="flex justify-center mt-3">
-                <TailwindPagination :data="products" @pagination-change-page="changePage" :limit="1"
+                <TailwindPagination :data="productsData" @pagination-change-page="fetchProducts" :limit="1"
                                     :keepLength="true"/>
             </div>
         </div>
