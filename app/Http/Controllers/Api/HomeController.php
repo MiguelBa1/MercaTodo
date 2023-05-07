@@ -20,8 +20,6 @@ class HomeController
                 'categories.name as category_name'
             );
 
-        dump($request->all());
-
         if ($request->get('category_id') !== null) {
             $query->where('category_id', $request->get('category_id'));
         }
