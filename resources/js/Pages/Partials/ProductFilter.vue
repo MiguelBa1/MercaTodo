@@ -13,7 +13,7 @@
         </div>
 
         <div class="flex items-center justify-between">
-            <label for="brand" class="mr-2">brand:</label>
+            <label for="brand" class="mr-2">Brand:</label>
             <select id="brand"
                     class="p-2 rounded border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
                     @change="$emit('update:brand_id', $event.target.value)">
