@@ -34,6 +34,6 @@ class HomeController
 
         return $query
             ->where('status', true)
-            ->orderBy('id', 'desc')->paginate(10);
+            ->orderBy('products.id', 'desc')->paginate(10);
     }
 }
