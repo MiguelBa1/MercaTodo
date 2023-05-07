@@ -1,6 +1,5 @@
 <template>
-<!--    {{ products }}-->
-    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         <ProductCard v-if="products && products.length > 0" v-for="product in products"
                      :key="product.id" :product="product"/>
         <div v-else class="text-center col-span-full">

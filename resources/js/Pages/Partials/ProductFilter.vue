@@ -1,5 +1,5 @@
 <template>
-    <form @submit.prevent="fetchProducts" class="flex flex-col justify-evenly px-7 sm:flex-row">
+    <form @submit.prevent="fetchProducts" class="grid grid-cols-1 gap-2 justify-evenly px-7 lg:flex lg:flex-row">
         <div class="flex items-center justify-between">
             <label for="category" class="mr-2">Category:</label>
             <select id="category"
