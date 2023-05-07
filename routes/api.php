@@ -10,7 +10,7 @@ use App\Http\Controllers\Api\Admin\RoleController as ApiRoleController;
 use App\Http\Controllers\Api\Admin\ProfileController as ApiProfileController;
 use App\Http\Controllers\Api\Admin\PasswordController as ApiPasswordController;
 use App\Http\Controllers\Api\Admin\ProductController as ApiProductController;
-use App\Http\Controllers\Api\ImageController as ApiImageController;
+use App\Http\Controllers\Api\HomeController as ApiHomeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,6 +26,8 @@ use App\Http\Controllers\Api\ImageController as ApiImageController;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::get('/', [ApiHomeController::class, 'index'])->name('api.home.index');
 
 Route::middleware(['auth:sanctum', 'role:admin', 'checkStatus', 'verified'])->prefix('admin')->group(function () {
     Route::get('roles', [ApiRoleController::class, 'index'])->name('admin.api.roles.index');
@@ -45,19 +47,11 @@ Route::middleware(['auth:sanctum', 'role:admin', 'checkStatus', 'verified'])->pr
 });
 
 Route::get('cities/{department_id}', function (int $department_id) {
-    return City::where('department_id', $department_id)->get();
+    return City::query()->where('department_id', $department_id)->get();
 })->name('api.list.cities');
 
-Route::get('images/{filename}', [ApiImageController::class, 'getImage'])->name('api.get.image')->middleware(
-    'auth:sanctum',
-    'checkStatus',
-    'verified'
-);
-
 Route::get('/brands', [BrandController::class, 'index'])
-    ->middleware(['auth:sanctum', 'verified'])
     ->name('api.brands.index');
 
 Route::get('/categories', [CategoryController::class, 'index'])
-    ->middleware(['auth:sanctum', 'verified'])
     ->name('api.categories.index');

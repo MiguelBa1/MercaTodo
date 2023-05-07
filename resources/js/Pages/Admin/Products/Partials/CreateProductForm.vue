@@ -10,23 +10,19 @@ import PrimaryButton from "@/Components/PrimaryButton.vue";
 
 const $toast = useToast()
 
-const {product} = defineProps({
-    product: Object
-})
-
-const imageUrl = ref(product.image ? `/storage/images/${product.image}` : null)
+const imageUrl = ref(null)
 
 const form = useForm(
     {
-        sku: product.sku,
-        name: product.name,
-        description: product.description,
-        price: product.price,
+        sku: '',
+        name: '',
+        description: '',
+        price: '',
         image: null,
-        stock: product.stock.toString(),
-        status: product.status,
-        brand_id: product.brand_id,
-        category_id: product.category_id,
+        stock: '',
+        status: '',
+        brand_id: '',
+        category_id: '',
     }
 )
 
@@ -38,19 +34,19 @@ function onFileChange(event) {
     }
 }
 
-const updateProduct = () => {
-    $toast.info('Updating product information...')
+const createProduct = () => {
+    $toast.info('Creating product...');
     form.clearErrors()
 
-    axios.postForm(route('admin.api.products.update', product.id), form.data(), {
+    axios.postForm(route('admin.api.products.store'), form.data(), {
         headers: {
             'Content-Type': 'multipart/form-data'
         }
     }).then(response => {
-        $toast.success('Product information updated successfully!')
+        $toast.success('Product created successfully!')
+
     }).catch(error => {
         form.setError(error.response.data.errors);
-        $toast.error('Something went wrong, please verify the information and try again.')
     })
 
 }
@@ -72,17 +68,15 @@ onMounted(() => {
     fetchBrands();
     fetchCategories();
 })
+
 </script>
+
 <template>
     <header>
         <h2 class="text-lg font-medium text-gray-900">Product Information</h2>
-
-        <p class="mt-1 text-sm text-gray-600">
-            Update product information.
-        </p>
     </header>
 
-    <form @submit.prevent="updateProduct">
+    <form @submit.prevent="createProduct">
         <div class="sm:grid sm:grid-cols-2 gap-3">
             <div class="mt-4 sm:mt-0">
                 <InputLabel for="sku" value="SKU"/>
@@ -119,7 +113,7 @@ onMounted(() => {
             <div class="flex flex-col mb-6">
                 <InputLabel for="description" value="Description"/>
                 <textarea id="description" v-model="form.description"
-                          class="resize-none w-full mt-1 px-3 py-2 text-gray-700 border rounded-md focus:outline-none border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 shadow-sm">
+                          class="resize-none w-full px-3 mt-1 py-2 text-gray-700 border rounded-md focus:outline-none border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 shadow-sm">
                 </textarea>
                 <InputError class="mt-2" :message="form.errors.description"/>
             </div>
@@ -181,7 +175,7 @@ onMounted(() => {
 
             <div class="flex flex-col mb-6">
                 <InputLabel for="category_id" value="Category"/>
-                <select id="category_id" v-model="product.category_id"
+                <select id="category_id" v-model="form.category_id"
                         class="w-full px-3 py-2 text-gray-700 border rounded-md focus:outline-none border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 shadow-sm">
                     <option v-for="category in categories" :key="category.id" :value="category.id">{{
                             category.name
@@ -194,8 +188,10 @@ onMounted(() => {
         </div>
 
         <PrimaryButton type="submit" class="mt-4">
-            Update Product
+            Create Product
         </PrimaryButton>
+
     </form>
+
 </template>
 

@@ -21,4 +21,9 @@ class ProductController extends Controller
             'product' => $product->load('category:id,name', 'brand:id,name')
         ]);
     }
+
+    public function create(): Response
+    {
+        return Inertia::render('Admin/Products/Create');
+    }
 }

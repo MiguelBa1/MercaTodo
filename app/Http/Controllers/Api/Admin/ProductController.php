@@ -59,7 +59,8 @@ class ProductController extends Controller
      */
     public function index(): LengthAwarePaginator
     {
-        return Product::query()->join('categories', 'categories.id', '=', 'products.category_id')
+        return Product::query()
+            ->join('categories', 'categories.id', '=', 'products.category_id')
             ->join('brands', 'brands.id', '=', 'products.brand_id')
             ->select(
                 'products.id',
@@ -73,7 +74,9 @@ class ProductController extends Controller
                 'categories.name as category_name',
                 'brands.name as brand_name'
             )
-            ->orderBy('products.id', 'desc')->paginate(10);
+            ->orderBy('products.id', 'desc')
+            ->latest('products.id')
+            ->paginate(10);
     }
 
     /**
@@ -105,6 +108,10 @@ class ProductController extends Controller
     protected function storeImage(UploadedFile $image): string
     {
         $imageIntervention = Image::make($image);
+        $imageIntervention->resize(800, 800, function ($constraint) {
+            $constraint->aspectRatio();
+            $constraint->upsize();
+        });
         $imageName = time() . '_' . $image->getClientOriginalName();
         Storage::disk('public')->put('images/' . $imageName, $imageIntervention->stream());
 
