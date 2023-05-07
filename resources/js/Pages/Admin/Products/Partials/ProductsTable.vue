@@ -65,7 +65,7 @@ onMounted(() => {
                                 Edit
                             </Link>
                             <button v-if="product.status === 'Active'"
-                                    @click="manageProductStatus(product.id, product.name)"
+                                    @click="manageProductStatus(product.id)"
                                     title="Disable user"
                                     class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-2 rounded text-center"
                             >

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {usePage} from '@inertiajs/vue3'
+import {usePage, Head} from '@inertiajs/vue3'
 import MainLayout from "@/Layouts/MainLayout.vue";
 import UsersTable from "@/Pages/Admin/Users/Partials/UsersTable.vue";
 
@@ -15,6 +15,9 @@ const {auth} = usePage().props
 </script>
 
 <template>
+    <Head>
+        <title>User Administration</title>
+    </Head>
     <MainLayout>
 
         <template #header>
