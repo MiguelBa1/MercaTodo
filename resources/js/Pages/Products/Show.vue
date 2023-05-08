@@ -83,6 +83,9 @@ const breakpoints = {
                     <Slide v-for="relatedProduct in relatedProducts" :key="relatedProduct.id">
                         <ProductCard :product="relatedProduct" class="h-full" />
                     </Slide>
+                    <template #addons>
+                        <Navigation />
+                    </template>
                 </Carousel>
             </div>
         </div>

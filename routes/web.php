@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Web\Admin\AuxiliaryTablesController;
 use App\Http\Controllers\Web\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Web\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Web\Admin\AdminController;
@@ -41,6 +42,8 @@ Route::middleware(['auth', 'role:admin', 'checkStatus', 'verified'])->prefix('ad
         Route::get('create', [AdminProductController::class, 'create'])->name('admin.products.create');
         Route::get('{product}/edit', [AdminProductController::class, 'edit'])->name('admin.products.edit');
     });
+
+    Route::get('/auxiliary-tables', [AuxiliaryTablesController::class, 'index'])->name('admin.auxiliary.tables.index');
 });
 
 Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');

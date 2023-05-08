@@ -67,6 +67,10 @@ const showingNavigationDropdown = ref(false);
                                         <div class="border border-indigo-100 mr-3"></div>
                                         Products
                                     </DropdownLink>
+                                    <DropdownLink :href="route('admin.auxiliary.tables.index')" class="pl-8 flex">
+                                        <div class="border border-indigo-100 mr-3"></div>
+                                        Auxiliary Tables
+                                    </DropdownLink>
                                 </div>
                                 <DropdownLink :href="route('profile.edit')"> Profile</DropdownLink>
                                 <DropdownLink :href="route('logout')" method="post" as="button">
@@ -147,6 +151,9 @@ const showingNavigationDropdown = ref(false);
                     </ResponsiveNavLink>
                     <ResponsiveNavLink v-if="$page.props.auth.isAdmin" :href="route('admin.view.products')"><span
                         class="border-l-4 pl-2">Products</span>
+                    </ResponsiveNavLink>
+                    <ResponsiveNavLink v-if="$page.props.auth.isAdmin" :href="route('admin.auxiliary.tables.index')"><span
+                        class="border-l-4 pl-2">Auxiliary Tables</span>
                     </ResponsiveNavLink>
                     <ResponsiveNavLink :href="route('logout')" method="post" as="button">
                         Log Out
