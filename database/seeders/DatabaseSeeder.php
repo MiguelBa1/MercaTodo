@@ -2,9 +2,7 @@
 
 namespace Database\Seeders;
 
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Spatie\Permission\Models\Role;
 use \App\Models\User;
 
 class DatabaseSeeder extends Seeder
@@ -14,23 +12,32 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $role = new Role();
-
-        $adminRole = $role->create(['name' => 'admin']);
-        $customerRole = $role->create(['name' => 'customer']);
-
-        User::factory(200)->create()->each(function ($user) use ($customerRole) {
-            $user->assignRole($customerRole);
-        });
-
-//      Crea un usuario administrador
-        $admin = User::factory()->create([
-            'name' => env('ADMIN_NAME'),
-            'email' => env('ADMIN_EMAIL'),
-            'password' => bcrypt(env('ADMIN_PASSWORD')),
+        /**
+         * Insert the cities, states and roles in the database
+         */
+        $this->call([
+            DepartmentsCitiesSeeder::class,
+            RolesSeeder::class,
+            BrandsSeeder::class,
+            CategoriesSeeder::class,
+            ProductsSeeder::class,
         ]);
 
-        $admin->assignRole($adminRole);
-        
+        User::factory(5)->create()->each(function ($user) {
+            $user->assignRole('customer');
+        });
+
+        // Create the admin user
+        User::factory()->create([
+            'name' => env('ADMIN_NAME'),
+            'document_type' => env('ADMIN_DOCUMENT_TYPE'),
+            'document' => env('ADMIN_DOCUMENT'),
+            'email' => env('ADMIN_EMAIL'),
+            'phone' => env('ADMIN_PHONE'),
+            'address' => env('ADMIN_ADDRESS'),
+            'password' => bcrypt(env('ADMIN_PASSWORD')),
+            'city_id' => env('ADMIN_CITY_ID'),
+        ])->assignRole('admin');
+
     }
 }

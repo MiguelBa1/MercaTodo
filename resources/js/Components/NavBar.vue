@@ -17,9 +17,7 @@ const showingNavigationDropdown = ref(false);
                 <!-- Logo -->
                 <div class="flex items-center">
                     <Link :href="route('home')">
-                        <ApplicationLogo
-                            class="block h-9 w-auto fill-current text-gray-800"
-                        />
+                        <ApplicationLogo/>
                     </Link>
                 </div>
 
@@ -35,8 +33,10 @@ const showingNavigationDropdown = ref(false);
                                             >
                                                 {{ $page.props.auth.user.name }}
 
-                                                <svg class="h-6 w-6 text-black" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                     stroke-linecap="round" stroke-linejoin="round">  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>  <circle
+                                                <svg class="h-6 w-6 text-black" viewBox="0 0 24 24" fill="none"
+                                                     stroke="currentColor" stroke-width="2"
+                                                     stroke-linecap="round" stroke-linejoin="round">  <path
+                                                    d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>  <circle
                                                     cx="12" cy="7" r="4"/></svg>
                                                 <svg
                                                     class=" -mr-0.5 h-4 w-4"
@@ -62,6 +62,14 @@ const showingNavigationDropdown = ref(false);
                                     <DropdownLink :href="route('admin.view.users')" class="pl-8 flex">
                                         <div class="border border-indigo-100 mr-3"></div>
                                         Users
+                                    </DropdownLink>
+                                    <DropdownLink :href="route('admin.view.products')" class="pl-8 flex">
+                                        <div class="border border-indigo-100 mr-3"></div>
+                                        Products
+                                    </DropdownLink>
+                                    <DropdownLink :href="route('admin.auxiliary.tables.index')" class="pl-8 flex">
+                                        <div class="border border-indigo-100 mr-3"></div>
+                                        Auxiliary Tables
                                     </DropdownLink>
                                 </div>
                                 <DropdownLink :href="route('profile.edit')"> Profile</DropdownLink>
@@ -139,7 +147,14 @@ const showingNavigationDropdown = ref(false);
                     <ResponsiveNavLink v-if="$page.props.auth.isAdmin" :href="route('admin.dashboard')"> Administrator
                     </ResponsiveNavLink>
                     <ResponsiveNavLink v-if="$page.props.auth.isAdmin" :href="route('admin.view.users')"><span
-                        class="border-l-4 pl-2">Users</span></ResponsiveNavLink>
+                        class="border-l-4 pl-2">Users</span>
+                    </ResponsiveNavLink>
+                    <ResponsiveNavLink v-if="$page.props.auth.isAdmin" :href="route('admin.view.products')"><span
+                        class="border-l-4 pl-2">Products</span>
+                    </ResponsiveNavLink>
+                    <ResponsiveNavLink v-if="$page.props.auth.isAdmin" :href="route('admin.auxiliary.tables.index')"><span
+                        class="border-l-4 pl-2">Auxiliary Tables</span>
+                    </ResponsiveNavLink>
                     <ResponsiveNavLink :href="route('logout')" method="post" as="button">
                         Log Out
                     </ResponsiveNavLink>

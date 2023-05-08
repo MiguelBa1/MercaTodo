@@ -1,0 +1,29 @@
+parameters:
+    paths:
+        - app
+    level: 3
+    excludePaths:
+        - vendor
+        - tests
+        - bootstrap
+        - storage
+        - node_modules
+        - public
+        - config
+        - database
+        - resources/views
+        - app/Http/Controllers/Auth
+        - app/Http/Request/Auth
+        - app/Http/Kernel.php
+        - app/Http/Middleware/Authenticate.php
+        - app/Http/Middleware/RedirectIfAuthenticated.php
+        - app/Http/Middleware/CheckUserStatus.php
+        - app/Http/Controllers/Controller.php
+        - app/Http/Middleware/VerifyCsrfToken.php
+        - app/Exceptions/Handler.php
+        - app/Http/Providers/*.php
+        - app/Http/Requests/Auth/*.php
+    reportUnmatchedIgnoredErrors: false
+    ignoreErrors:
+            - '#Call to an undefined method#'
+            - '#Call to an undefined static method#'

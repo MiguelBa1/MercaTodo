@@ -1,14 +1,13 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\Web\Admin\UserController;
+use App\Http\Controllers\Web\Admin\AuxiliaryTablesController;
+use App\Http\Controllers\Web\Admin\ProductController as AdminProductController;
+use App\Http\Controllers\Web\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Web\Admin\AdminController;
-use App\Http\Controllers\Api\Admin\UserController as ApiUserController;
-use App\Http\Controllers\Api\Admin\RoleController as ApiRoleController;
-use App\Http\Controllers\Api\Admin\ProfileController as ApiProfileController;
-use \App\Http\Controllers\Api\Admin\PasswordController as ApiPasswordController;
+use App\Http\Controllers\Web\HomeController;
+use App\Http\Controllers\Web\ProductController;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,12 +20,10 @@ use Inertia\Inertia;
 |
 */
 
-Route::get('/', function () {
-    return Inertia::render('Home', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-    ]);
-})->name('home');
+Route::get(
+    '/',
+    [HomeController::class, 'index']
+)->name('home');
 
 Route::middleware(['auth', 'checkStatus', 'verified'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -34,20 +31,21 @@ Route::middleware(['auth', 'checkStatus', 'verified'])->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-// Render views
 Route::middleware(['auth', 'role:admin', 'checkStatus', 'verified'])->prefix('admin')->group(function () {
     Route::get('/', [AdminController::class, 'index'])->name('admin.dashboard');
-    Route::get('users', [UserController::class, 'index'])->name('admin.view.users');
-    Route::get('users/edit/{user}', [UserController::class, 'edit'])->name('admin.edit.user');
+    Route::prefix('users')->group(function () {
+        Route::get('/', [AdminUserController::class, 'index'])->name('admin.view.users');
+        Route::get('edit/{user}', [AdminUserController::class, 'edit'])->name('admin.edit.user');
+    });
+    Route::prefix('products')->group(function () {
+        Route::get('/', [AdminProductController::class, 'index'])->name('admin.view.products');
+        Route::get('create', [AdminProductController::class, 'create'])->name('admin.products.create');
+        Route::get('{product}/edit', [AdminProductController::class, 'edit'])->name('admin.products.edit');
+    });
+
+    Route::get('/auxiliary-tables', [AuxiliaryTablesController::class, 'index'])->name('admin.auxiliary.tables.index');
 });
 
-// API calls
-Route::middleware(['auth', 'role:admin', 'checkStatus', 'verified'])->prefix('admin/api')->group(function () {
-    Route::get('roles', [ApiRoleController::class, 'list'])->name('admin.api.list.roles');
-    Route::get('users', [ApiUserController::class, 'list'])->name('admin.api.list.users');
-    Route::patch('users/status/{user}', [ApiUserController::class, 'update'])->name('admin.api.update.user.status');
-    Route::patch('users/password/{user}', [ApiPasswordController::class, 'update'])->name('admin.api.update.user.password');
-    Route::patch('users/profile/{user}', [ApiProfileController::class, 'update'])->name('admin.api.update.user.profile');
-});
+Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
 
 require __DIR__ . '/auth.php';

@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use App\Enums\DocumentTypeEnum;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -22,6 +24,12 @@ class User extends Authenticatable implements MustVerifyEmail
         'name',
         'email',
         'password',
+        'phone',
+        'document',
+        'document_type',
+        'status',
+        'address',
+        'city_id',
     ];
 
     /**
@@ -42,4 +50,22 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    /**
+     * @param $value
+     * @return string
+     */
+    public function getStatusAttribute($value): string
+    {
+        return $value ? 'Active' : 'Inactive';
+    }
+
+    public function getCityNameAttribute($value): string
+    {
+        return $value ? City::query()->find($value)->getAttribute('name') : 'N/A';
+    }
+    public function city(): BelongsTo
+    {
+        return $this->belongsTo(City::class, 'city_id', 'id');
+    }
 }
