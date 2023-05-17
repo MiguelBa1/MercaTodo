@@ -32,7 +32,7 @@ jobs:
 
     - name: Prepare Laravel Application
       run: |
-        cp .env.ci .env
+        cp .env.example .env
         php artisan key:generate
 
     - name: Install npm dependencies
@@ -41,8 +41,8 @@ jobs:
     - name: Run vite build
       run: npm run build
 
-    - name: Run Testsuite
-      run: vendor/bin/phpunit tests/
-
     - name: Run PhpStan
       run: vendor/bin/phpstan analyze
+
+    - name: Run Testsuite
+      run: vendor/bin/phpunit tests/
