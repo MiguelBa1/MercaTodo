@@ -25,19 +25,19 @@ class ProductRequest extends FormRequest
     public function rules(Request $request): array
     {
         // If the request is for updating a product, we need to ignore the current product id
-        $id = $request->route('product')['id'] ?? null;
+        $id = $this->route('product')->id ?? null;
         return [
             'sku' => [
                 'required',
                 'string',
-                'max:255',
+                'max:20',
                 Rule::unique(Product::class)->ignore($id),
             ],
-            'name' => 'required|string|max:255',
-            'description' => 'required|string',
-            'price' => 'required|numeric',
+            'name' => 'required|string|max:100',
+            'description' => 'required|string|max:500',
+            'price' => 'required|numeric|min:0',
             'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'stock' => 'required|numeric',
+            'stock' => 'required|numeric|min:0',
             'category_id' => 'required|exists:categories,id',
             'brand_id' => 'required|exists:brands,id',
         ];

@@ -25,15 +25,15 @@ class CategoryRequest extends FormRequest
     {
         // if the request is for updating a category, we need to ignore the current category
         /**
-         * @var Category|null $category
+         * @var Category|null $id
          */
-        $category = $this->route('category') ?? null;
+        $id = $this->route('category')->id ?? null;
         return [
             'name' => [
                 'required',
                 'string',
                 'max:255',
-                Rule::unique(Category::class)->ignore($category?->getAttribute('id')),
+                Rule::unique(Category::class)->ignore($id),
             ],
         ];
     }

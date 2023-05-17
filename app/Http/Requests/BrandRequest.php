@@ -25,15 +25,15 @@ class BrandRequest extends FormRequest
     {
         // if the request is for updating a brand, we need to ignore the current brand
         /**
-         * @var Brand|null $brand
+         * @var Brand|null $id
          */
-        $brand = $this->route('brand') ?? null;
+        $id = $this->route('brand')->id ?? null;
         return [
             'name' => [
                 'required',
                 'string',
                 'max:255',
-                Rule::unique(Brand::class)->ignore($brand?->getAttribute('id')),
+                Rule::unique(Brand::class)->ignore($id),
             ],
         ];
     }
