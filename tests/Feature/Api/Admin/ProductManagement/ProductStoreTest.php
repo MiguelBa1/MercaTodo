@@ -89,5 +89,4 @@ class ProductStoreTest extends ProductTestCase
         $response->assertStatus(200);
         $response->assertJson(['message' => 'Product created successfully']);
     }
-
 }

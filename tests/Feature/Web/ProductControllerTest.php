@@ -6,7 +6,6 @@ use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Testing\AssertableInertia;
 use Tests\TestCase;
@@ -33,7 +32,8 @@ class ProductControllerTest extends TestCase
     {
         $response = $this->get(route('products.show', $this->product[0]['id']));
         $response->assertStatus(200);
-        $response->assertInertia(fn (AssertableInertia $page) => $page
+        $response->assertInertia(
+            fn (AssertableInertia $page) => $page
             ->component('Products/Show')
             ->has('product')
             ->has('relatedProducts')
@@ -44,7 +44,8 @@ class ProductControllerTest extends TestCase
     {
         $response = $this->get(route('products.show', $this->product[0]['id']));
         $response->assertStatus(200);
-        $response->assertInertia(fn (AssertableInertia $page) => $page
+        $response->assertInertia(
+            fn (AssertableInertia $page) => $page
             ->component('Products/Show', function ($page) {
                 $relatedProducts = $page['relatedProducts'];
                 $relatedProducts->each(function ($product) {
@@ -53,5 +54,4 @@ class ProductControllerTest extends TestCase
             })
         );
     }
-
 }

@@ -28,5 +28,4 @@ class UserStatusUpdateTest extends UserTestCase
         $response->assertStatus(200);
         $this->assertEquals('Active', $this->customerUser->status);
     }
-
 }

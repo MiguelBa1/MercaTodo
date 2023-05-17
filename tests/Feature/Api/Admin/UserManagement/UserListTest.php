@@ -17,5 +17,4 @@ class UserListTest extends UserTestCase
         $response->assertJsonStructure(['data', 'links']);
         $response->assertJsonFragment(['name' => $this->customerUser->name]);
     }
-
 }

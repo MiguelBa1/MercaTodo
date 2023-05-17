@@ -25,5 +25,4 @@ class ProductTestCase extends UserTestCase
         $this->category = Category::factory()->create();
         $this->product = Product::factory()->create();
     }
-
 }

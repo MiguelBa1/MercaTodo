@@ -9,7 +9,6 @@ use Inertia\Response;
 
 class ProductController extends Controller
 {
-
     public function index(): Response
     {
         return Inertia::render('Admin/Products/Index');

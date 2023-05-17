@@ -12,7 +12,7 @@ class ProfileUpdateTest extends UserTestCase
      * Update the user profile
      * @return void
      */
-    public function testUpdateProfileUpdatesUserProfile() : void
+    public function testUpdateProfileUpdatesUserProfile(): void
     {
         $newName = 'John Doe';
         $newRole = 'admin';
@@ -45,8 +45,8 @@ class ProfileUpdateTest extends UserTestCase
     }
 
     // Test update user profile with the old document
-    public function testUpdateProfileUpdatesUserProfileWithOldDocument() {
-
+    public function testUpdateProfileUpdatesUserProfileWithOldDocument()
+    {
         $oldDocument = $this->customerUser->document;
 
         $response = $this->actingAs($this->adminUser)->patch(
@@ -66,7 +66,8 @@ class ProfileUpdateTest extends UserTestCase
     }
 
     // Test document unique validation
-    public function testUpdateProfileFailWithOtherUserDocument() {
+    public function testUpdateProfileFailWithOtherUserDocument()
+    {
         $secondCustomerUser = User::factory()->create();
         $response = $this->actingAs($this->adminUser)->patch(
             route('admin.api.users.profile.update', $this->customerUser->id),

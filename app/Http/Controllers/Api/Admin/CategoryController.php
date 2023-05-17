@@ -7,7 +7,6 @@ use App\Http\Requests\CategoryRequest;
 use App\Models\Category;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
@@ -23,7 +22,7 @@ class CategoryController extends Controller
      * @param CategoryRequest $request
      * @return JsonResponse
      */
-    public function store(CategoryRequest $request) : JsonResponse
+    public function store(CategoryRequest $request): JsonResponse
     {
         $data = $request->validated();
 
@@ -36,7 +35,7 @@ class CategoryController extends Controller
      * @param Category $category
      * @return JsonResponse
      */
-    public function update(CategoryRequest $request, Category $category) : JsonResponse
+    public function update(CategoryRequest $request, Category $category): JsonResponse
     {
         $data = $request->validated();
 

@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Support\Facades\Storage;
 use Tests\Feature\Utilities\UserTestCase;
+
 class ProductIndexTest extends UserTestCase
 {
     public function testAdminCanGetAllProducts(): void

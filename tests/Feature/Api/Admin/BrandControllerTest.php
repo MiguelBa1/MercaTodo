@@ -61,6 +61,4 @@ class BrandControllerTest extends UserTestCase
         $response->assertSessionHasErrors(['name']);
         $response->assertStatus(302);
     }
-
-
 }

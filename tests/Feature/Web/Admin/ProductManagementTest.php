@@ -4,11 +4,9 @@ namespace Tests\Feature\Web\Admin;
 
 use Inertia\Testing\AssertableInertia;
 use Tests\Feature\Utilities\ProductTestCase;
-use Tests\Feature\Utilities\UserTestCase;
 
 class ProductManagementTest extends ProductTestCase
 {
-
     public function testIndexRendersCorrectView(): void
     {
         $response = $this
@@ -17,7 +15,8 @@ class ProductManagementTest extends ProductTestCase
 
         $response->assertOk();
         $response->assertStatus(200);
-        $response->assertInertia(fn(AssertableInertia $page) => $page
+        $response->assertInertia(
+            fn (AssertableInertia $page) => $page
             ->component('Admin/Products/Index')
         );
     }
@@ -26,8 +25,11 @@ class ProductManagementTest extends ProductTestCase
     {
         $response = $this->actingAs($this->adminUser)->get(route('admin.products.edit', $this->product->id));
         $response->assertStatus(200);
-        $response->assertInertia(fn(AssertableInertia $page) => $page
-            ->component('Admin/Products/Edit')->has('product', fn(AssertableInertia $page) => $page
+        $response->assertInertia(
+            fn (AssertableInertia $page) => $page
+            ->component('Admin/Products/Edit')->has(
+                'product',
+                fn (AssertableInertia $page) => $page
                 ->where('sku', $this->product->sku)
                 ->where('name', $this->product->name)
                 ->where('description', $this->product->description)
@@ -45,7 +47,7 @@ class ProductManagementTest extends ProductTestCase
     {
         $response = $this->actingAs($this->adminUser)->get(route('admin.products.create'));
         $response->assertStatus(200);
-        $response->assertInertia(fn(AssertableInertia $page) => $page
+        $response->assertInertia(fn (AssertableInertia $page) => $page
             ->component('Admin/Products/Create'));
     }
 }
