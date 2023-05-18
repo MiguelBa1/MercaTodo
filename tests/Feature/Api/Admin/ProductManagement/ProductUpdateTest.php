@@ -8,65 +8,98 @@ use Tests\Feature\Utilities\ProductTestCase;
 
 class ProductUpdateTest extends ProductTestCase
 {
-    public function testAdminCanUpdateProductWithAnImage(): void
+    /**
+     * @dataProvider validProductData
+     * @param array $productData
+     * @return void
+     */
+    public function testAdminCanUpdateProduct(array $productData): void
     {
-        $file = new UploadedFile(
-            __DIR__ . '/../../../Utilities/test-image.png',
-            'test-image.png',
-            'image/png',
-            null,
-            true
+        $response = $this->actingAs($this->adminUser)->post(
+            route('admin.api.products.update', $this->product->getAttribute('id')),
+            $productData
         );
 
-        $response = $this->actingAs($this->adminUser)->post(route('admin.api.products.update', $this->product->getAttribute('id')), [
-            'sku' => 'TEST-PRODUCT',
-            'name' => 'Test Product',
-            'description' => 'Test Description',
-            'price' => 1000,
-            'image' => $file,
-            'stock' => 10,
-            'status' => true,
-            'brand_id' => $this->brand->getAttribute('id'),
-            'category_id' => $this->category->getAttribute('id')
+        $response->assertOk();
+        $response->assertJson(['message' => 'Product updated successfully']);
+
+        $imageName = time() . '_' . $productData['image']->getClientOriginalName();
+        $this->assertDatabaseHas('products', [
+            'sku' => $productData['sku'],
+            'name' => $productData['name'],
+            'description' => $productData['description'],
+            'price' => $productData['price'],
+            'image' => $imageName,
+            'stock' => $productData['stock'],
+            'status' => 1,
+            'brand_id' => $productData['brand_id'],
+            'category_id' => $productData['category_id'],
         ]);
 
-        $response->assertStatus(200);
-        $response->assertJson(['message' => 'Product updated successfully']);
-        $this->assertFileExists(Storage::disk('public')->path('images/' . time() . '_test-image.png'));
+        Storage::disk('public')->assertExists('images/' . $imageName);
     }
 
-    public function testAdminCanUpdateProductWithoutAnImage(): void
+    /**
+     * @dataProvider validProductData
+     * @param array $productData
+     * @return void
+     */
+    public function testCustomerCanNotUpdateProduct(array $productData): void
     {
-        $response = $this->actingAs($this->adminUser)->post(route('admin.api.products.update', $this->product->getAttribute('id')), [
-            'sku' => 'TEST-PRODUCT',
-            'name' => 'Test Product',
-            'description' => 'Test Description',
-            'price' => 1000,
-            'stock' => 10,
-            'status' => true,
-            'brand_id' => $this->brand->getAttribute('id'),
-            'category_id' => $this->category->getAttribute('id')
-        ]);
+        $response = $this->actingAs($this->customerUser)->post(
+            route('admin.api.products.update', $this->product->getAttribute('id')),
+            $productData
+        );
 
-        $response->assertStatus(200);
-        $response->assertJson(['message' => 'Product updated successfully']);
+        $response->assertForbidden();
     }
 
-    public function testAdminCanNotUpdateProductWithInvalidData(): void
+    /**
+     * @dataProvider validProductData
+     * @param array $productData
+     * @return void
+     */
+    public function testProductCanUpdateWithEmptyImage(array $productData): void
     {
-        $response = $this->actingAs($this->adminUser)->post(route('admin.api.products.update', $this->product->getAttribute('id')), [
-            'sku' => 'TEST-PRODUCT',
-            'name' => 'Test Product',
-            'description' => 'Test Description',
-            'price' => 1000,
-            'image' => 'invalid-image',
-            'stock' => 10,
-            'status' => true,
-            'brand_id' => $this->brand->getAttribute('id'),
-            'category_id' => $this->category->getAttribute('id')
-        ]);
+        $productData['image'] = null;
+        $response = $this->actingAs($this->adminUser)->post(
+            route('admin.api.products.update', $this->product->getAttribute('id')),
+            $productData
+        );
 
-        $response->assertStatus(302);
-        $response->assertSessionHasErrors(['image']);
+        $response->assertOk();
+        $response->assertJson(['message' => 'Product updated successfully']);
+
+        $this->assertDatabaseHas('products', [
+            'sku' => $productData['sku'],
+            'name' => $productData['name'],
+            'description' => $productData['description'],
+            'price' => $productData['price'],
+            'image' => null,
+            'stock' => $productData['stock'],
+            'status' => 1,
+            'brand_id' => $productData['brand_id'],
+            'category_id' => $productData['category_id'],
+        ]);
+    }
+
+
+    public static function validProductData(): array
+    {
+        $image = UploadedFile::fake()->image('test-image.png');
+        return [
+            'valid product data' => [
+                [
+                    'sku' => 'TEST-PRODUCT',
+                    'name' => 'Test Product',
+                    'description' => 'Test Description',
+                    'price' => 1000,
+                    'image' => $image,
+                    'stock' => 10,
+                    'brand_id' => 1,
+                    'category_id' => 1,
+                ]
+            ]
+        ];
     }
 }

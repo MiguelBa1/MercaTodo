@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Api\Admin\ProductManagement;
 
+use Illuminate\Support\Facades\Storage;
 use Tests\Feature\Utilities\ProductTestCase;
 
 class ProductDeleteTest extends ProductTestCase
@@ -12,5 +13,11 @@ class ProductDeleteTest extends ProductTestCase
 
         $response->assertStatus(200);
         $response->assertJson(['message' => 'Product deleted successfully']);
+
+        Storage::disk('public')->assertMissing($this->product->getAttribute('image'));
+
+        $this->assertDatabaseMissing('products', [
+            'id' => $this->product->getAttribute('id'),
+        ]);
     }
 }

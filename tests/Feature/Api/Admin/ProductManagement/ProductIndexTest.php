@@ -10,16 +10,28 @@ use Tests\Feature\Utilities\UserTestCase;
 
 class ProductIndexTest extends UserTestCase
 {
-    public function testAdminCanGetAllProducts(): void
+    private const EXPECTED_PRODUCT_COUNT = 5;
+
+    protected function setUp(): void
     {
+        parent::setUp();
+
         Storage::fake('public');
         Brand::factory()->create();
         Category::factory()->create();
-        Product::factory()->count(5)->create();
+        Product::factory()->count(self::EXPECTED_PRODUCT_COUNT)->create();
+    }
 
+    public function testAdminCanGetAllProducts(): void
+    {
         $response = $this->actingAs($this->adminUser)->get(route('admin.api.products.index'));
+
         $response->assertStatus(200);
-        $response->assertJsonCount(5, 'data');
+
+        $responseData = $response->json();
+
+        $this->assertCount(self::EXPECTED_PRODUCT_COUNT, $responseData['data']);
+
         $response->assertJsonStructure([
             'data' => [
                 '*' => [
@@ -35,6 +47,10 @@ class ProductIndexTest extends UserTestCase
                     'category_name',
                 ]
             ]
-        ]);
+        ], $responseData);
+
+        $productIds = collect($responseData['data'])->pluck('id')->toArray();
+        $expectedOrder = range(self::EXPECTED_PRODUCT_COUNT, 1);
+        $this->assertEquals($expectedOrder, $productIds);
     }
 }

@@ -21,6 +21,11 @@ class ProductStatusUpdateTest extends ProductTestCase
         $this->product->refresh();
         $response->assertStatus(200);
         $this->assertEquals('Inactive', $this->product->status);
+
+        $this->assertDatabaseHas('products', [
+            'id' => $this->product->getAttribute('id'),
+            'status' => false,
+        ]);
     }
 
     /**
@@ -39,5 +44,10 @@ class ProductStatusUpdateTest extends ProductTestCase
         $this->product->refresh();
         $response->assertStatus(200);
         $this->assertEquals('Active', $this->product->status);
+
+        $this->assertDatabaseHas('products', [
+            'id' => $this->product->getAttribute('id'),
+            'status' => true,
+        ]);
     }
 }
