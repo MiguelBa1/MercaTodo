@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Admin;
 
+use App\Models\Brand;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use App\Models\Category;
 
-class CategoryRequest extends FormRequest
+class BrandRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,17 +23,17 @@ class CategoryRequest extends FormRequest
      */
     public function rules(): array
     {
-        // if the request is for updating a category, we need to ignore the current category
+        // if the request is for updating a brand, we need to ignore the current brand
         /**
-         * @var Category|null $id
+         * @var Brand|null $id
          */
-        $id = $this->route('category')->id ?? null;
+        $id = $this->route('brand')->id ?? null;
         return [
             'name' => [
                 'required',
                 'string',
                 'max:255',
-                Rule::unique(Category::class)->ignore($id),
+                Rule::unique(Brand::class)->ignore($id),
             ],
         ];
     }
