@@ -31,12 +31,4 @@ class UserController extends Controller
             ->latest('users.id')
             ->paginate(10);
     }
-
-    public function update(User $user): JsonResponse
-    {
-        $user->setAttribute('status', !$user->getRawOriginal('status'));
-        $user->save();
-
-        return response()->json(['message' => 'User status updated successfully']);
-    }
 }
