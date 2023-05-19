@@ -6,7 +6,7 @@ use Illuminate\Http\JsonResponse;
 use Spatie\Permission\Models\Role;
 use Tests\Feature\Utilities\UserTestCase;
 
-class RoleListTest extends UserTestCase
+class RoleIndexTest extends UserTestCase
 {
     /**
      * @test
@@ -15,10 +15,8 @@ class RoleListTest extends UserTestCase
      */
     public function testListReturnsJson(): void
     {
-        // Act
         $response = $this->actingAs($this->adminUser)->get(route('admin.api.roles.index'));
 
-        // Assert
         $response->assertStatus(200);
         $this->assertInstanceOf(JsonResponse::class, $response->baseResponse);
         $this->assertEquals(Role::all()->pluck('name'), $response->baseResponse->original);

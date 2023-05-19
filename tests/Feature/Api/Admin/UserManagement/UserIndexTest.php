@@ -4,7 +4,7 @@ namespace Tests\Feature\Api\Admin\UserManagement;
 
 use Tests\Feature\Utilities\UserTestCase;
 
-class UserListTest extends UserTestCase
+class UserIndexTest extends UserTestCase
 {
     /**
      * @test
