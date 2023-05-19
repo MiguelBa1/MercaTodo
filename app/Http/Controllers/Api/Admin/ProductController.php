@@ -5,14 +5,19 @@ namespace App\Http\Controllers\Api\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Products\ProductRequest;
 use App\Models\Product;
+use App\Services\ProductImageService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\UploadedFile;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Facades\Storage;
-use Intervention\Image\Facades\Image;
 
 class ProductController extends Controller
 {
+    protected ProductImageService $imageService;
+
+    public function __construct(ProductImageService $imageService)
+    {
+        $this->imageService = $imageService;
+    }
+
     /**
      * @param ProductRequest $request
      * @return JsonResponse
@@ -22,7 +27,7 @@ class ProductController extends Controller
         $data = $request->validated();
 
         if (isset($data['image'])) {
-            $imageName = $this->storeImage($data['image']);
+            $imageName = $this->imageService->storeImage($data['image']);
             $data['image'] = $imageName;
         }
 
@@ -42,11 +47,11 @@ class ProductController extends Controller
         $data = $request->validated();
 
         if (isset($data['image']) && $product->getAttribute('image') !== $data['image']) {
-            $this->deleteImage($product->getAttribute('image'));
+            $this->imageService->deleteImage($product->getAttribute('image'));
         }
 
         if (isset($data['image'])) {
-            $imageName = $this->storeImage($data['image']);
+            $imageName = $this->imageService->storeImage($data['image']);
             $data['image'] = $imageName;
         }
 
@@ -86,44 +91,7 @@ class ProductController extends Controller
     public function destroy(Product $product): JsonResponse
     {
         $product->delete();
-        $this->deleteImage($product->getAttribute('image'));
+        $this->imageService->deleteImage($product->getAttribute('image'));
         return response()->json(['message' => 'Product deleted successfully']);
-    }
-
-    /**
-     * @param Product $product
-     * @return JsonResponse
-     */
-    public function updateStatus(Product $product): JsonResponse
-    {
-        $product->setAttribute('status', !$product->getRawOriginal('status'));
-        $product->save();
-        return response()->json(['message' => 'Product status updated successfully']);
-    }
-
-    /**
-     * @param UploadedFile $image
-     * @return string
-     */
-    protected function storeImage(UploadedFile $image): string
-    {
-        $imageIntervention = Image::make($image);
-        $imageIntervention->resize(800, 800, function ($constraint) {
-            $constraint->aspectRatio();
-            $constraint->upsize();
-        });
-        $imageName = time() . '_' . $image->getClientOriginalName();
-        Storage::disk('public')->put('images/' . $imageName, $imageIntervention->stream());
-
-        return $imageName;
-    }
-
-    /**
-     * @param string $imageName
-     * @return void
-     */
-    protected function deleteImage(string $imageName): void
-    {
-        Storage::disk('public')->delete('images/' . $imageName);
     }
 }

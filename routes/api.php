@@ -8,10 +8,12 @@ use App\Models\City;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\Admin\UserController as ApiUserController;
+use App\Http\Controllers\Api\Admin\UserStatusController as ApiUserStatusController;
 use App\Http\Controllers\Api\Admin\RoleController as ApiRoleController;
 use App\Http\Controllers\Api\Admin\ProfileController as ApiProfileController;
 use App\Http\Controllers\Api\Admin\PasswordController as ApiPasswordController;
 use App\Http\Controllers\Api\Admin\ProductController as ApiProductController;
+use App\Http\Controllers\Api\Admin\ProductStatusController as ApiProductStatusController;
 use App\Http\Controllers\Api\HomeController as ApiHomeController;
 
 /*
@@ -35,7 +37,7 @@ Route::middleware(['auth:sanctum', 'role:admin', 'checkStatus', 'verified'])->pr
     Route::get('roles', [ApiRoleController::class, 'index'])->name('admin.api.roles.index');
     Route::prefix('users')->group(function () {
         Route::get('/', [ApiUserController::class, 'index'])->name('admin.api.users.index');
-        Route::patch('{user}/status', [ApiUserController::class, 'update'])->name('admin.api.users.status.update');
+        Route::patch('{user}/status', [ApiUserStatusController::class, 'update'])->name('admin.api.users.status.update');
         Route::patch('{user}/password', [ApiPasswordController::class, 'update'])->name('admin.api.users.password.update');
         Route::patch('{user}/profile', [ApiProfileController::class, 'update'])->name('admin.api.users.profile.update');
     });
@@ -44,7 +46,7 @@ Route::middleware(['auth:sanctum', 'role:admin', 'checkStatus', 'verified'])->pr
         Route::post('/', [ApiProductController::class, 'store'])->name('admin.api.products.store');
         Route::post('{product}', [ApiProductController::class, 'update'])->name('admin.api.products.update');
         Route::delete('{product}', [ApiProductController::class, 'destroy'])->name('admin.api.products.destroy');
-        Route::patch('{product}/status', [ApiProductController::class, 'updateStatus'])->name('admin.api.products.updateStatus');
+        Route::patch('{product}/status', [ApiProductStatusController::class, 'update'])->name('admin.api.products.status.update');
     });
     Route::prefix('brands')->group(function () {
         Route::get('/', [AdminBrandController::class, 'index'])->name('admin.api.brands.index');
