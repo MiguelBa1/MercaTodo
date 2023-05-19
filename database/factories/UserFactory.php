@@ -2,7 +2,6 @@
 
 namespace Database\Factories;
 
-use App\Enums\DocumentType;
 use App\Enums\DocumentTypeEnum;
 use App\Models\City;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -21,7 +20,6 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
-
         $this->str = new Str();
 
         return [

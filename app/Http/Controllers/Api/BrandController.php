@@ -15,4 +15,5 @@ class BrandController extends Controller
         return response()->json([
             'brands' => $brands,
         ]);
-    }}
+    }
+}

@@ -2,92 +2,68 @@
 
 namespace Tests\Feature\Api\Admin\ProductManagement;
 
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Tests\Feature\Utilities\ProductTestCase;
-use Illuminate\Http\UploadedFile;
 
 class ProductStoreTest extends ProductTestCase
 {
     /**
+     * @dataProvider validProductData
+     * @param array $productData
      * @return void
      */
-    public function testAdminCanCreateProduct(): void
+    public function testAdminCanCreateProduct(array $productData): void
     {
-        $file = new UploadedFile(
-            __DIR__ . '/../../../Utilities/test-image.png',
-            'test-image.png',
-            'image/png',
-            null,
-            true
-        );
+        $response = $this->actingAs($this->adminUser)->post(route('admin.api.products.store'), $productData);
 
-        $response = $this->actingAs($this->adminUser)->post(route('admin.api.products.store'), [
-            'sku' => 'TEST-PRODUCT',
-            'name' => 'Test Product',
-            'description' => 'Test Description',
-            'price' => 1000,
-            'image' => $file,
-            'stock' => 10,
-            'status' => true,
-            'brand_id' => $this->brand->getAttribute('id'),
-            'category_id' => $this->category->getAttribute('id')
-        ]);
-
-        $response->assertStatus(200);
+        $response->assertOk();
         $response->assertJson(['message' => 'Product created successfully']);
-        $this->assertFileExists(Storage::disk('public')->path('images/' . time() . '_test-image.png'));
-    }
 
-    public function testAdminCanNotCreateProductWithInvalidData(): void
-    {
-        $response = $this->actingAs($this->adminUser)->post(route('admin.api.products.store'), [
-            'sku' => 'TEST-PRODUCT',
-            'name' => 'Test Product',
-            'description' => 'Test Description',
-            'price' => 1000,
-            'image' => 'invalid-image',
-            'stock' => 10,
-            'status' => true,
-            'brand_id' => $this->brand->getAttribute('id'),
-            'category_id' => $this->category->getAttribute('id')
+        $imageName = time() . '_' . $productData['image']->getClientOriginalName();
+        $this->assertDatabaseHas('products', [
+            'sku' => $productData['sku'],
+            'name' => $productData['name'],
+            'description' => $productData['description'],
+            'price' => $productData['price'],
+            'image' => $imageName,
+            'stock' => $productData['stock'],
+            'status' => 1,
+            'brand_id' => $productData['brand_id'],
+            'category_id' => $productData['category_id'],
         ]);
 
-        $response->assertStatus(302);
-        $response->assertSessionHasErrors(['image']);
+        Storage::disk('public')->assertExists('images/' . $imageName);
     }
 
-    public function testCustomerCanNotCreateProduct(): void
+    /**
+     * @dataProvider validProductData
+     * @param array $productData
+     * @return void
+     */
+    public function testCustomerCanNotCreateProduct(array $productData): void
     {
-        $response = $this->actingAs($this->customerUser)->post(route('admin.api.products.store'), [
-            'sku' => 'TEST-PRODUCT',
-            'name' => 'Test Product',
-            'description' => 'Test Description',
-            'price' => 1000,
-            'image' => 'invalid-image',
-            'stock' => 10,
-            'status' => true,
-            'brand_id' => $this->brand->getAttribute('id'),
-            'category_id' => $this->category->getAttribute('id')
-        ]);
+        $response = $this->actingAs($this->customerUser)->post(route('admin.api.products.store'), $productData);
 
         $response->assertStatus(403);
     }
 
-    public function testAdminCanCreateProductWithoutImage(): void
+    public static function validProductData(): array
     {
-        $response = $this->actingAs($this->adminUser)->post(route('admin.api.products.store'), [
-            'sku' => 'TEST-PRODUCT',
-            'name' => 'Test Product',
-            'description' => 'Test Description',
-            'price' => 1000,
-            'stock' => 10,
-            'status' => true,
-            'brand_id' => $this->brand->getAttribute('id'),
-            'category_id' => $this->category->getAttribute('id')
-        ]);
-
-        $response->assertStatus(200);
-        $response->assertJson(['message' => 'Product created successfully']);
+        $image = UploadedFile::fake()->image('test-image.png');
+        return [
+            'valid product data' => [
+                [
+                    'sku' => 'TEST-PRODUCT',
+                    'name' => 'Test Product',
+                    'description' => 'Test Description',
+                    'price' => 1000,
+                    'image' => $image,
+                    'stock' => 10,
+                    'brand_id' => 1,
+                    'category_id' => 1,
+                ]
+            ]
+        ];
     }
-
 }

@@ -12,7 +12,8 @@ class HomeControllerTest extends TestCase
         $response = $this->get(route('home'));
         $response->assertOk();
         $response->assertStatus(200);
-        $response->assertInertia(fn(AssertableInertia $page) => $page
+        $response->assertInertia(
+            fn (AssertableInertia $page) => $page
             ->component('Home')
         );
     }

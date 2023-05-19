@@ -23,7 +23,8 @@ class ProductTestCase extends UserTestCase
         Storage::fake('public');
         $this->brand = Brand::factory()->create();
         $this->category = Category::factory()->create();
-        $this->product = Product::factory()->create();
+        $this->product = Product::factory()->create([
+            'status' => 1,
+        ]);
     }
-
 }

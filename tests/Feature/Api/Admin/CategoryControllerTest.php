@@ -54,13 +54,13 @@ class CategoryControllerTest extends UserTestCase
         $this->assertDatabaseHas('categories', array_merge(['id' => $category->getAttribute('id')], $data));
     }
 
-    public function testReturnErrorIfDataIsInvalid()
+    public function testReturnsErrorIfDataIsInvalid()
     {
         $data = ['name' => ''];
 
         $response = $this->actingAs($this->adminUser)->post(route('admin.api.categories.store'), $data);
 
+        $response->assertFound();
         $response->assertSessionHasErrors(['name']);
-        $response->assertStatus(302);
     }
 }

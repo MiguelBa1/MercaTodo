@@ -11,7 +11,6 @@ use Inertia\Response;
 
 class UserController extends Controller
 {
-
     public function index(): Response
     {
         return Inertia::render('Admin/Users/Index');
@@ -34,5 +33,4 @@ class UserController extends Controller
             'document_types' => DocumentTypeEnum::getValues(),
         ]);
     }
-
 }

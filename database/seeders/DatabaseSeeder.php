@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use \App\Models\User;
+use App\Models\User;
 
 class DatabaseSeeder extends Seeder
 {
@@ -38,6 +38,5 @@ class DatabaseSeeder extends Seeder
             'password' => bcrypt(env('ADMIN_PASSWORD')),
             'city_id' => env('ADMIN_CITY_ID'),
         ])->assignRole('admin');
-
     }
 }

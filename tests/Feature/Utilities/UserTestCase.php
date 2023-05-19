@@ -1,4 +1,5 @@
 <?php
+
 namespace Tests\Feature\Utilities;
 
 use App\Models\City;
@@ -35,6 +36,5 @@ class UserTestCase extends TestCase
         $this->customerUser->assignRole($customerRole);
         $this->adminUser = User::factory()->create();
         $this->adminUser->assignRole($adminRole);
-
     }
 }

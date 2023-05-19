@@ -3,10 +3,8 @@
 namespace Tests\Feature\Auth;
 
 use App\Enums\DocumentTypeEnum;
-use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Spatie\Permission\Models\Role;
-use Tests\TestCase;
 
 class RegistrationTest extends BaseTestCase
 {

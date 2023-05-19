@@ -4,7 +4,7 @@ namespace Tests\Feature\Api\Admin\UserManagement;
 
 use Tests\Feature\Utilities\UserTestCase;
 
-class UserListTest extends UserTestCase
+class UserIndexTest extends UserTestCase
 {
     /**
      * @test
@@ -17,5 +17,4 @@ class UserListTest extends UserTestCase
         $response->assertJsonStructure(['data', 'links']);
         $response->assertJsonFragment(['name' => $this->customerUser->name]);
     }
-
 }

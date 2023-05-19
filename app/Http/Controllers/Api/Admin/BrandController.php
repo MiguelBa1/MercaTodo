@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\BrandRequest;
+use App\Http\Requests\Admin\BrandRequest;
 use App\Models\Brand;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\JsonResponse;
@@ -22,7 +22,7 @@ class BrandController extends Controller
      * @param BrandRequest $request
      * @return JsonResponse
      */
-    public function store(BrandRequest $request) : JsonResponse
+    public function store(BrandRequest $request): JsonResponse
     {
         $data = $request->validated();
 
@@ -35,12 +35,11 @@ class BrandController extends Controller
      * @param Brand $brand
      * @return JsonResponse
      */
-    public function update(BrandRequest $request, Brand $brand) : JsonResponse
+    public function update(BrandRequest $request, Brand $brand): JsonResponse
     {
         $data = $request->validated();
 
         $brand->update($data);
         return response()->json(['message' => 'Brand updated successfully']);
     }
-
 }

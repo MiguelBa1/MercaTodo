@@ -36,5 +36,4 @@ class Product extends Model
     {
         return $value ? 'Active' : 'Inactive';
     }
-
 }

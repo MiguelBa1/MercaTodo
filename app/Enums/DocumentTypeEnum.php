@@ -6,12 +6,12 @@ use Illuminate\Validation\Rules\Enum;
 
 class DocumentTypeEnum extends Enum
 {
-    const PASSPORT = 'Passport';
-    const NATIONAL_ID_CARD = 'National ID Card';
-    const DRIVER_LICENSE = 'Driver License';
-    const SOCIAL_SECURITY_NUMBER = 'Social Security Number';
-    const TAX_ID_NUMBER = 'Tax ID Number';
-    const OTHER = 'Other';
+    public const PASSPORT = 'Passport';
+    public const NATIONAL_ID_CARD = 'National ID Card';
+    public const DRIVER_LICENSE = 'Driver License';
+    public const SOCIAL_SECURITY_NUMBER = 'Social Security Number';
+    public const TAX_ID_NUMBER = 'Tax ID Number';
+    public const OTHER = 'Other';
 
     public static function getRandomValue(): string
     {

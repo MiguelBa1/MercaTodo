@@ -6,27 +6,41 @@ use Tests\Feature\Utilities\UserTestCase;
 
 class UserStatusUpdateTest extends UserTestCase
 {
-    /**
-     * @test
-     * Update the user status
-     */
-    public function testUpdateStatusUpdatesUserStatus(): void
+    public function testAdminCanActivateAnUser(): void
     {
-        // User status is active
-        $response = $this->actingAs($this->adminUser)->patch(
-            route('admin.api.users.status.update', $this->customerUser->id)
-        );
-        $this->customerUser->refresh();
-        $response->assertStatus(200);
-        $this->assertEquals('Inactive', $this->customerUser->status);
+        $this->customerUser->setAttribute('status', false);
+        $this->customerUser->save();
 
-        // User status is inactive
         $response = $this->actingAs($this->adminUser)->patch(
-            route('admin.api.users.status.update', $this->customerUser->id)
+            route('admin.api.users.status.update', $this->customerUser->getAttribute('id'))
         );
+
         $this->customerUser->refresh();
-        $response->assertStatus(200);
+        $response->assertOk();
         $this->assertEquals('Active', $this->customerUser->status);
+
+        $this->assertDatabaseHas('users', [
+            'id' => $this->customerUser->getAttribute('id'),
+            'status' => true,
+        ]);
     }
 
+    public function testAdminCanDeactivateAnUser(): void
+    {
+        $this->customerUser->setAttribute('status', true);
+        $this->customerUser->save();
+
+        $response = $this->actingAs($this->adminUser)->patch(
+            route('admin.api.users.status.update', $this->customerUser->getAttribute('id'))
+        );
+
+        $this->customerUser->refresh();
+        $response->assertOk();
+        $this->assertEquals('Inactive', $this->customerUser->status);
+
+        $this->assertDatabaseHas('users', [
+            'id' => $this->customerUser->getAttribute('id'),
+            'status' => false,
+        ]);
+    }
 }
