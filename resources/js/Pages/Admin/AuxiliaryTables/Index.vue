@@ -1,7 +1,7 @@
 <script setup>
 import MainLayout from "@/Layouts/MainLayout.vue";
-import BrandsTable from "@/Pages/Admin/AuxiliaryTables/Partials/BrandsTable.vue";
-import CategoriesTable from "@/Pages/Admin/AuxiliaryTables/Partials/CategoriesTable.vue";
+import BrandsTable from "@/Components/Tables/BrandsTable.vue";
+import CategoriesTable from "@/Components/Tables/CategoriesTable.vue";
 
 import {Head} from "@inertiajs/vue3";
 import {ref} from "vue";

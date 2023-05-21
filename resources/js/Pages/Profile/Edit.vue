@@ -1,8 +1,8 @@
 <script setup>
 import MainLayout from '@/Layouts/MainLayout.vue';
-import DeleteUserForm from './Partials/DeleteUserForm.vue';
-import UpdatePasswordForm from './Partials/UpdatePasswordForm.vue';
-import UpdateProfileInformationForm from './Partials/UpdateProfileInformationForm.vue';
+import DeleteUserForm from '../../Components/Forms/DeleteUserForm.vue';
+import UpdatePasswordForm from '../../Components/Forms/UpdatePasswordForm.vue';
+import UpdateProfileInformationForm from '../../Components/Forms/UpdateProfileInformationForm.vue';
 import { Head } from '@inertiajs/vue3';
 
 defineProps({

@@ -16,6 +16,6 @@ class AdminDashboardTest extends UserTestCase
         $response = $this->actingAs($this->adminUser)->get('/admin');
         $response->assertStatus(200);
         $response->assertInertia(fn (AssertableInertia $page) => $page
-            ->component('Admin/Dashboard'));
+            ->component('Admin/Dashboard/Index'));
     }
 }
