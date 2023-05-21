@@ -1,8 +1,8 @@
 <script setup>
 import MainLayout from "@/Layouts/MainLayout.vue";
-import UpdateProductInformationForm from "@/Pages/Admin/Products/Partials/UpdateProductInformationForm.vue";
+import UpdateProductInformationForm from "@/Components/Forms/Admin/UpdateProductInformationForm.vue";
 import {usePage, Head} from "@inertiajs/vue3";
-import DeleteProductForm from "@/Pages/Admin/Products/Partials/DeleteProductForm.vue";
+import DeleteProductForm from "@/Components/Forms/Admin/DeleteProductForm.vue";
 
 const {product} = usePage().props;
 </script>

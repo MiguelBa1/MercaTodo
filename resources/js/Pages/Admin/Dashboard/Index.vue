@@ -1,7 +1,7 @@
 <script setup>
 import MainLayout from "@/Layouts/MainLayout.vue";
 import {Head} from '@inertiajs/vue3';
-import Card from "@/Pages/Admin/Partials/Card.vue";</script>
+import Card from "@/Pages/Admin/Dashboard/AdminOptionCard.vue";</script>
 
 <template>
     <Head title="Administrator"/>
@@ -33,6 +33,20 @@ import Card from "@/Pages/Admin/Partials/Card.vue";</script>
                     <path d="M5 21v-10.15"/>
                     <path d="M19 21v-10.15"/>
                     <path d="M9 21v-4a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v4"/>
+                </svg>
+            </Card>
+
+            <Card title="Other Tables" sub-title="View and manage other tables" :href="route('admin.auxiliary.tables.index')">
+                <svg class="h-8 w-8 text-black" width="24" height="24" viewBox="0 0 24 24" stroke-width="2"
+                     stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z"/>
+                    <rect x="3" y="3" width="18" height="18" rx="2"/>
+                    <line x1="7" y1="7" x2="7" y2="7.01"/>
+                    <line x1="7" y1="11" x2="7" y2="11.01"/>
+                    <line x1="7" y1="15" x2="7" y2="15.01"/>
+                    <line x1="11" y1="7" x2="11" y2="7.01"/>
+                    <line x1="11" y1="11" x2="11" y2="11.01"/>
+                    <line x1="11" y1="15" x2="11" y2="15.01"/>
                 </svg>
             </Card>
         </div>

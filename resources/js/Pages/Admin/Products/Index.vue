@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {usePage} from '@inertiajs/vue3'
 import MainLayout from "@/Layouts/MainLayout.vue";
-import ProductsTable from "@/Pages/Admin/Products/Partials/ProductsTable.vue";
+import ProductsTable from "@/Components/Tables/ProductsTable.vue";
 import {Link, Head} from "@inertiajs/vue3";
 
 defineProps({

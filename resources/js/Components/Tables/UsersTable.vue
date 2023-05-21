@@ -3,19 +3,19 @@ import {Link} from '@inertiajs/vue3'
 import {TailwindPagination} from 'laravel-vue-pagination';
 import {useToast} from "vue-toast-notification";
 import axios from "axios";
-import {ref} from 'vue';
+import {onMounted, ref} from 'vue';
+import LoadingSpinner from "@/Components/LoadingSpinner.vue";
 
 const $toast = useToast();
 const usersData = ref({});
 const pageNumber = ref(1);
+const isLoading = ref(true);
 
 const getUsers = async (page = 1) => {
     const response = await fetch(route('admin.api.users.index', {page: page}));
     usersData.value = await response.json();
     pageNumber.value = page;
 }
-
-getUsers();
 
 const manageUserStatus = async (id, name) => {
     $toast.clear();
@@ -28,10 +28,17 @@ const manageUserStatus = async (id, name) => {
     }
 }
 
+onMounted(async () => {
+    await getUsers();
+    isLoading.value = false;
+})
 </script>
 
 <template>
-    <div class="p-4 sm:p-6 shadow sm:rounded-lg">
+    <div v-if="isLoading">
+        <LoadingSpinner/>
+    </div>
+    <div v-else class="p-4 sm:p-6 shadow sm:rounded-lg">
         <div class="overflow-auto">
             <!-- Table of users from props -->
             <table class="table-auto mx-auto w-full border">
