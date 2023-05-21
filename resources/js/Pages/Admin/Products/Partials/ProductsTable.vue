@@ -4,10 +4,12 @@ import {TailwindPagination} from 'laravel-vue-pagination';
 import {useToast} from "vue-toast-notification";
 import axios from "axios";
 import {onMounted, ref} from 'vue';
+import LoadingSpinner from "@/Components/LoadingSpinner.vue";
 
 const $toast = useToast();
 const productsData = ref({});
 const pageNumber = ref(1);
+const isLoading = ref(true);
 
 const getProducts = async (page = 1) => {
     const response = await fetch(route('admin.api.products.index', {page: page}));
@@ -26,13 +28,17 @@ const manageProductStatus = async (id) => {
     }
 }
 
-onMounted(() => {
-    getProducts();
+onMounted(async () => {
+    await getProducts();
+    isLoading.value = false;
 })
 </script>
 
 <template>
-    <div class="p-4 sm:p-6 shadow sm:rounded-lg">
+    <div v-if="isLoading">
+        <LoadingSpinner/>
+    </div>
+    <div v-else class="p-4 sm:p-6 shadow sm:rounded-lg">
         <div class="overflow-auto">
             <!-- Table of products from props -->
             <table class="table-auto mx-auto w-full border">

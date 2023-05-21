@@ -3,12 +3,14 @@ import axios from "axios";
 import {onMounted, ref} from 'vue';
 import {useToast} from "vue-toast-notification";
 import {TailwindPagination} from 'laravel-vue-pagination';
+import LoadingSpinner from "@/Components/LoadingSpinner.vue";
 
 import Modal from "@/Components/Modal.vue";
 
 const $toast = useToast();
 const brandsData = ref({});
 const pageNumber = ref(1);
+const isLoading = ref(true);
 
 const editingBrand = ref({});
 const creatingBrand = ref({});
@@ -49,13 +51,17 @@ const editBrand = async () => {
     }
 }
 
-onMounted(() => {
-    getBrands();
+onMounted(async () => {
+    await getBrands();
+    isLoading.value = false;
 })
 </script>
 
 <template>
-    <div class="p-4 sm:p-6 shadow sm:rounded-lg">
+    <div v-if="isLoading">
+        <LoadingSpinner/>
+    </div>
+    <div v-else class="p-4 sm:p-6 shadow sm:rounded-lg">
         <div class="overflow-auto">
             <!-- Table of products from props -->
             <table class="table-auto mx-auto w-full border">
@@ -121,15 +127,6 @@ onMounted(() => {
                 </div>
             </Modal>
 
-
-            <!-- button to trigger the Create brand modal -->
-            <div class="flex justify-center mt-3">
-                <button @click="creatingBrand.name = ''"
-                        class="bg-green-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md">
-                    Create Brand
-                </button>
-            </div>
-
             <Modal :show="Object.keys(creatingBrand).length > 0" @close="creatingBrand = {}">
                 <div class="p-6">
                     <h2 class="text-lg font-medium text-gray-900">
@@ -149,7 +146,7 @@ onMounted(() => {
 
                         <div class="mt-4">
                             <button type="submit"
-                                    class="bg-green-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md">
+                                    class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-md">
                                 Create Brand
                             </button>
                         </div>
@@ -163,6 +160,13 @@ onMounted(() => {
             <TailwindPagination :data="brandsData" @pagination-change-page="getBrands" :limit="1"
                                 :keepLength="true"/>
         </div>
+    </div>
+    <!-- button to trigger the Create brand modal -->
+    <div class="flex justify-center mt-3">
+        <button @click="creatingBrand.name = ''"
+                class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-md">
+            Create Brand
+        </button>
     </div>
 </template>
 

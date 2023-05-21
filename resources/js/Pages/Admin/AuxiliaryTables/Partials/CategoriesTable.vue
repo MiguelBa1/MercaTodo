@@ -3,12 +3,14 @@ import axios from "axios";
 import {onMounted, ref} from 'vue';
 import {useToast} from "vue-toast-notification";
 import {TailwindPagination} from 'laravel-vue-pagination';
+import LoadingSpinner from "@/Components/LoadingSpinner.vue";
 
 import Modal from "@/Components/Modal.vue";
 
 const $toast = useToast();
 const categoriesData = ref({});
 const pageNumber = ref(1);
+const isLoading = ref(true);
 
 const editingCategory = ref({});
 const creatingCategory = ref({});
@@ -17,6 +19,7 @@ const getCategories = async (page = 1) => {
     const response = await fetch(route('admin.api.categories.index', {page: page}));
     categoriesData.value = await response.json();
     pageNumber.value = page;
+    isLoading.value = false;
 }
 
 const createCategory = async () => {
@@ -49,13 +52,17 @@ const editCategory = async () => {
     }
 }
 
-onMounted(() => {
-    getCategories();
+onMounted(async () => {
+    await getCategories();
+    isLoading.value = false;
 })
 </script>
 
 <template>
-    <div class="p-4 sm:p-6 shadow sm:rounded-lg">
+    <div v-if="isLoading">
+        <LoadingSpinner/>
+    </div>
+    <div v-else class="p-4 sm:p-6 shadow sm:rounded-lg">
         <div class="overflow-auto">
             <!-- Table of products from props -->
             <table class="table-auto mx-auto w-full border">
@@ -121,15 +128,7 @@ onMounted(() => {
                 </div>
             </Modal>
 
-            <!-- button to trigger the Create category modal -->
-            <div class="flex justify-center mt-3">
-                <button @click="creatingCategory.name = ''"
-                        class="bg-blue-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-md">
-                    Create Category
-                </button>
-            </div>
-
-            <Modal :show="Object.keys(creatingCategory).length > 0" @close="creatingCategory = {}">
+            <Modal :show="Object.keys(creatingCategory).length > 0" @close="creatingCategory= {}">
                 <div class="p-6">
                     <h2 class="text-lg font-medium text-gray-900">
                         Create Category
@@ -148,7 +147,7 @@ onMounted(() => {
 
                         <div class="mt-4">
                             <button type="submit"
-                                    class="bg-green-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md">
+                                    class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-md">
                                 Create Category
                             </button>
                         </div>
@@ -161,6 +160,13 @@ onMounted(() => {
         <div class="flex justify-center mt-3">
             <TailwindPagination :data="categoriesData" @pagination-change-page="getCategories" :limit="1"
                                 :keepLength="true"/>
+        </div>
+        <!-- button to trigger the Create category modal -->
+        <div class="flex justify-center mt-3">
+            <button @click="creatingCategory.name = ''"
+                    class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-md">
+                Create Category
+            </button>
         </div>
     </div>
 </template>
