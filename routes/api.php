@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\Api\Admin\RoleController as ApiRoleController;
 use App\Http\Controllers\Api\Brands\AdminBrandController as AdminBrandController;
 use App\Http\Controllers\Api\Brands\BrandController;
 use App\Http\Controllers\Api\Categories\AdminCategoryController as AdminCategoryController;
@@ -34,7 +33,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::get('/', [ApiHomeController::class, 'index'])->name('api.home.index');
 
 Route::middleware(['auth:sanctum', 'role:admin', 'checkStatus', 'verified'])->prefix('admin')->group(function () {
-    Route::get('roles', [ApiRoleController::class, 'index'])->name('admin.api.roles.index');
     Route::prefix('users')->group(function () {
         Route::get('/', [ApiUserController::class, 'index'])->name('admin.api.users.index');
         Route::patch('{user}/status', [ApiUserStatusController::class, 'update'])->name('admin.api.users.status.update');
