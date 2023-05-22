@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Inertia\Inertia;
 use Inertia\Response;
 
-class AdminController extends Controller
+class DashboardController extends Controller
 {
     public function index(): Response
     {
