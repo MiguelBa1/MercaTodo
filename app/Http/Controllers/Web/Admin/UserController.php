@@ -5,9 +5,11 @@ namespace App\Http\Controllers\Web\Admin;
 use App\Enums\DocumentTypeEnum;
 use App\Http\Controllers\Controller;
 use App\Models\City;
+use App\Models\Department;
 use App\Models\User;
 use Inertia\Inertia;
 use Inertia\Response;
+use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
@@ -29,8 +31,9 @@ class UserController extends Controller
 
         return Inertia::render('Admin/Users/Edit', [
             'user' => $userData,
-            'departments' => \App\Models\Department::all(),
+            'departments' => Department::all('id', 'name'),
             'document_types' => DocumentTypeEnum::getValues(),
+            'roles' => Role::all('name')
         ]);
     }
 }

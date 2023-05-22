@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\Admin;
+namespace App\Http\Controllers\Api\Brands;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\BrandRequest;
@@ -8,7 +8,7 @@ use App\Models\Brand;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\JsonResponse;
 
-class BrandController extends Controller
+class AdminBrandController extends Controller
 {
     /**
      * @return LengthAwarePaginator

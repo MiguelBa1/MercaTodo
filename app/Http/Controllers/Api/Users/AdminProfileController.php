@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\Api\Admin;
+namespace App\Http\Controllers\Api\Users;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Users\ProfileUpdateRequest;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 
-class ProfileController extends Controller
+class AdminProfileController extends Controller
 {
     /**
      * @param ProfileUpdateRequest $request

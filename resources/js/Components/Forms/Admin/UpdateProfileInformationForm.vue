@@ -10,20 +10,6 @@ import {ref} from 'vue';
 
 const $toast = useToast();
 
-defineProps(
-    {
-        user: {
-            type: Object
-        },
-        document_types: {
-            type: Object
-        },
-        departments: {
-            type: Object
-        }
-    }
-);
-
 const { user, departments, document_types } = usePage().props;
 
 const form = useForm({
@@ -39,6 +25,8 @@ const form = useForm({
 
 const department_id = ref(user.department_id);
 const cities = ref({});
+const roles = ref(usePage().props.roles);
+
 const getCities = async () => {
     const response = await fetch(route('api.list.cities', department_id.value));
     cities.value = await response.json();
@@ -60,15 +48,6 @@ const updateProfileInformation = () => {
         });
 };
 
-const roles = ref([]);
-const getRoles = async () => {
-    await axios.get(route('admin.api.roles.index'))
-        .then(response => {
-            roles.value = response.data;
-        });
-};
-
-getRoles();
 </script>
 
 <template>
@@ -108,12 +87,12 @@ getRoles();
                         required
                         autocomplete="role"
                     >
-                        <option v-for="role in roles" :value="role">
-                            {{ role.charAt(0).toUpperCase() + role.slice(1) }}
+                        <option v-for="role in roles" :value="role.name">
+                            {{ role.name.charAt(0).toUpperCase() + role.name.slice(1) }}
                         </option>
                     </select>
 
-                    <InputError class="mt-2" :message="form.errors.roles"/>
+                    <InputError class="mt-2" :message="form.errors.role_name"/>
                 </div>
 
                 <div class="mt-4 sm:mt-0">

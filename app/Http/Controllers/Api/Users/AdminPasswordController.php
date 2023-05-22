@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\Admin;
+namespace App\Http\Controllers\Api\Users;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Users\PasswordUpdateRequest;
@@ -9,7 +9,7 @@ use Illuminate\Http\JsonResponse;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 
-class PasswordController extends Controller
+class AdminPasswordController extends Controller
 {
     /**
      * @param PasswordUpdateRequest $request
