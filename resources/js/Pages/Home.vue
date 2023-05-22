@@ -4,8 +4,8 @@ import MainLayout from "@/Layouts/MainLayout.vue";
 import {onMounted, ref} from 'vue'
 import {TailwindPagination} from 'laravel-vue-pagination';
 import axios from "axios";
-import ProductFilter from "@/Pages/Partials/ProductFilter.vue";
-import ProductGallery from "@/Pages/Partials/ProductGallery.vue";
+import ProductFilter from "@/Pages/Products/Partials/ProductFilter.vue";
+import ProductGallery from "@/Pages/Products/Partials/ProductGallery.vue";
 import LoadingSpinner from "@/Components/LoadingSpinner.vue";
 
 const productsData = ref({});
