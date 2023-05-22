@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Http\Controllers\Api\Admin;
+namespace App\Http\Controllers\Api\Products;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Products\ProductRequest;
 use App\Models\Product;
 use App\Services\ProductImageService;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Http\JsonResponse;
 
-class ProductController extends Controller
+class AdminProductController extends Controller
 {
     protected ProductImageService $imageService;
 

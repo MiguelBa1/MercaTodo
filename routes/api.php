@@ -1,20 +1,20 @@
 <?php
 
-use App\Http\Controllers\Api\BrandController;
-use App\Http\Controllers\Api\CategoryController;
-use App\Http\Controllers\Api\Admin\BrandController as AdminBrandController;
-use App\Http\Controllers\Api\Admin\CategoryController as AdminCategoryController;
+use App\Http\Controllers\Api\Admin\RoleController as ApiRoleController;
+use App\Http\Controllers\Api\Brands\AdminBrandController as AdminBrandController;
+use App\Http\Controllers\Api\Brands\BrandController;
+use App\Http\Controllers\Api\Categories\AdminCategoryController as AdminCategoryController;
+use App\Http\Controllers\Api\Categories\CategoryController;
+use App\Http\Controllers\Api\HomeController as ApiHomeController;
+use App\Http\Controllers\Api\Products\AdminProductController as ApiProductController;
+use App\Http\Controllers\Api\Products\AdminProductStatusController as ApiProductStatusController;
+use App\Http\Controllers\Api\Users\AdminPasswordController as ApiPasswordController;
+use App\Http\Controllers\Api\Users\AdminProfileController as ApiProfileController;
+use App\Http\Controllers\Api\Users\AdminUserController as ApiUserController;
+use App\Http\Controllers\Api\Users\AdminUserStatusController as ApiUserStatusController;
 use App\Models\City;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\Admin\UserController as ApiUserController;
-use App\Http\Controllers\Api\Admin\UserStatusController as ApiUserStatusController;
-use App\Http\Controllers\Api\Admin\RoleController as ApiRoleController;
-use App\Http\Controllers\Api\Admin\ProfileController as ApiProfileController;
-use App\Http\Controllers\Api\Admin\PasswordController as ApiPasswordController;
-use App\Http\Controllers\Api\Admin\ProductController as ApiProductController;
-use App\Http\Controllers\Api\Admin\ProductStatusController as ApiProductStatusController;
-use App\Http\Controllers\Api\HomeController as ApiHomeController;
 
 /*
 |--------------------------------------------------------------------------
