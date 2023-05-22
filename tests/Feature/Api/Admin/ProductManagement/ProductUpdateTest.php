@@ -15,6 +15,9 @@ class ProductUpdateTest extends ProductTestCase
      */
     public function testAdminCanUpdateProduct(array $productData): void
     {
+        $productData['brand_id'] = $this->brand->getAttribute('id');
+        $productData['category_id'] = $this->category->getAttribute('id');
+
         $response = $this->actingAs($this->adminUser)->post(
             route('admin.api.products.update', $this->product->getAttribute('id')),
             $productData
@@ -61,6 +64,9 @@ class ProductUpdateTest extends ProductTestCase
      */
     public function testProductCanUpdateWithEmptyImage(array $productData): void
     {
+        $productData['brand_id'] = $this->brand->getAttribute('id');
+        $productData['category_id'] = $this->category->getAttribute('id');
+
         $productData['image'] = null;
         $response = $this->actingAs($this->adminUser)->post(
             route('admin.api.products.update', $this->product->getAttribute('id')),
@@ -93,11 +99,9 @@ class ProductUpdateTest extends ProductTestCase
                     'sku' => 'TEST-PRODUCT',
                     'name' => 'Test Product',
                     'description' => 'Test Description',
-                    'price' => 1000,
+                    'price' => 1000.00,
                     'image' => $image,
                     'stock' => 10,
-                    'brand_id' => 1,
-                    'category_id' => 1,
                 ]
             ]
         ];

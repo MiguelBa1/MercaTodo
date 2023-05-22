@@ -15,6 +15,8 @@ class ProductStoreTest extends ProductTestCase
      */
     public function testAdminCanCreateProduct(array $productData): void
     {
+        $productData['brand_id'] = $this->brand->getAttribute('id');
+        $productData['category_id'] = $this->category->getAttribute('id');
         $response = $this->actingAs($this->adminUser)->post(route('admin.api.products.store'), $productData);
 
         $response->assertOk();
@@ -57,11 +59,9 @@ class ProductStoreTest extends ProductTestCase
                     'sku' => 'TEST-PRODUCT',
                     'name' => 'Test Product',
                     'description' => 'Test Description',
-                    'price' => 1000,
+                    'price' => 1000.00,
                     'image' => $image,
                     'stock' => 10,
-                    'brand_id' => 1,
-                    'category_id' => 1,
                 ]
             ]
         ];
