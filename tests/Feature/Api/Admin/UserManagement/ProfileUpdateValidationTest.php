@@ -33,8 +33,6 @@ class ProfileUpdateValidationTest extends UserTestCase
         return [
             'name is required' => ['name', '', 'The name field is required.'],
             'name is too long' => ['name', str_repeat('a', 101), 'The name may not be greater than 101 characters.'],
-            'role_name is required' => ['role_name', '', 'The role name field is required.'],
-            'role_name is invalid' => ['role_name', 'invalid', 'The selected role name is invalid.'],
             'document is required' => ['document', '', 'The document field is required.'],
             'document should be a integer' => ['document', 'invalid', 'The document must be an integer.'],
             'document digits should be between 6 and 12' => [

@@ -5,6 +5,7 @@ namespace Tests\Feature\Api\Admin\ProductManagement;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Product;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Storage;
 use Tests\Feature\Utilities\UserTestCase;
 
@@ -50,7 +51,9 @@ class ProductIndexTest extends UserTestCase
         ], $responseData);
 
         $productIds = collect($responseData['data'])->pluck('id')->toArray();
-        $expectedOrder = range(self::EXPECTED_PRODUCT_COUNT, 1);
+        $maxProductId = Product::query()->max('id');
+        $minProductId = Product::query()->min('id');
+        $expectedOrder = range($maxProductId, $minProductId);
         $this->assertEquals($expectedOrder, $productIds);
     }
 }
