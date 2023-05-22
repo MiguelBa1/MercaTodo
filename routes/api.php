@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\Users\AdminPasswordController as ApiPasswordControl
 use App\Http\Controllers\Api\Users\AdminProfileController as ApiProfileController;
 use App\Http\Controllers\Api\Users\AdminUserController as ApiUserController;
 use App\Http\Controllers\Api\Users\AdminUserStatusController as ApiUserStatusController;
+use App\Http\Controllers\Api\Cart\CartController as ApiCartController;
 use App\Models\City;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -68,3 +69,10 @@ Route::get('/brands', [BrandController::class, 'index'])
 
 Route::get('/categories', [CategoryController::class, 'index'])
     ->name('api.categories.index');
+
+Route::middleware(['auth:sanctum', 'verified'])->prefix('cart')->group(function () {
+    Route::get('/', [ApiCartController::class, 'getProducts'])->name('api.cart.getProducts');
+    Route::post('/add', [ApiCartController::class, 'addProduct'])->name('api.cart.addProduct');
+    Route::delete('/clear', [ApiCartController::class, 'clearCart'])->name('api.cart.clearCart');
+    Route::delete('/remove/{product}', [ApiCartController::class, 'removeProduct'])->name('api.cart.removeProduct');
+});

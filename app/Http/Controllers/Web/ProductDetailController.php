@@ -21,7 +21,7 @@ class ProductDetailController extends Controller
 
         return Inertia::render('Products/Show', [
             'product' => $product->load('category:id,name', 'brand:id,name')
-                ->only('name', 'price', 'stock', 'description', 'image', 'category', 'brand'),
+                ->only('id', 'name', 'price', 'stock', 'description', 'image', 'category', 'brand'),
             'relatedProducts' => $relatedProducts,
         ]);
     }
