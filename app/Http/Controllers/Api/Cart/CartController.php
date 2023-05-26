@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api\Cart;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\CartRequest;
+use App\Http\Requests\CartStoreRequest;
 use App\Services\CartService;
 use Illuminate\Http\Request;
 
@@ -16,7 +16,7 @@ class CartController extends Controller
         $this->cartService = $cartService;
     }
 
-    public function addProduct(CartRequest $request): void
+    public function store(CartStoreRequest $request): void
     {
         $this->cartService->addProduct(
             $request->user()->id,
@@ -25,21 +25,16 @@ class CartController extends Controller
         );
     }
 
-    public function removeProduct(Request $request): void
+    public function destroy(Request $request, int $product_id): void
     {
         $this->cartService->removeProduct(
             $request->user()->id,
-            $request->get('product_id')
+            $product_id
         );
     }
 
-    public function getProducts(Request $request): array
+    public function index(Request $request): array
     {
         return $this->cartService->getProducts($request->user()->id);
-    }
-
-    public function clearCart(Request $request): void
-    {
-        $this->cartService->clearCart($request->user()->id);
     }
 }
