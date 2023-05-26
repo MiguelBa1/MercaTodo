@@ -73,10 +73,9 @@ Route::get('/categories', [CategoryController::class, 'index'])
 
 
 Route::middleware(['auth:sanctum', 'verified', 'checkStatus'])->prefix('cart')->group(function () {
-    Route::get('/', [CartController::class, 'index'])->name('api.cart.getProducts');
-    Route::post('/add', [CartController::class, 'store'])->name('api.cart.addProduct');
-    Route::delete('/clear', [CartController::class, 'clearCart'])->name('api.cart.clear');
-    Route::delete('/remove/{product_id}', [CartController::class, 'destroy'])->name('api.cart.removeProduct');
+    Route::get('/', [CartController::class, 'index'])->name('api.cart.index');
+    Route::post('/add', [CartController::class, 'store'])->name('api.cart.store');
+    Route::delete('/remove/{product_id}', [CartController::class, 'destroy'])->name('api.cart.destroy');
 
     Route::post('/product', [ProductDetailsController::class, 'show'])
         ->name('api.cart.products.show');

@@ -1,11 +1,10 @@
 <script setup>
 import MainLayout from "@/Layouts/MainLayout.vue";
-import {Head} from '@inertiajs/vue3';
+import {Head, Link} from '@inertiajs/vue3';
 import {useCartStore} from "@/store/cart";
 import {computed, onMounted, ref} from "vue";
 import ProductCard from "@/Pages/Cart/Partials/ProductCard.vue";
 import LoadingSpinner from "@/Components/LoadingSpinner.vue";
-import {Link} from "@inertiajs/vue3";
 
 const store = useCartStore();
 const productsInformation = ref([]);
@@ -19,14 +18,16 @@ const total = computed(() => {
 const isLoading = ref(true);
 
 const getProductsInformation = async () => {
-    await store.syncCart();
-    if (!(store.cartItemsCount === 0)) {
-        const {data} = await axios.post(route('api.cart.products.show'), {products: store.cart})
-        productsInformation.value = data;
+    if (store.cartItemsCount === 0) {
+        productsInformation.value = [];
+        return;
     }
+    const {data} = await axios.post(route('api.cart.products.show'), {products: store.cart})
+    productsInformation.value = data;
 };
 
 onMounted(async () => {
+    await store.syncCart();
     await getProductsInformation();
     isLoading.value = false;
 });
@@ -41,7 +42,6 @@ onMounted(async () => {
         <template #header>
             <h2>Cart items</h2>
         </template>
-
         <div v-if="!isLoading" class="mt-12 max-w-7xl mx-auto">
             <div v-if="store.cartItemsCount > 0" class="flex flex-col lg:flex-row gap-6">
                 <div
@@ -71,7 +71,7 @@ onMounted(async () => {
                     <p class="text-gray-500">Looks like you haven't added any items to your cart yet.</p>
                     <div class="mt-4">
                         <Link :href="route('home')"
-                           class="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                              class="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                             Continue shopping
                         </Link>
                     </div>

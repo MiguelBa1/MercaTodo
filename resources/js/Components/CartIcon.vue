@@ -1,18 +1,8 @@
 <script setup>
 import {useCartStore} from "@/store/cart";
-import {Link, usePage} from "@inertiajs/vue3";
-import {onMounted} from "vue";
+import {Link} from "@inertiajs/vue3";
 
-const page = usePage();
 const store = useCartStore();
-
-onMounted(() => {
-    if (!page.props.auth.user) {
-        return;
-    }
-
-    store.syncCart();
-});
 
 </script>
 

@@ -5,6 +5,7 @@ export const useCartStore = defineStore({
     id: 'mainStore',
     state: () => ({
         cart: [],
+        isCartSynced: false,
     }),
     getters: {
         cartItemsCount() {
@@ -13,18 +14,23 @@ export const useCartStore = defineStore({
     },
     actions: {
         async addToCart(product_id, quantity = 1) {
-            const response = await axios.post(route('api.cart.addProduct'), {product_id, quantity});
+            const response = await axios.post(route('api.cart.store'), {product_id, quantity});
+            await this.syncCart(true);
             return response;
         },
-        async syncCart() {
-            const {data} = await axios.get(route('api.cart.getProducts'));
-            this.cart = Object.entries(data).map(([id, quantity]) => ({
-                id: parseInt(id),
-                quantity: parseInt(quantity),
-            }));
+        async syncCart(forceSync = false) {
+            if (!this.isCartSynced || forceSync) {
+                const {data} = await axios.get(route('api.cart.index'));
+                this.cart = Object.entries(data).map(([id, quantity]) => ({
+                    id: parseInt(id),
+                    quantity: parseInt(quantity),
+                }));
+                this.isCartSynced = true;
+            }
         },
         async removeFromCart(product_id) {
-            const response = await axios.delete(route('api.cart.removeProduct', product_id));
+            const response = await axios.delete(route('api.cart.destroy', product_id));
+            await this.syncCart(true);
             return response;
         }
     },
