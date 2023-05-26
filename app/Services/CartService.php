@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Product;
 use Illuminate\Support\Facades\Redis;
 
 class CartService
@@ -18,11 +19,19 @@ class CartService
 
     public function getProducts(int $userId): array
     {
-        return Redis::client()->hgetall("user:$userId:cart");
-    }
+        $cartData = Redis::client()->hgetall("user:$userId:cart");
+        $activeCartData = [];
 
-    public function clearCart(int $userId): void
-    {
-        Redis::client()->del("user:$userId:cart");
+        foreach ($cartData as $productId => $quantity) {
+            $product = Product::query()->find($productId);
+
+            if ($product && $product->getAttribute('stock') > 0 && $product->getRawOriginal('status')) {
+                $activeCartData[$productId] = $quantity;
+            } else {
+                Redis::client()->hdel("user:$userId:cart", $productId);
+            }
+        }
+
+        return $activeCartData;
     }
 }
