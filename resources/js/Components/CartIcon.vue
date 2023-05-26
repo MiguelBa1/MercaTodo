@@ -1,14 +1,24 @@
 <script setup>
 import {useCartStore} from "@/store/cart";
+import {Link, usePage} from "@inertiajs/vue3";
+import {onMounted} from "vue";
 
+const page = usePage();
 const store = useCartStore();
-store.syncCart();
+
+onMounted(() => {
+    if (!page.props.auth.user) {
+        return;
+    }
+
+    store.syncCart();
+});
 
 </script>
 
 <template>
     <div class="flex items-center">
-        <a href="/" class="relative">
+        <Link :href="route('cart.index')" class="relative">
             <svg class="h-6 w-6 text-black" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                  stroke-linecap="round" stroke-linejoin="round">
                 <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
@@ -20,6 +30,6 @@ store.syncCart();
             >
                 {{ store.cartItemsCount }}
             </span>
-        </a>
+        </Link>
     </div>
 </template>

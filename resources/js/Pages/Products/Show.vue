@@ -7,9 +7,12 @@ import { Carousel, Slide, Navigation, Pagination } from 'vue3-carousel'
 import {useCartStore} from "@/store/cart";
 import {ref} from "vue";
 import {useToast} from "vue-toast-notification";
+import {usePage} from "@inertiajs/vue3";
 
 const toast = useToast();
 const quantity = ref(1);
+
+const page = usePage();
 
 const {product, relatedProducts} = defineProps({
     product: {
@@ -42,13 +45,19 @@ const breakpoints = {
 
 const store = useCartStore();
 
-const addToCart = () => {
-    if (store.productInCart(product.id)) {
-        toast.info('Product updated in cart');
-    } else {
-        toast.success('Product added to cart');
+const addToCart = async () => {
+    if (!page.props.auth.user){
+        toast.error('You need to login first');
+        return;
     }
-    store.addToCart(product.id, quantity.value);
+
+    const response = await store.addToCart(product.id, quantity.value);
+    if (response.status === 200) {
+        toast.success('Product added to cart');
+        await store.syncCart();
+    } else {
+        toast.error('Something went wrong');
+    }
 }
 
 </script>
