@@ -5,7 +5,6 @@ namespace Tests\Feature\Api\Admin\ProductManagement;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Product;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Storage;
 use Tests\Feature\Utilities\UserTestCase;
 

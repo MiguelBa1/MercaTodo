@@ -1,20 +1,18 @@
 <script setup>
-import { ref } from 'vue';
 import NavBar from "@/Components/NavBar.vue";
-
 </script>
 
 <template>
-            <NavBar />
-            <!-- Page Heading -->
-            <header class="bg-white shadow" v-if="$slots.header">
-                <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                    <slot name="header" />
-                </div>
-            </header>
+    <NavBar/>
+    <!-- Page Heading -->
+    <header class="bg-white shadow" v-if="$slots.header">
+        <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+            <slot name="header"/>
+        </div>
+    </header>
 
-            <!-- Page Content -->
-            <main>
-                <slot />
-            </main>
+    <!-- Page Content -->
+    <main>
+        <slot/>
+    </main>
 </template>

@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Web\Admin\AuxiliaryTablesController;
 use App\Http\Controllers\Web\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Web\Admin\UserController as AdminUserController;
+use App\Http\Controllers\Web\CartController;
 use App\Http\Controllers\Web\Admin\DashboardController;
 use App\Http\Controllers\Web\HomeController;
 use App\Http\Controllers\Web\ProductDetailController;
@@ -29,6 +30,8 @@ Route::middleware(['auth', 'checkStatus', 'verified'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
 });
 
 Route::middleware(['auth', 'role:admin', 'checkStatus', 'verified'])->prefix('admin')->group(function () {

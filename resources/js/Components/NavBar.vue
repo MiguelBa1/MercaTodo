@@ -5,6 +5,7 @@ import DropdownLink from "@/Components/DropdownLink.vue";
 import {Link} from "@inertiajs/vue3";
 import ResponsiveNavLink from "@/Components/ResponsiveNavLink.vue";
 import {ref} from "vue";
+import CartIcon from "@/Components/CartIcon.vue";
 
 const showingNavigationDropdown = ref(false);
 </script>
@@ -21,11 +22,14 @@ const showingNavigationDropdown = ref(false);
                     </Link>
                 </div>
 
-                <div class="hidden sm:flex sm:items-center sm:ml-6">
-                    <!-- Settings Dropdown -->
-                    <div v-if="$page.props.auth.user" class="ml-3 relative">
-                        <Dropdown align="right" width="48">
-                            <template #trigger>
+                <div class="flex items-center">
+                    <CartIcon />
+
+                    <div class="hidden sm:flex sm:items-center sm:ml-6">
+                        <!-- Settings Dropdown -->
+                        <div v-if="$page.props.auth.user" class="ml-3 relative">
+                            <Dropdown align="right" width="48">
+                                <template #trigger>
                                         <span class="inline-flex rounded-md">
                                             <button
                                                 type="button"
@@ -52,80 +56,83 @@ const showingNavigationDropdown = ref(false);
                                                 </svg>
                                             </button>
                                         </span>
-                            </template>
+                                </template>
 
-                            <template #content>
-                                <div v-if="$page.props.auth.isAdmin">
-                                    <DropdownLink v-if="$page.props.auth.isAdmin" :href="route('admin.dashboard')">
-                                        Administrator
+                                <template #content>
+                                    <div v-if="$page.props.auth.isAdmin">
+                                        <DropdownLink v-if="$page.props.auth.isAdmin" :href="route('admin.dashboard')">
+                                            Administrator
+                                        </DropdownLink>
+                                        <DropdownLink :href="route('admin.view.users')" class="pl-8 flex">
+                                            <div class="border border-indigo-100 mr-3"></div>
+                                            Users
+                                        </DropdownLink>
+                                        <DropdownLink :href="route('admin.view.products')" class="pl-8 flex">
+                                            <div class="border border-indigo-100 mr-3"></div>
+                                            Products
+                                        </DropdownLink>
+                                        <DropdownLink :href="route('admin.auxiliary.tables.index')" class="pl-8 flex">
+                                            <div class="border border-indigo-100 mr-3"></div>
+                                            Auxiliary Tables
+                                        </DropdownLink>
+                                    </div>
+                                    <DropdownLink :href="route('profile.edit')"> Profile</DropdownLink>
+                                    <DropdownLink :href="route('logout')" method="post" as="button">
+                                        Log Out
                                     </DropdownLink>
-                                    <DropdownLink :href="route('admin.view.users')" class="pl-8 flex">
-                                        <div class="border border-indigo-100 mr-3"></div>
-                                        Users
-                                    </DropdownLink>
-                                    <DropdownLink :href="route('admin.view.products')" class="pl-8 flex">
-                                        <div class="border border-indigo-100 mr-3"></div>
-                                        Products
-                                    </DropdownLink>
-                                    <DropdownLink :href="route('admin.auxiliary.tables.index')" class="pl-8 flex">
-                                        <div class="border border-indigo-100 mr-3"></div>
-                                        Auxiliary Tables
-                                    </DropdownLink>
-                                </div>
-                                <DropdownLink :href="route('profile.edit')"> Profile</DropdownLink>
-                                <DropdownLink :href="route('logout')" method="post" as="button">
-                                    Log Out
-                                </DropdownLink>
-                            </template>
-                        </Dropdown>
+                                </template>
+                            </Dropdown>
+                        </div>
+
+                        <div v-else class="">
+                            <Link
+                                :href="route('login')"
+                                class="font-semibold text-gray-400 hover:text-gray-900 focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500"
+                            >Log in
+                            </Link>
+
+                            <Link
+                                :href="route('register')"
+                                class="ml-4 font-semibold text-gray-400 hover:text-gray-900 focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500"
+                            >Register
+                            </Link
+                            >
+                        </div>
                     </div>
 
-                    <div v-else class="">
-                        <Link
-                            :href="route('login')"
-                            class="font-semibold text-gray-400 hover:text-gray-900 focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500"
-                        >Log in
-                        </Link>
+                    <!-- Hamburger -->
+                    <div class="-mr-2 flex items-center sm:hidden ml-6">
 
-                        <Link
-                            :href="route('register')"
-                            class="ml-4 font-semibold text-gray-400 hover:text-gray-900 focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500"
-                        >Register
-                        </Link
+                        <button
+                            @click="showingNavigationDropdown = !showingNavigationDropdown"
+                            class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out"
                         >
-                    </div>
-                </div>
-
-                <!-- Hamburger -->
-                <div class="-mr-2 flex items-center sm:hidden">
-                    <button
-                        @click="showingNavigationDropdown = !showingNavigationDropdown"
-                        class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out"
-                    >
-                        <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                            <path
-                                :class="{
+                            <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+                                <path
+                                    :class="{
                                             hidden: showingNavigationDropdown,
                                             'inline-flex': !showingNavigationDropdown,
                                         }"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                stroke-width="2"
-                                d="M4 6h16M4 12h16M4 18h16"
-                            />
-                            <path
-                                :class="{
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M4 6h16M4 12h16M4 18h16"
+                                />
+                                <path
+                                    :class="{
                                             hidden: !showingNavigationDropdown,
                                             'inline-flex': showingNavigationDropdown,
                                         }"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                stroke-width="2"
-                                d="M6 18L18 6M6 6l12 12"
-                            />
-                        </svg>
-                    </button>
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M6 18L18 6M6 6l12 12"
+                                />
+                            </svg>
+                        </button>
+                    </div>
                 </div>
+
             </div>
         </div>
 

@@ -3,7 +3,16 @@ import MainLayout from "@/Layouts/MainLayout.vue";
 import {Head} from '@inertiajs/vue3';
 import ProductCard from "@/Components/ProductCard.vue";
 import 'vue3-carousel/dist/carousel.css'
-import { Carousel, Slide, Pagination, Navigation } from 'vue3-carousel'
+import { Carousel, Slide, Navigation, Pagination } from 'vue3-carousel'
+import {useCartStore} from "@/store/cart";
+import {ref} from "vue";
+import {useToast} from "vue-toast-notification";
+import {usePage} from "@inertiajs/vue3";
+
+const toast = useToast();
+const quantity = ref(1);
+
+const page = usePage();
 
 const {product, relatedProducts} = defineProps({
     product: {
@@ -11,7 +20,7 @@ const {product, relatedProducts} = defineProps({
         required: true
     },
     relatedProducts: {
-        type: Array,
+        type: Object,
         required: true,
         attributes: {
             id: Number,
@@ -22,26 +31,35 @@ const {product, relatedProducts} = defineProps({
     }
 })
 
-// carousel settings
-const settings = {
-    itemsToShow: 1,
-    snapAlign: 'center',
-}
-
 const breakpoints = {
     640: {
-        itemsToShow: 2,
-        pagination: false,
+        itemsToShow: 1,
     },
     768: {
-        itemsToShow: 3,
-        pagination: false,
+        itemsToShow: 2,
     },
     1024: {
-        itemsToShow: 4,
-        pagination: false,
-    },
+        itemsToShow: 3,
+    }
 }
+
+const store = useCartStore();
+
+const addToCart = async () => {
+    if (!page.props.auth.user){
+        toast.error('You need to login first');
+        return;
+    }
+
+    const response = await store.addToCart(product.id, quantity.value);
+    if (response.status === 200) {
+        toast.success('Product added to cart');
+        await store.syncCart();
+    } else {
+        toast.error('Something went wrong');
+    }
+}
+
 </script>
 
 <template>
@@ -62,13 +80,25 @@ const breakpoints = {
                     <p class="">{{ product.description }}</p>
                     <p class="font-bold text-xl">$ {{ product.price }}</p>
                     <div class="grid gap-2 ">
-                        <input type="number" name="quantity" id="quantity" class="border rounded-md"
-                               min="1" max="10"
-                               :placeholder="`${product.stock} in stock`"
-                        >
-                        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                            <!--                                @click="addToCart(product.id, quantity)">-->
-                            Add to Cart
+                        <div class="flex justify-between">
+                            <div>
+                                <button class="bg-gray-200 text-gray-600 rounded-md px-4 py-2"
+                                        @click="quantity = quantity - 1"
+                                        :disabled="quantity <= 1">-
+                                </button>
+                                <span class="px-4 py-2">{{ quantity }}</span>
+                                <button class="bg-gray-200 text-gray-600 rounded-md px-4 py-2"
+                                        @click="quantity = quantity + 1"
+                                        :disabled="quantity >= product.stock">+
+                                </button>
+                            </div>
+                            <div>
+                                <p class="text-gray-600 text-sm">Stock: {{ product.stock }}</p>
+                            </div>
+                        </div>
+
+                        <button class="bg-blue-500 text-white rounded-md px-4 py-2"
+                                @click="addToCart">Add to cart
                         </button>
                     </div>
                 </div>
@@ -79,12 +109,13 @@ const breakpoints = {
         <div class="pt-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <h2 class="text-2xl font-bold">Related Products</h2>
-                <Carousel :items-to-show="3.5" :wrap-around="true">
+                <Carousel :breakpoints="breakpoints" :wrap-around="true" class="mt-8">
                     <Slide v-for="relatedProduct in relatedProducts" :key="relatedProduct.id">
                         <ProductCard :product="relatedProduct" class="h-full" />
                     </Slide>
                     <template #addons>
-                        <Navigation />
+                        <Navigation/>
+                        <Pagination/>
                     </template>
                 </Carousel>
             </div>

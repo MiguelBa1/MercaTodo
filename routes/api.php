@@ -1,16 +1,18 @@
 <?php
 
-use App\Http\Controllers\Api\Brands\AdminBrandController as AdminBrandController;
+use App\Http\Controllers\Api\Brands\AdminBrandController;
 use App\Http\Controllers\Api\Brands\BrandController;
-use App\Http\Controllers\Api\Categories\AdminCategoryController as AdminCategoryController;
+use App\Http\Controllers\Api\Categories\AdminCategoryController;
 use App\Http\Controllers\Api\Categories\CategoryController;
-use App\Http\Controllers\Api\HomeController as ApiHomeController;
-use App\Http\Controllers\Api\Products\AdminProductController as ApiProductController;
-use App\Http\Controllers\Api\Products\AdminProductStatusController as ApiProductStatusController;
-use App\Http\Controllers\Api\Users\AdminPasswordController as ApiPasswordController;
-use App\Http\Controllers\Api\Users\AdminProfileController as ApiProfileController;
-use App\Http\Controllers\Api\Users\AdminUserController as ApiUserController;
-use App\Http\Controllers\Api\Users\AdminUserStatusController as ApiUserStatusController;
+use App\Http\Controllers\Api\HomeController;
+use App\Http\Controllers\Api\Products\AdminProductController;
+use App\Http\Controllers\Api\Products\AdminProductStatusController;
+use App\Http\Controllers\Api\Users\AdminPasswordController;
+use App\Http\Controllers\Api\Users\AdminProfileController;
+use App\Http\Controllers\Api\Users\AdminUserController;
+use App\Http\Controllers\Api\Users\AdminUserStatusController;
+use App\Http\Controllers\Api\Cart\CartController;
+use App\Http\Controllers\Api\Products\ProductDetailsController;
 use App\Models\City;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -30,21 +32,21 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/', [ApiHomeController::class, 'index'])->name('api.home.index');
+Route::get('/', [HomeController::class, 'index'])->name('api.home.index');
 
 Route::middleware(['auth:sanctum', 'role:admin', 'checkStatus', 'verified'])->prefix('admin')->group(function () {
     Route::prefix('users')->group(function () {
-        Route::get('/', [ApiUserController::class, 'index'])->name('admin.api.users.index');
-        Route::patch('{user}/status', [ApiUserStatusController::class, 'update'])->name('admin.api.users.status.update');
-        Route::patch('{user}/password', [ApiPasswordController::class, 'update'])->name('admin.api.users.password.update');
-        Route::patch('{user}/profile', [ApiProfileController::class, 'update'])->name('admin.api.users.profile.update');
+        Route::get('/', [AdminUserController::class, 'index'])->name('admin.api.users.index');
+        Route::patch('{user}/status', [AdminUserStatusController::class, 'update'])->name('admin.api.users.status.update');
+        Route::patch('{user}/password', [AdminPasswordController::class, 'update'])->name('admin.api.users.password.update');
+        Route::patch('{user}/profile', [AdminProfileController::class, 'update'])->name('admin.api.users.profile.update');
     });
     Route::prefix('products')->group(function () {
-        Route::get('/', [ApiProductController::class, 'index'])->name('admin.api.products.index');
-        Route::post('/', [ApiProductController::class, 'store'])->name('admin.api.products.store');
-        Route::post('{product}', [ApiProductController::class, 'update'])->name('admin.api.products.update');
-        Route::delete('{product}', [ApiProductController::class, 'destroy'])->name('admin.api.products.destroy');
-        Route::patch('{product}/status', [ApiProductStatusController::class, 'update'])->name('admin.api.products.status.update');
+        Route::get('/', [AdminProductController::class, 'index'])->name('admin.api.products.index');
+        Route::post('/', [AdminProductController::class, 'store'])->name('admin.api.products.store');
+        Route::post('{product}', [AdminProductController::class, 'update'])->name('admin.api.products.update');
+        Route::delete('{product}', [AdminProductController::class, 'destroy'])->name('admin.api.products.destroy');
+        Route::patch('{product}/status', [AdminProductStatusController::class, 'update'])->name('admin.api.products.status.update');
     });
     Route::prefix('brands')->group(function () {
         Route::get('/', [AdminBrandController::class, 'index'])->name('admin.api.brands.index');
@@ -68,3 +70,13 @@ Route::get('/brands', [BrandController::class, 'index'])
 
 Route::get('/categories', [CategoryController::class, 'index'])
     ->name('api.categories.index');
+
+
+Route::middleware(['auth:sanctum', 'verified', 'checkStatus'])->prefix('cart')->group(function () {
+    Route::get('/', [CartController::class, 'index'])->name('api.cart.index');
+    Route::post('/add', [CartController::class, 'store'])->name('api.cart.store');
+    Route::delete('/remove/{product_id}', [CartController::class, 'destroy'])->name('api.cart.destroy');
+
+    Route::post('/product', [ProductDetailsController::class, 'show'])
+        ->name('api.cart.products.show');
+});
