@@ -32,7 +32,9 @@
                 </button>
                 <span class="text-gray-700 mx-2">{{ quantity }}</span>
                 <button @click="updateQuantity(product.id, quantity + 1)"
-                        class="text-gray-500 focus:outline-none focus:text-gray-600">
+                        :class="[quantity >= product.stock ? 'cursor-not-allowed' : 'text-gray-500 focus:outline-none focus:text-gray-600']"
+                        :disabled="quantity >= product.stock"
+                >
                     <svg class="h-5 w-5" fill="none" stroke-linecap="round" stroke-linejoin="round"
                          stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
                         <path
@@ -46,7 +48,6 @@
 
 <script setup>
 import {useCartStore} from "@/store/cart";
-import {defineEmits} from "vue";
 import {Link} from "@inertiajs/vue3";
 import {useToast} from "vue-toast-notification";
 
@@ -78,7 +79,8 @@ const updateQuantity = async (product_id, quantity) => {
         await emit('getProductsInformation');
         $toast.success('Quantity updated!')
     } catch (e) {
-        $toast.error('Something went wrong!')
+        const {message} = e.response.data;
+        $toast.error(message);
     }
 };
 

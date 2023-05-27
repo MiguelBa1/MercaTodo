@@ -23,10 +23,18 @@ class CartStoreRequest extends FormRequest
      */
     public function rules(): array
     {
-        $product = Product::query()->findOrFail($this->input('product_id'));
-        return [
+        $rules = [
             'product_id' => ['required', 'integer', 'exists:products,id'],
-            'quantity' => ['required', 'integer', 'min:1', 'max:'. $product->getAttribute('stock')],
+            'quantity' => ['required', 'integer', 'min:1'],
         ];
+
+        if ($this->has('product_id') && is_numeric($this->input('product_id'))) {
+            $product = Product::query()->find($this->input('product_id'));
+            if ($product) {
+                $rules['quantity'][] = 'max:' . $product->getAttribute('stock');
+            }
+        }
+
+        return $rules;
     }
 }
