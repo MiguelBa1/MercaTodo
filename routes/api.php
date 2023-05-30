@@ -13,6 +13,7 @@ use App\Http\Controllers\Api\Users\AdminUserController;
 use App\Http\Controllers\Api\Users\AdminUserStatusController;
 use App\Http\Controllers\Api\Cart\CartController;
 use App\Http\Controllers\Api\Products\ProductDetailsController;
+use App\Http\Controllers\Api\OrderController;
 use App\Models\City;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -79,4 +80,10 @@ Route::middleware(['auth:sanctum', 'verified', 'checkStatus'])->prefix('cart')->
 
     Route::post('/product', [ProductDetailsController::class, 'show'])
         ->name('api.cart.products.show');
+});
+
+Route::middleware(['auth:sanctum', 'verified', 'checkStatus'])->prefix('order')->group(function () {
+    Route::get('/', [OrderController::class, 'index'])->name('api.order.index');
+    Route::get('/{order}', [OrderController::class, 'show'])->name('api.order.show');
+    Route::post('/', [OrderController::class, 'store'])->name('api.order.store');
 });

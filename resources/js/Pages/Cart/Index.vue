@@ -5,9 +5,11 @@ import {useCartStore} from "@/store/cart";
 import {computed, onMounted, ref} from "vue";
 import ProductCard from "@/Pages/Cart/Partials/ProductCard.vue";
 import LoadingSpinner from "@/Components/LoadingSpinner.vue";
+import {useToast} from "vue-toast-notification";
 
 const store = useCartStore();
 const productsInformation = ref([]);
+const $toast = useToast();
 
 const total = computed(() => {
     return productsInformation.value.reduce((total, product) => {
@@ -24,6 +26,18 @@ const getProductsInformation = async () => {
     }
     const {data} = await axios.post(route('api.cart.products.show'), {products: store.cart})
     productsInformation.value = data;
+};
+
+const checkout = async () => {
+    const response = await axios.post(route('api.order.store'));
+    if (response.status === 201) {
+        $toast.success('Checkout successful');
+        await store.syncCart();
+        await getProductsInformation();
+    } else {
+        $toast.error('Checkout failed');
+    }
+    await store.syncCart(true);
 };
 
 onMounted(async () => {
@@ -43,9 +57,9 @@ onMounted(async () => {
             <h2>Cart items</h2>
         </template>
         <div v-if="!isLoading" class="mt-12 max-w-7xl mx-auto">
-            <div v-if="store.cartItemsCount > 0" class="flex flex-col lg:flex-row gap-6">
+            <div v-if="store.cartItemsCount > 0" class="flex flex-col lg:flex-row items-center lg:items-start gap-6">
                 <div
-                    class="w-full sm:px-6 lg:px-8 p-4 sm:p-8 shadow sm:rounded-lg grid grid-cols-1 gap-2">
+                    class="w-full grid grid-cols-1 gap-2">
                     <ProductCard v-for="product in productsInformation" :key="product.id" :product="product"
                                  :quantity="product.quantity"
                                  @getProductsInformation="getProductsInformation"
@@ -59,7 +73,9 @@ onMounted(async () => {
                     </div>
                     <span>Item(s): {{ store.cartItemsCount }}</span>
                     <div class="mt-4">
-                        <button class="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                        <button
+                            class="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                            @click="checkout">
                             Proceed to checkout
                         </button>
                     </div>

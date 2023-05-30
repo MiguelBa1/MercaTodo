@@ -10,7 +10,8 @@ use Tests\Feature\Utilities\ProductTestCase;
 
 class CartStoreRequestTest extends ProductTestCase
 {
-    use RefreshDatabase, WithFaker;
+    use RefreshDatabase;
+    use WithFaker;
 
     /**
      * Data provider for validation test.
