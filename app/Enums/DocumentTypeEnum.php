@@ -2,9 +2,7 @@
 
 namespace App\Enums;
 
-use Illuminate\Validation\Rules\Enum;
-
-class DocumentTypeEnum extends Enum
+enum DocumentTypeEnum: string
 {
     public const PASSPORT = 'Passport';
     public const NATIONAL_ID_CARD = 'National ID Card';
