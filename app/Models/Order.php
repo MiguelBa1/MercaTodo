@@ -24,6 +24,7 @@ class Order extends Model
 
     protected $casts = [
         'status' => OrderStatusEnum::class,
+        'created_at' => 'datetime:d F Y'
     ];
 
     public function user(): BelongsTo
