@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Order;
+use App\Models\Product;
 use App\Services\CartService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -12,21 +13,13 @@ class OrderController extends Controller
 {
     public function index(Request $request): JsonResponse
     {
+        $orders = Order::query()
+            ->select('id', 'reference', 'status', 'total', 'created_at')
+            ->where('user_id', $request->user()->id)
+            ->with('orderDetails:id,product_id,order_id,product_name,product_price,quantity')
+            ->get();
         return response()->json([
-            'orders' => $request->user()->orders()->with('orderDetails')->get()
-        ]);
-    }
-
-    public function show(Request $request, Order $order): JsonResponse
-    {
-        if ($request->user()->id !== $order->getAttribute('user_id')) {
-            return response()->json([
-                'message' => 'Unauthorized'
-            ], 401);
-        }
-
-        return response()->json([
-            'order' => $order->load('orderDetails')
+            'orders' => $orders
         ]);
     }
 
@@ -41,16 +34,19 @@ class OrderController extends Controller
         }
 
         $order = $request->user()->orders()->create([
+            'reference' => uniqid(),
             'user_id' => $request->user()->id,
             'total' => $cartService->getTotal($cart)
         ]);
 
         $order->orderDetails()->createMany(
             collect($cart)->map(function ($quantity, $product_id) use ($cartService) {
+                $product = Product::query()->find($product_id);
                 return [
                     'product_id' => $product_id,
                     'quantity' => $quantity,
-                    'price' => $cartService->getPrice($product_id)
+                    'product_name' => $product->getAttribute('name'),
+                    'product_price' => $product->getAttribute('price'),
                 ];
             })->toArray()
         );
@@ -58,7 +54,7 @@ class OrderController extends Controller
         $cartService->clear($request->user()->id);
 
         return response()->json([
-            'order' => $order->load('orderDetails')
+            'message' => 'Order created successfully'
         ], 201);
     }
 }

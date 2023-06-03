@@ -53,15 +53,4 @@ class CartService
 
         return $total;
     }
-
-    public function getPrice(int $productId): float
-    {
-        $product = Product::query()->find($productId);
-
-        if ($product) {
-            return $product->getAttribute('price');
-        }
-
-        return 0;
-    }
 }
