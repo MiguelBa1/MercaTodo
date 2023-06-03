@@ -20,7 +20,8 @@ class OrderService
         $order->orderDetails()->createMany(
             $cart->map(function ($quantity, $product_id) {
                 $product = Product::query()->find($product_id);
-                $product->decrement('stock', $quantity);
+                $product->setAttribute('stock', $product->getAttribute('stock') - $quantity);
+                $product->save();
                 return [
                     'product_id' => $product_id,
                     'quantity' => $quantity,

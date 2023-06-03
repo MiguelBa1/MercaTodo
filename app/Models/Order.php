@@ -13,7 +13,8 @@ class Order extends Model
     use HasFactory;
 
     /**
-     * @var float|mixed
+     * The attributes that are mass assignable.
+     * @var array<int, string>
      */
     protected $fillable = [
         'user_id',
