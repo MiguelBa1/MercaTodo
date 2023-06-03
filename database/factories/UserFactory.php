@@ -13,6 +13,7 @@ use Illuminate\Support\Str;
 class UserFactory extends Factory
 {
     protected $str;
+
     /**
      * Define the model's default state.
      *
@@ -30,7 +31,7 @@ class UserFactory extends Factory
                 1000000000,
                 9999999999
             ),
-            'document_type' => DocumentTypeEnum::getRandomValue(),
+            'document_type' => fake()->randomElement(array_column(DocumentTypeEnum::cases(), 'value')),
             'phone' => fake()->numberBetween(1000000000, 9999999999),
             'address' => fake()->address(),
             'city_id' => fake()->randomElement(City::select('id')->get())->id,

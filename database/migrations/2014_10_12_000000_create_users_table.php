@@ -19,7 +19,7 @@ return new class () extends Migration {
             $table->string('password');
             $table->bigInteger('phone');
             $table->bigInteger('document')->unique();
-            $table->enum('document_type', DocumentTypeEnum::getValues())->nullable();
+            $table->enum('document_type', array_column(DocumentTypeEnum::cases(), 'value'))->nullable();
             $table->boolean('status')->default(true);
             $table->string('address', 255);
             $table->foreignIdFor(City::class);

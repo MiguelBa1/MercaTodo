@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -71,8 +72,8 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->belongsTo(City::class, 'city_id', 'id');
     }
 
-    public function orders(): BelongsTo
+    public function orders(): HasMany
     {
-        return $this->belongsTo(Order::class, 'user_id', 'id');
+        return $this->hasMany(Order::class, 'user_id', 'id');
     }
 }
