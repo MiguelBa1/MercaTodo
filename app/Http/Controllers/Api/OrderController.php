@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Order;
 use App\Services\CartService;
 use App\Services\OrderService;
 use Illuminate\Http\JsonResponse;
@@ -11,14 +10,10 @@ use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
-    public function index(Request $request): JsonResponse
+    public function index(Request $request, OrderService $orderService): JsonResponse
     {
-        $orders = Order::query()
-            ->latest()
-            ->select('id', 'reference', 'status', 'total', 'created_at')
-            ->where('user_id', $request->user()->id)
-            ->with('orderDetails:id,product_id,order_id,product_name,product_price,quantity')
-            ->get();
+        $orders = $orderService->getOrders($request->user()->id);
+
         return response()->json([
             'orders' => $orders
         ]);

@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Order;
 use App\Models\Product;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
@@ -19,7 +20,7 @@ class OrderService
 
         $order->orderDetails()->createMany(
             $cart->map(function ($quantity, $product_id) {
-                $product = Product::query()->find($product_id);
+                $product = Product::query()->findOrFail($product_id);
                 $product->setAttribute('stock', $product->getAttribute('stock') - $quantity);
                 $product->save();
                 return [
@@ -32,5 +33,15 @@ class OrderService
         );
 
         return $order;
+    }
+
+    public function getOrders(int $user_id): collection
+    {
+        return Order::query()
+            ->latest()
+            ->select('id', 'reference', 'status', 'total', 'created_at')
+            ->where('user_id', $user_id)
+            ->with('orderDetails:id,product_id,order_id,product_name,product_price,quantity')
+            ->get();
     }
 }
