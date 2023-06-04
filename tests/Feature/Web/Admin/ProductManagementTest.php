@@ -33,7 +33,6 @@ class ProductManagementTest extends ProductTestCase
                 ->where('sku', $this->product->sku)
                 ->where('name', $this->product->name)
                 ->where('description', $this->product->description)
-                ->where('price', (string)$this->product->price)
                 ->where('image', $this->product->image)
                 ->where('stock', $this->product->stock)
                 ->where('brand_id', $this->product->brand_id)

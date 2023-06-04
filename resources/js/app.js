@@ -8,17 +8,9 @@ import {ZiggyVue} from '../../vendor/tightenco/ziggy/dist/vue.m';
 import VueToast from 'vue-toast-notification';
 import 'vue-toast-notification/dist/theme-sugar.css';
 import {createPinia} from "pinia";
-import {useCartStore} from "./store/cart";
 
 const pinia = createPinia();
 const appName = window.document.getElementsByTagName('title')[0]?.innerText || 'Laravel';
-
-pinia.use(async ({store}) => {
-    if (store.$id === 'mainStore') {
-        const mainStore = useCartStore();
-        await mainStore.syncCart();
-    }
-})
 
 createInertiaApp({
     title: (title) => `${title} - ${appName}`,

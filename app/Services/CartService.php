@@ -34,4 +34,23 @@ class CartService
 
         return $activeCartData;
     }
+    public function clear(int $userId): void
+    {
+        Redis::client()->del("user:$userId:cart");
+    }
+
+    public function getTotal(array $cart): float
+    {
+        $total = 0;
+
+        foreach ($cart as $productId => $quantity) {
+            $product = Product::query()->find($productId);
+
+            if ($product) {
+                $total += $product->getAttribute('price') * $quantity;
+            }
+        }
+
+        return $total;
+    }
 }

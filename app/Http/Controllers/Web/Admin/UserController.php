@@ -32,7 +32,7 @@ class UserController extends Controller
         return Inertia::render('Admin/Users/Edit', [
             'user' => $userData,
             'departments' => Department::all('id', 'name'),
-            'document_types' => DocumentTypeEnum::getValues(),
+            'document_types' => array_column(DocumentTypeEnum::cases(), 'value'),
             'roles' => Role::all('name')
         ]);
     }

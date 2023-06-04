@@ -23,7 +23,7 @@ class RegisteredUserController extends Controller
     {
         return Inertia::render('Auth/Register', [
             'departments' => \App\Models\Department::all(),
-            'document_types' => DocumentTypeEnum::getValues(),
+            'document_types' => array_column(DocumentTypeEnum::cases(), 'value')
         ]);
     }
 

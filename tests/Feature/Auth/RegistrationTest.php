@@ -27,7 +27,7 @@ class RegistrationTest extends BaseTestCase
             'password' => 'password',
             'password_confirmation' => 'password',
             'document' => '123456789',
-            'document_type' => DocumentTypeEnum::PASSPORT,
+            'document_type' => DocumentTypeEnum::PASSPORT->value,
             'phone' => '123456789',
             'address' => 'Test Address',
             'city_id' => 1
