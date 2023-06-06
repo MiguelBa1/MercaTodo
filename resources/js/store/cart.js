@@ -21,10 +21,7 @@ export const useCartStore = defineStore({
         async syncCart(forceSync = false) {
             if (!this.isCartSynced || forceSync) {
                 const {data} = await axios.get(route('api.cart.index'));
-                this.cart = Object.entries(data).map(([id, quantity]) => ({
-                    id: parseInt(id),
-                    quantity: parseInt(quantity),
-                }));
+                this.cart = data;
                 this.isCartSynced = true;
             }
         },
