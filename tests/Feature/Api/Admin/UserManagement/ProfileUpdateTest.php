@@ -22,6 +22,7 @@ class ProfileUpdateTest extends UserTestCase
         $this->assertDatabaseHas('users', [
             'id' => $this->customerUser->getAttribute('id'),
             'name' => $userData['name'],
+            'surname' => $userData['surname'],
             'document' => $userData['document'],
             'document_type' => $userData['document_type'],
             'city_id' => $userData['city_id'],
@@ -46,6 +47,7 @@ class ProfileUpdateTest extends UserTestCase
             route('admin.api.users.profile.update', $this->customerUser->id),
             [
                 'name' => $this->customerUser->getAttribute('name'),
+                'surname' => $this->customerUser->getAttribute('surname'),
                 'role_name' => $this->customerUser->roles->first()->name,
                 'document' => $oldDocument,
                 'document_type' => $this->customerUser->getAttribute('document_type'),
@@ -63,10 +65,11 @@ class ProfileUpdateTest extends UserTestCase
         return [
             'valid user data' => [
                 [
-                    'name' => 'John Doe',
+                    'name' => 'John',
+                    'surname' => 'Doe',
                     'role_name' => 'customer',
                     'document' => '123456789',
-                    'document_type' => 'Driver License',
+                    'document_type' => 'CC',
                     'city_id' => 1,
                     'phone' => '123456789',
                     'address' => 'Calle 123',

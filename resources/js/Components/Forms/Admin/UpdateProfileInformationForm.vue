@@ -14,6 +14,7 @@ const { user, departments, document_types } = usePage().props;
 
 const form = useForm({
     name: user.name,
+    surname: user.surname,
     email: user.email,
     role_name: user.role_name,
     city_id: user.city_id,
@@ -75,6 +76,21 @@ const updateProfileInformation = () => {
                     />
 
                     <InputError class="mt-2" :message="form.errors.name"/>
+                </div>
+
+                <div>
+                    <InputLabel for="surname" value="Surname"/>
+
+                    <TextInput
+                        id="name"
+                        type="text"
+                        class="mt-1 block w-full"
+                        v-model="form.surname"
+                        required
+                        autocomplete="surname"
+                    />
+
+                    <InputError class="mt-2" :message="form.errors.surname"/>
                 </div>
 
                 <div class="mt-4 sm:mt-0">

@@ -7,19 +7,11 @@ import TextInput from '@/Components/TextInput.vue';
 import {Head, Link, useForm, usePage} from '@inertiajs/vue3';
 import {ref} from "vue";
 
-defineProps({
-    document_types: {
-        type: Object
-    },
-    departments: {
-        type: Object
-    }
-})
-
 const {document_types, departments} = usePage().props;
 
 const form = useForm({
     name: '',
+    surname: '',
     email: '',
     password: '',
     password_confirmation: '',
@@ -47,7 +39,9 @@ const submit = () => {
 
 <template>
     <GuestLayout>
-        <Head title="Register"/>
+        <Head>
+            <title>Register</title>
+        </Head>
 
         <div class="w-full sm:max-w-xl mt-6 px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg">
             <form @submit.prevent="submit">
@@ -66,6 +60,21 @@ const submit = () => {
                         />
 
                         <InputError class="mt-2" :message="form.errors.name"/>
+                    </div>
+
+                    <div>
+                        <InputLabel for="surname" value="Surname"/>
+
+                        <TextInput
+                            id="surname"
+                            type="text"
+                            class="mt-1 block w-full"
+                            v-model="form.surname"
+                            required
+                            autocomplete="surname"
+                        />
+
+                        <InputError class="mt-2" :message="form.errors.surname"/>
                     </div>
 
                     <div class="mt-4 sm:mt-0">

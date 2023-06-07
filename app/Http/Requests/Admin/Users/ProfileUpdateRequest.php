@@ -27,6 +27,7 @@ class ProfileUpdateRequest extends FormRequest
         $id = $request->route('user')['id'];
         return [
             'name' => 'required|string|max:100',
+            'surname' => 'required|string|max:100',
             'role_name' => 'required|string|exists:roles,name',
             'document' => [
                 'required',
