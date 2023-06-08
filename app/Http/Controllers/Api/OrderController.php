@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Services\CartService;
 use App\Services\OrderService;
+use App\Services\Payment\PaymentService;
+use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -19,26 +21,37 @@ class OrderController extends Controller
         ]);
     }
 
-    public function store(Request $request, CartService $cartService, OrderService $orderService): JsonResponse
+    public function store(Request $request, CartService $cartService, OrderService $orderService, PaymentService $paymentService): JsonResponse
     {
-        $cart = $cartService->getProducts($request->user()->id);
+        $cartProducts = $cartService->getProductsWithDetails($request->user()->id);
 
-        if (empty($cart)) {
+        if (empty($cartProducts)) {
             return response()->json([
                 'message' => 'Cart is empty'
             ], 400);
         }
 
-        $orderService->createOrder(
+        $order = $orderService->createOrder(
             $request->user(),
-            collect($cart),
-            $cartService->getTotal($cart)
+            collect($cartProducts)
         );
 
-        $cartService->clear($request->user()->id);
+        try {
+            $redirectUrl = $paymentService->pay(
+                $order,
+                $request->ip(),
+                $request->userAgent()
+            );
 
-        return response()->json([
-            'message' => 'Order created successfully'
-        ], 201);
+            $cartService->clear($request->user()->id);
+
+            return response()->json([
+                'redirect_url' => $redirectUrl
+            ], 201);
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => $e->getMessage()
+            ], 500);
+        }
     }
 }

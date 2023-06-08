@@ -10,27 +10,31 @@ use Illuminate\Support\Collection;
 
 class OrderService
 {
-    public function createOrder(User $user, Collection $cart, float $total): Model
+    public function createOrder(User $user, Collection $cartProducts): Model|Order
     {
+        $total = $cartProducts->sum(function ($product) {
+            return $product['price'] * $product['quantity'];
+        });
+
         $order = $user->orders()->create([
             'reference' => crc32(uniqid()),
             'user_id' => $user->getAttribute('id'),
             'total' => $total
         ]);
 
-        $order->orderDetails()->createMany(
-            $cart->map(function ($quantity, $product_id) {
-                $product = Product::query()->findOrFail($product_id);
-                $product->setAttribute('stock', $product->getAttribute('stock') - $quantity);
-                $product->save();
-                return [
-                    'product_id' => $product_id,
-                    'quantity' => $quantity,
-                    'product_name' => $product->getAttribute('name'),
-                    'product_price' => $product->getAttribute('price'),
-                ];
-            })->toArray()
-        );
+        // create order details and update product stock
+        $cartProducts->each(function ($product) use ($order) {
+            $order->orderDetails()->create([
+                'product_id' => $product['id'],
+                'product_name' => $product['name'],
+                'product_price' => $product['price'],
+                'quantity' => $product['quantity'],
+            ]);
+
+            $productModel = Product::query()->find($product['id']);
+            $productModel->setAttribute('stock', $productModel->getAttribute('stock') - $product['quantity']);
+            $productModel->save();
+        });
 
         return $order;
     }

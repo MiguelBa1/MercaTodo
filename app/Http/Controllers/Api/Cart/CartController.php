@@ -35,6 +35,6 @@ class CartController extends Controller
 
     public function index(Request $request): array
     {
-        return $this->cartService->getProducts($request->user()->id);
+        return $this->cartService->getProductsWithDetails($request->user()->id);
     }
 }

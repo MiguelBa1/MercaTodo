@@ -13,8 +13,9 @@ class Transaction extends Model
 
     protected $fillable = [
         'order_id',
+        'process_url',
+        'request_id',
         'status',
-        'amount',
     ];
 
     protected $casts = [
