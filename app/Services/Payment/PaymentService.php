@@ -2,7 +2,6 @@
 
 namespace App\Services\Payment;
 
-use App\Enums\TransactionStatusEnum;
 use App\Models\Order;
 use App\Services\Payment\Entities\AuthEntity;
 use App\Services\Payment\Entities\BuyerEntity;
@@ -24,10 +23,9 @@ class PaymentService
         );
 
         if ($response->ok()) {
-            $order->transaction()->create([
+            $order->update([
                 'request_id' => $response->json()['requestId'],
                 'process_url' => $response->json()['processUrl'],
-                'status' => TransactionStatusEnum::PENDING,
             ]);
 
             return $response->json()['processUrl'];

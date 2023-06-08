@@ -22,8 +22,9 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property-read Collection<int, OrderDetail> $orderDetails
- * @property-read Collection<int, Transaction> $transaction
  * @property-read User $user
+ * @property int $request_id
+ * @property string $process_url
  * @method static OrderFactory factory($count = null, $state = [])
  */
 class Order extends Model
@@ -38,7 +39,9 @@ class Order extends Model
         'user_id',
         'reference',
         'status',
-        'total'
+        'total',
+        'request_id',
+        'process_url'
     ];
 
     protected $casts = [
@@ -54,10 +57,5 @@ class Order extends Model
     public function orderDetails(): HasMany
     {
         return $this->hasMany(OrderDetail::class);
-    }
-
-    public function transaction(): HasMany
-    {
-        return $this->hasMany(Transaction::class);
     }
 }

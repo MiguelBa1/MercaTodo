@@ -41,8 +41,8 @@ class OrderControllerTest extends ProductTestCase
             $mock->shouldReceive('getProductsWithDetails')->andReturn([
                 $this->product->getKey() => [
                     'id' => $this->product->getKey(),
-                    'name' => $this->product->getAttribute('name'),
-                    'price' => $this->product->getAttribute('price'),
+                    'name' => $this->product->name,
+                    'price' => (int)$this->product->price,
                     'quantity' => 1,
                 ]
             ]);
@@ -58,21 +58,17 @@ class OrderControllerTest extends ProductTestCase
         ]);
         $this->assertDatabaseCount('orders', 1);
         $this->assertDatabaseCount('order_details', 1);
-        $this->assertDatabaseCount('transactions', 1);
         $this->assertDatabaseHas('orders', [
             'user_id' => $this->customerUser->getKey(),
-            'total' => $this->product->getAttribute('price'),
+            'total' => $this->product->price,
+            'request_id' => 1,
+            'process_url' => 'https://checkout-co.placetopay.com/session/1/cc9b8690b1f7228c78b759ce27d7e80a',
         ]);
         $this->assertDatabaseHas('order_details', [
             'product_id' => $this->product->getKey(),
             'product_name' => $this->product->getAttribute('name'),
             'product_price' => $this->product->getAttribute('price'),
             'quantity' => 1,
-        ]);
-        $this->assertDatabaseHas('transactions', [
-            'order_id' => 1,
-            'request_id' => 1,
-            'process_url' => 'https://checkout-co.placetopay.com/session/1/cc9b8690b1f7228c78b759ce27d7e80a',
         ]);
     }
 

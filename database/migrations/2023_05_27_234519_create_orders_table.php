@@ -15,8 +15,10 @@ return new class () extends Migration {
             $table->id();
             $table->string('reference')->unique();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->decimal('total', 10, 2);
+            $table->unsignedDecimal('total', 10, 2);
             $table->enum('status', array_column(OrderStatusEnum::cases(), 'value'))->default(OrderStatusEnum::PENDING->value);
+            $table->string('process_url')->nullable();
+            $table->unsignedInteger('request_id')->nullable();
             $table->timestamps();
         });
     }
