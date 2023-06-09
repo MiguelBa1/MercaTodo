@@ -30,6 +30,7 @@ class DatabaseSeeder extends Seeder
         // Create the admin user
         User::factory()->create([
             'name' => env('ADMIN_NAME'),
+            'surname' => env('ADMIN_SURNAME'),
             'document_type' => env('ADMIN_DOCUMENT_TYPE'),
             'document' => env('ADMIN_DOCUMENT'),
             'email' => env('ADMIN_EMAIL'),

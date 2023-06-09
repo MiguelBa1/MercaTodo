@@ -30,9 +30,9 @@ class ProductFactory extends Factory
             'sku' => fake()->ean8(),
             'name' => fake()->sentence(2),
             'description' => fake()->text(),
-            'price' => $this->faker->numberBetween(10000, 100000),
-            'stock' => fake()->numberBetween(1,  10),
-            'status' => fake()->boolean(),
+            'price' => $this->faker->numberBetween(0, 1000),
+            'stock' => fake()->numberBetween(1, 10),
+            'status' => true,
             'brand_id' => Brand::query()->inRandomOrder()->first()->getAttribute('id'),
             'category_id' => Category::query()->inRandomOrder()->first()->getAttribute('id'),
             'image' => $imageName

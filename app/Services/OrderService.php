@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\OrderStatusEnum;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\User;
@@ -22,7 +23,6 @@ class OrderService
             'total' => $total
         ]);
 
-        // create order details and update product stock
         $cartProducts->each(function ($product) use ($order) {
             $order->orderDetails()->create([
                 'product_id' => $product['id'],
@@ -47,5 +47,48 @@ class OrderService
             ->where('user_id', $user_id)
             ->with('orderDetails:id,product_id,order_id,product_name,product_price,quantity')
             ->get();
+    }
+
+    public function deleteOrder(Order $order): bool
+    {
+        foreach ($order->orderDetails as $orderDetail) {
+            /* @var Product $product */
+            $product = Product::query()->find($orderDetail->product_id);
+            $product->stock = $product->stock + $orderDetail->quantity;
+
+            if ($product->stock > 0) {
+                $product->status = 1;
+            }
+
+            $product->save();
+
+            $orderDetail->delete();
+        }
+
+        return $order->delete();
+    }
+
+    public function completeOrder(Order $order): void
+    {
+        $order->status = OrderStatusEnum::COMPLETED;
+        $order->save();
+    }
+
+    public function rejectOrder(Order $order): void
+    {
+        $order->status = OrderStatusEnum::REJECTED;
+        $order->save();
+
+        foreach ($order->orderDetails as $orderDetail) {
+            /* @var Product $product */
+            $product = Product::query()->find($orderDetail->product_id);
+            $product->stock += $orderDetail->quantity;
+
+            if ($product->stock > 0) {
+                $product->status = 1;
+            }
+
+            $product->save();
+        }
     }
 }
