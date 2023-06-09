@@ -17,11 +17,11 @@ class PaymentService
     /**
      * @throws Exception
      */
-    public function pay(Order $order, string $ipAddress, string $userAgent): string
+    public function processPayment(Order $order, string $ipAddress, string $userAgent): string
     {
         $response = Http::post(
             config('placetopay.url') . '/api/session',
-            $this->createSession($order, $ipAddress, $userAgent)
+            $this->preparePaymentSession($order, $ipAddress, $userAgent)
         );
 
         if ($response->ok()) {
@@ -40,7 +40,7 @@ class PaymentService
         }
     }
 
-    private function createSession(Order $order, string $ipAddress, string $userAgent): array
+    private function preparePaymentSession(Order $order, string $ipAddress, string $userAgent): array
     {
         $auth = new AuthEntity();
         $buyer = new BuyerEntity($order->user);
@@ -59,9 +59,8 @@ class PaymentService
         ];
     }
 
-    public function processResponse(Order $order): void
+    public function handlePaymentResponse(Order $order): void
     {
-        $orderService = new OrderService();
 
         $auth = new AuthEntity();
         $response = Http::post(
@@ -70,16 +69,21 @@ class PaymentService
         );
 
         if ($response->ok()) {
-            $status = $response->json()['status']['status'];
+            $this->updateOrderStatus($order, $response->json()['status']['status']);
+        }
+    }
 
-            switch ($status) {
-                case TransactionStatusEnum::APPROVED->value:
-                    $orderService->completeOrder($order);
-                    break;
-                case TransactionStatusEnum::REJECTED->value:
-                    $orderService->rejectOrder($order);
-                    break;
-            }
+    private function updateOrderStatus(Order $order, string $status): void
+    {
+        $orderService = new OrderService();
+
+        switch ($status) {
+            case TransactionStatusEnum::APPROVED->value:
+                $orderService->completeOrder($order);
+                break;
+            case TransactionStatusEnum::REJECTED->value:
+                $orderService->rejectOrder($order);
+                break;
         }
     }
 }

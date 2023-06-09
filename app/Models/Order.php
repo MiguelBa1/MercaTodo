@@ -56,4 +56,9 @@ class Order extends Model
     {
         return $this->hasMany(OrderDetail::class);
     }
+
+    public function getCreatedAtAttribute($value): string
+    {
+        return Carbon::parse($value)->format('d F Y');
+    }
 }

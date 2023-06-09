@@ -37,7 +37,7 @@ class OrderController extends Controller
         );
 
         try {
-            $redirectUrl = $paymentService->pay(
+            $redirectUrl = $paymentService->processPayment(
                 $order,
                 $request->ip(),
                 $request->userAgent()

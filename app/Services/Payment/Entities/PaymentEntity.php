@@ -20,7 +20,7 @@ class PaymentEntity implements Arrayable
             'reference' => $this->order->getAttribute('reference'),
             'description' => date($this->order->getAttribute('created_at')),
             'amount' => [
-                'currency' => 'COP',
+                'currency' => 'USD',
                 'total' => $this->order->getAttribute('total'),
             ],
             'items' => $this->getItems(),
