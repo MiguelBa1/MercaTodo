@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Enums\DocumentTypeEnum;
-use Database\Factories\UserFactory;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -50,7 +49,6 @@ use Spatie\Permission\Traits\HasRoles;
  * @property-read int|null $roles_count
  * @property-read Collection<int, PersonalAccessToken> $tokens
  * @property-read int|null $tokens_count
- * @method static UserFactory factory($count = null, $state = [])
  */
 class User extends Authenticatable implements MustVerifyEmail
 {

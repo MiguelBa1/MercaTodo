@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Database\Factories\OrderDetailFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -21,7 +20,6 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $updated_at
  * @property-read Order $order
  * @property-read Product|null $product
- * @method static OrderDetailFactory factory($count = null, $state = [])
  */
 class OrderDetail extends Model
 {
