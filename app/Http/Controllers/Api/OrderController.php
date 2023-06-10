@@ -12,15 +12,6 @@ use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
-    public function index(Request $request, OrderService $orderService): JsonResponse
-    {
-        $orders = $orderService->getOrders($request->user()->id);
-
-        return response()->json([
-            'orders' => $orders
-        ]);
-    }
-
     public function store(Request $request, CartService $cartService, OrderService $orderService, PaymentService $paymentService): JsonResponse
     {
         $cartProducts = $cartService->getProductsWithDetails($request->user()->id);
