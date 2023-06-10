@@ -23,12 +23,11 @@ class CartService
         $activeProducts = [];
 
         foreach ($cartData as $productId => $quantity) {
+            /** @var Product $product */
             $product = Product::query()
                 ->find($productId, ['id', 'name', 'image', 'price', 'status', 'stock']);
 
-            $product = $product->toArray();
-
-            if (!$product || !$product['status'] || !$product['stock'] > 0) {
+            if (!$product || !$product->getRawOriginal('status') || !$product['stock'] > 0) {
                 $this->removeProduct($userId, $productId);
             }
 
