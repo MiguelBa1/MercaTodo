@@ -11,30 +11,21 @@ use Illuminate\Support\Collection;
 
 class OrderService
 {
-    public function createOrder(User $user, Collection $cartProducts): Model|Order
+    public function createOrder(User $user, Collection $cartProducts): Order|Model
     {
         $total = $cartProducts->sum(function ($product) {
             return $product['price'] * $product['quantity'];
         });
 
+        /* @var Order $order */
         $order = $user->orders()->create([
             'reference' => crc32(uniqid()),
             'user_id' => $user->getAttribute('id'),
             'total' => $total
         ]);
 
-        $cartProducts->each(function ($product) use ($order) {
-            $order->orderDetails()->create([
-                'product_id' => $product['id'],
-                'product_name' => $product['name'],
-                'product_price' => $product['price'],
-                'quantity' => $product['quantity'],
-            ]);
-
-            $productModel = Product::query()->find($product['id']);
-            $productModel->setAttribute('stock', $productModel->getAttribute('stock') - $product['quantity']);
-            $productModel->save();
-        });
+        $orderDetailService = new OrderDetailService();
+        $orderDetailService->createOrderDetails($order, $cartProducts);
 
         return $order;
     }
@@ -51,16 +42,11 @@ class OrderService
 
     public function deleteOrder(Order $order): bool
     {
+        $productService = new ProductService();
         foreach ($order->orderDetails as $orderDetail) {
             /* @var Product $product */
-            $product = Product::query()->find($orderDetail->product_id);
-            $product->stock = $product->stock + $orderDetail->quantity;
-
-            if ($product->stock > 0) {
-                $product->status = 1;
-            }
-
-            $product->save();
+            $product = Product::query()->find($orderDetail->product_id)->first();
+            $productService->updateStock($product->id, $orderDetail->quantity, true);
 
             $orderDetail->delete();
         }
@@ -79,16 +65,14 @@ class OrderService
         $order->status = OrderStatusEnum::REJECTED;
         $order->save();
 
+        $productService = new ProductService();
+
         foreach ($order->orderDetails as $orderDetail) {
             /* @var Product $product */
-            $product = Product::query()->find($orderDetail->product_id);
-            $product->stock += $orderDetail->quantity;
+            $product = Product::query()->find($orderDetail->product_id)->first();
+            $productService->updateStock($product->id, $orderDetail->quantity, true);
 
-            if ($product->stock > 0) {
-                $product->status = 1;
-            }
-
-            $product->save();
+            $orderDetail->delete();
         }
     }
 }

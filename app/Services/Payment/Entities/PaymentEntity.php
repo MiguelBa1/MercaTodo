@@ -17,11 +17,11 @@ class PaymentEntity implements Arrayable
     public function toArray(): array
     {
         return [
-            'reference' => $this->order->getAttribute('reference'),
-            'description' => date($this->order->getAttribute('created_at')),
+            'reference' => $this->order->reference,
+            'description' => date($this->order->created_at),
             'amount' => [
                 'currency' => 'USD',
-                'total' => $this->order->getAttribute('total'),
+                'total' => $this->order->total,
             ],
             'items' => $this->getItems(),
         ];
@@ -39,7 +39,7 @@ class PaymentEntity implements Arrayable
                 'sku' => $product['sku'],
                 'name' => $product['name'],
                 'qty' => $orderDetail->quantity,
-                'price' => $orderDetail->amount,
+                'price' => $orderDetail->product_price,
             ];
         }
 

@@ -61,7 +61,6 @@ class PaymentService
 
     public function handlePaymentResponse(Order $order): void
     {
-
         $auth = new AuthEntity();
         $response = Http::post(
             config('placetopay.url') . "/api/session/{$order->request_id}",
