@@ -24,4 +24,9 @@ class ProductService
         }
         $product->save();
     }
+
+    public function verifyProductAvailability(Product $product, int $quantity): bool
+    {
+        return $product->getRawOriginal('status') && $product->stock >= $quantity && $product->stock > 0;
+    }
 }

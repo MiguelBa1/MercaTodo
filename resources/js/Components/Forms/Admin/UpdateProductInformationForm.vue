@@ -109,7 +109,6 @@ onMounted(() => {
                     class="mt-1 block w-full"
                     v-model="form.name"
                     required
-                    autofocus
                     autocomplete="name"
                 />
 
@@ -132,7 +131,6 @@ onMounted(() => {
                     class="mt-1 block w-full"
                     v-model="form.price"
                     required
-                    autofocus
                     autocomplete="price"
                 />
                 <InputError class="mt-2" :message="form.errors.price"/>
@@ -160,7 +158,6 @@ onMounted(() => {
                     class="mt-1 block w-full"
                     v-model="form.stock"
                     required
-                    autofocus
                     autocomplete="stock"
                 />
 
