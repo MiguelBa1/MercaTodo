@@ -9,6 +9,7 @@ use App\Http\Controllers\Web\Admin\DashboardController;
 use App\Http\Controllers\Web\HomeController;
 use App\Http\Controllers\Web\ProductDetailController;
 use App\Http\Controllers\Web\OrderController;
+use App\Http\Controllers\Web\PaymentController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -34,6 +35,11 @@ Route::middleware(['auth', 'checkStatus', 'verified'])->group(function () {
 
     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
     Route::get('/orders', [OrderController::class, 'index'])->name('order.index');
+
+    Route::prefix('/payment')->group(function () {
+        Route::get('/result', [PaymentController::class, 'handleRedirect'])->name('payment.result');
+        Route::get('/canceled', [PaymentController::class, 'handleCanceled'])->name('payment.canceled');
+    });
 });
 
 Route::middleware(['auth', 'role:admin', 'checkStatus', 'verified'])->prefix('admin')->group(function () {

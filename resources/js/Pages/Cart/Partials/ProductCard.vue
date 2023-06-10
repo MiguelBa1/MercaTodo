@@ -57,8 +57,6 @@ const props = defineProps({
     }
 });
 
-const emit = defineEmits(['getProductsInformation']);
-
 const updateQuantity = async (product_id, quantity) => {
     $toast.clear();
     if (quantity === 0) {
@@ -72,7 +70,7 @@ const updateQuantity = async (product_id, quantity) => {
     $toast.default('Updating quantity...')
     try {
         await store.addToCart(product_id, quantity);
-        await emit('getProductsInformation');
+        await store.syncCart();
         $toast.success('Quantity updated!')
     } catch (e) {
         const {message} = e.response.data;
@@ -85,7 +83,7 @@ const removeProduct = async (product_id) => {
     $toast.default('Removing product...')
     try {
         await store.removeFromCart(product_id);
-        await emit('getProductsInformation');
+        await store.syncCart();
         $toast.success('Product removed!')
     } catch (e) {
         $toast.error('Something went wrong!')

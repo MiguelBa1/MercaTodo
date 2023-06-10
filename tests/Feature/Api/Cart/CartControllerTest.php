@@ -51,7 +51,8 @@ class CartControllerTest extends ProductTestCase
 
         $response->assertOk();
         Redis::shouldReceive('hgetall')->with($redisKey);
-        $response->assertJson([$this->product->getAttribute('id') => 1]);
+        $expectedResponse = [$this->product->only(['id', 'name', 'image', 'price', 'status', 'stock'])];
+        $response->assertJson($expectedResponse);
     }
 
     public function testFetchingOnlyActiveProductsInStock(): void
@@ -67,6 +68,7 @@ class CartControllerTest extends ProductTestCase
         $response = $this->getJson(route('api.cart.index'));
 
         $response->assertOk();
-        $response->assertJson([$product1->getAttribute('id') => 1]);
+        $expectedResponse = [$product1->only(['id', 'name', 'image', 'price', 'status', 'stock'])];
+        $response->assertJson($expectedResponse);
     }
 }

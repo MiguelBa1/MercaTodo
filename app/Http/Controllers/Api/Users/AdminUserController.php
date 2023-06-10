@@ -18,6 +18,7 @@ class AdminUserController extends Controller
             ->select(
                 'users.id',
                 'users.name',
+                'users.surname',
                 'users.email',
                 'users.document',
                 'users.document_type',

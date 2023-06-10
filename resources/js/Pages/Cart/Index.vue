@@ -8,41 +8,30 @@ import LoadingSpinner from "@/Components/LoadingSpinner.vue";
 import {useToast} from "vue-toast-notification";
 
 const store = useCartStore();
-const productsInformation = ref([]);
 const $toast = useToast();
 
 const total = computed(() => {
-    return productsInformation.value.reduce((total, product) => {
+    return store.cart.reduce((total, product) => {
         return total + (product.price * product.quantity);
     }, 0);
 });
 
 const isLoading = ref(true);
 
-const getProductsInformation = async () => {
-    if (store.cartItemsCount === 0) {
-        productsInformation.value = [];
-        return;
-    }
-    const {data} = await axios.post(route('api.cart.products.show'), {products: store.cart})
-    productsInformation.value = data;
-};
-
 const checkout = async () => {
-    const response = await axios.post(route('api.order.store'));
-    if (response.status === 201) {
-        $toast.success('Checkout successful');
-        await store.syncCart();
-        await getProductsInformation();
-    } else {
-        $toast.error('Checkout failed');
+    isLoading.value = true;
+    try {
+        const response = await axios.post(route('api.order.store'));
+        if (response.status === 201) {
+            window.location.href = response.data.redirect_url;
+        }
+    } catch (e) {
+        $toast.error("Something went wrong, please try again later.");
+        isLoading.value = false;
     }
-    await store.syncCart(true);
 };
 
 onMounted(async () => {
-    await store.syncCart();
-    await getProductsInformation();
     isLoading.value = false;
 });
 </script>
@@ -60,9 +49,8 @@ onMounted(async () => {
             <div v-if="store.cartItemsCount > 0" class="flex flex-col lg:flex-row items-center lg:items-start gap-6">
                 <div
                     class="w-full grid grid-cols-1 gap-2">
-                    <ProductCard v-for="product in productsInformation" :key="product.id" :product="product"
+                    <ProductCard v-for="product in store.cart" :key="product.id" :product="product"
                                  :quantity="product.quantity"
-                                 @getProductsInformation="getProductsInformation"
                     />
                 </div>
 

@@ -33,6 +33,7 @@ getCities();
 
 const form = useForm({
     name: user.name,
+    surname: user.surname,
     email: user.email,
     department_id: user.department_id,
     city_id: user.city_id,
@@ -86,6 +87,21 @@ const updateProfileInformation = () => {
                     />
 
                     <InputError class="mt-2" :message="form.errors.name"/>
+                </div>
+
+                <div class="mt-4 sm:mt-0">
+                    <InputLabel for="surname" value="Surname"/>
+
+                    <TextInput
+                        id="surname"
+                        type="text"
+                        class="mt-1 block w-full"
+                        v-model="form.surname"
+                        required
+                        autocomplete="surname"
+                    />
+
+                    <InputError class="mt-2" :message="form.errors.surname"/>
                 </div>
 
                 <div class="mt-4 sm:mt-0">

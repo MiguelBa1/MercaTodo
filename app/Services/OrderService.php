@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\OrderStatusEnum;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\User;
@@ -10,27 +11,21 @@ use Illuminate\Support\Collection;
 
 class OrderService
 {
-    public function createOrder(User $user, Collection $cart, float $total): Model
+    public function createOrder(User $user, Collection $cartProducts): Order|Model
     {
+        $total = $cartProducts->sum(function ($product) {
+            return $product['price'] * $product['quantity'];
+        });
+
+        /* @var Order $order */
         $order = $user->orders()->create([
             'reference' => crc32(uniqid()),
             'user_id' => $user->getAttribute('id'),
             'total' => $total
         ]);
 
-        $order->orderDetails()->createMany(
-            $cart->map(function ($quantity, $product_id) {
-                $product = Product::query()->findOrFail($product_id);
-                $product->setAttribute('stock', $product->getAttribute('stock') - $quantity);
-                $product->save();
-                return [
-                    'product_id' => $product_id,
-                    'quantity' => $quantity,
-                    'product_name' => $product->getAttribute('name'),
-                    'product_price' => $product->getAttribute('price'),
-                ];
-            })->toArray()
-        );
+        $orderDetailService = new OrderDetailService();
+        $orderDetailService->createOrderDetails($order, $cartProducts);
 
         return $order;
     }
@@ -43,5 +38,41 @@ class OrderService
             ->where('user_id', $user_id)
             ->with('orderDetails:id,product_id,order_id,product_name,product_price,quantity')
             ->get();
+    }
+
+    public function deleteOrder(Order $order): bool
+    {
+        $productService = new ProductService();
+        foreach ($order->orderDetails as $orderDetail) {
+            /* @var Product $product */
+            $product = Product::query()->find($orderDetail->product_id)->first();
+            $productService->updateStock($product->id, $orderDetail->quantity, true);
+
+            $orderDetail->delete();
+        }
+
+        return $order->delete();
+    }
+
+    public function completeOrder(Order $order): void
+    {
+        $order->status = OrderStatusEnum::COMPLETED;
+        $order->save();
+    }
+
+    public function rejectOrder(Order $order): void
+    {
+        $order->status = OrderStatusEnum::REJECTED;
+        $order->save();
+
+        $productService = new ProductService();
+
+        foreach ($order->orderDetails as $orderDetail) {
+            /* @var Product $product */
+            $product = Product::query()->find($orderDetail->product_id)->first();
+            $productService->updateStock($product->id, $orderDetail->quantity, true);
+
+            $orderDetail->delete();
+        }
     }
 }

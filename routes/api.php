@@ -12,7 +12,6 @@ use App\Http\Controllers\Api\Users\AdminProfileController;
 use App\Http\Controllers\Api\Users\AdminUserController;
 use App\Http\Controllers\Api\Users\AdminUserStatusController;
 use App\Http\Controllers\Api\Cart\CartController;
-use App\Http\Controllers\Api\Products\ProductDetailsController;
 use App\Http\Controllers\Api\OrderController;
 use App\Models\City;
 use Illuminate\Http\Request;
@@ -77,9 +76,6 @@ Route::middleware(['auth:sanctum', 'verified', 'checkStatus'])->prefix('cart')->
     Route::get('/', [CartController::class, 'index'])->name('api.cart.index');
     Route::post('/add', [CartController::class, 'store'])->name('api.cart.store');
     Route::delete('/remove/{product_id}', [CartController::class, 'destroy'])->name('api.cart.destroy');
-
-    Route::post('/product', [ProductDetailsController::class, 'show'])
-        ->name('api.cart.products.show');
 });
 
 Route::middleware(['auth:sanctum', 'verified', 'checkStatus'])->prefix('order')->group(function () {
