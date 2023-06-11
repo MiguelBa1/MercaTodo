@@ -18,7 +18,9 @@ class CartService
     {
         $key = "user:$userId:cart";
         $cart = Cache::get($key, []);
-        unset($cart[$productId]);
+
+        $cart = array_diff_key($cart, [$productId => '']);
+
         Cache::put($key, $cart, 60 * 24 * 7);
     }
 

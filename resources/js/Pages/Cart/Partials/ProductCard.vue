@@ -77,8 +77,7 @@ const updateQuantity = async (product_id, quantity) => {
         await fetchProducts();
         $toast.success('Quantity updated!')
     } catch (e) {
-        const {message} = e.response.data;
-        $toast.error(message);
+        $toast.error('Something went wrong!')
     }
 };
 
