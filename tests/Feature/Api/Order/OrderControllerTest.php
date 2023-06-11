@@ -32,7 +32,7 @@ class OrderControllerTest extends ProductTestCase
                 "date" => "2021-11-30T15:08:27-05:00",
             ],
             "requestId" => 1,
-            "processUrl" => "https://checkout-co.placetopay.com/session/1/cc9b8690b1f7228c78b759ce27d7e80a",
+            "processUrl" => "https://test.placetopay.com/",
         ];
 
         Http::fake([
@@ -50,7 +50,7 @@ class OrderControllerTest extends ProductTestCase
         $response->assertStatus(201);
 
         $response->assertJson([
-            'redirect_url' => 'https://checkout-co.placetopay.com/session/1/cc9b8690b1f7228c78b759ce27d7e80a',
+            'redirect_url' => 'https://test.placetopay.com/',
         ]);
         $this->assertDatabaseCount('orders', 1);
         $this->assertDatabaseCount('order_details', 1);
@@ -58,7 +58,7 @@ class OrderControllerTest extends ProductTestCase
             'user_id' => $this->customerUser->getKey(),
             'total' => $this->product->price,
             'request_id' => 1,
-            'process_url' => 'https://checkout-co.placetopay.com/session/1/cc9b8690b1f7228c78b759ce27d7e80a',
+            'process_url' => 'https://test.placetopay.com/',
         ]);
         $this->assertDatabaseHas('order_details', [
             'product_id' => $this->product->getKey(),

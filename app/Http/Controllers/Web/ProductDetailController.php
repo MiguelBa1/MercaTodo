@@ -11,10 +11,17 @@ class ProductDetailController extends Controller
 {
     public function show(Product $product): Response
     {
+        // TODO: Implement product not found in component.
+        if (!$product->getRawOriginal('status')) {
+            Inertia::render('Products/Show', [
+                'error' => 'Product not found'
+            ]);
+        }
+
         $relatedProducts = Product::query()
             ->where('category_id', $product->getAttribute('category_id'))
             ->where('id', '!=', $product->getAttribute('id'))
-            ->where('status', true)
+            ->where('status', '=', true)
             ->select('id', 'name', 'price', 'image')
             ->inRandomOrder()
             ->limit(4)->get();
