@@ -6,6 +6,22 @@ use App\Models\Product;
 
 class ProductService
 {
+    public function getProductsDetails(array $productIds): array
+    {
+        $products = Product::query()
+            ->whereIn('id', $productIds)
+            ->get(['id', 'name', 'image', 'price', 'status', 'stock']);
+
+        /** @var array<Product> $productDetails */
+        $productDetails = [];
+
+        foreach ($products as $product) {
+            $productDetails[$product['id']] = $product;
+        }
+
+        return $productDetails;
+    }
+
     public function updateStock(int $product_id, int $quantity, bool $increase = false): void
     {
         /** @var Product $product */

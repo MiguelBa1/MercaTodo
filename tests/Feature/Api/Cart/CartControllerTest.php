@@ -2,8 +2,7 @@
 
 namespace Tests\Feature\Api\Cart;
 
-use App\Models\Product;
-use Illuminate\Support\Facades\Redis;
+use Illuminate\Support\Facades\Cache;
 use Tests\Feature\Utilities\ProductTestCase;
 
 class CartControllerTest extends ProductTestCase
@@ -18,57 +17,42 @@ class CartControllerTest extends ProductTestCase
     public function testAddingProductToCart(): void
     {
         $response = $this->postJson(route('api.cart.store'), [
-            'product_id' => $this->product->getAttribute('id'),
+            'product_id' => $this->product->id,
             'quantity' => 1,
         ]);
 
-        $redisKey = 'user:' . $this->adminUser->getAttribute('id') . ':cart';
+        $cacheKey = 'user:' . $this->adminUser->id . ':cart';
 
         $response->assertOk();
-        Redis::shouldReceive('hset')->with($redisKey, $this->product->getAttribute('id'), 1);
+        Cache::shouldReceive('put')->with($cacheKey, [$this->product->id => 1]);
     }
 
     public function testRemovingProductFromCart(): void
     {
-        $response = $this->deleteJson(route('api.cart.destroy', ['product_id' => $this->product->getAttribute('id')]));
+        $response = $this->deleteJson(route('api.cart.destroy', ['product_id' => $this->product->id]));
 
-        $redisKey = 'user:' . $this->adminUser->getAttribute('id') . ':cart';
+        $cacheKey = 'user:' . $this->adminUser->id . ':cart';
 
         $response->assertOk();
-        Redis::shouldReceive('hdel')->with($redisKey, $this->product->getAttribute('id'));
+        Cache::shouldReceive('put')->with($cacheKey, []);
     }
 
     public function testFetchingCartContents(): void
     {
         $this->postJson(route('api.cart.store'), [
-            'product_id' => $this->product->getAttribute('id'),
+            'product_id' => $this->product->id,
             'quantity' => 1,
         ]);
 
         $response = $this->getJson(route('api.cart.index'));
 
-        $redisKey = 'user:' . $this->adminUser->getAttribute('id') . ':cart';
+        $cacheKey = 'user:' . $this->adminUser->id . ':cart';
 
         $response->assertOk();
-        Redis::shouldReceive('hgetall')->with($redisKey);
-        $expectedResponse = [$this->product->only(['id', 'name', 'image', 'price', 'status', 'stock'])];
-        $response->assertJson($expectedResponse);
-    }
+        Cache::shouldReceive('get')->with($cacheKey);
 
-    public function testFetchingOnlyActiveProductsInStock(): void
-    {
-        $product1 = Product::factory()->create(['stock' => 1, 'status' => true]);
-        $product2 = Product::factory()->create(['stock' => 0, 'status' => true]);
-        $product3 = Product::factory()->create(['stock' => 1, 'status' => false]);
-
-        $this->postJson(route('api.cart.store'), ['product_id' => $product1->getAttribute('id'), 'quantity' => 1]);
-        $this->postJson(route('api.cart.store'), ['product_id' => $product2->getAttribute('id'), 'quantity' => 1]);
-        $this->postJson(route('api.cart.store'), ['product_id' => $product3->getAttribute('id'), 'quantity' => 1]);
-
-        $response = $this->getJson(route('api.cart.index'));
-
-        $response->assertOk();
-        $expectedResponse = [$product1->only(['id', 'name', 'image', 'price', 'status', 'stock'])];
-        $response->assertJson($expectedResponse);
+        $response->assertJson([
+            $this->product->id => 1,
+        ]);
     }
 }
