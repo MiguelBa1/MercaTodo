@@ -17,18 +17,21 @@ class PaymentController extends Controller
 {
     public function handleRedirect(Request $request, Order $order, PaymentService $paymentService): RedirectResponse|Response
     {
-        if ($order->status !== OrderStatusEnum::PENDING) {
+        if ($order->status !== OrderStatusEnum::PENDING || $order->user_id !== $request->user()->id) {
             return Redirect::to(route('home'));
         }
 
-        if ($order->user_id !== $request->user()->id) {
-            return Redirect::to(route('home'));
-        }
+        $updatedOrder = $paymentService->handlePaymentResponse($order);
+        $status = $updatedOrder->status;
 
-        $paymentService->handlePaymentResponse($order);
+        $viewName = match ($status) {
+            OrderStatusEnum::COMPLETED => 'Payment/Completed',
+            OrderStatusEnum::REJECTED => 'Payment/Rejected',
+            default => 'Payment/Pending',
+        };
 
-        return Inertia::render('Payment/Result', [
-            'order' => $order->only('reference', 'total', 'created_at')
+        return Inertia::render($viewName, [
+            'order' => $updatedOrder->only(['reference', 'total', 'status', 'created_at'])
         ]);
     }
 

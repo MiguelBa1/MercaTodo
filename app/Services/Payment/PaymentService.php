@@ -62,7 +62,7 @@ class PaymentService
         ];
     }
 
-    public function handlePaymentResponse(Order $order): void
+    public function handlePaymentResponse(Order $order): Order
     {
         $auth = new AuthEntity();
         $response = Http::post(
@@ -73,6 +73,8 @@ class PaymentService
         if ($response->ok()) {
             $this->updateOrderStatus($order, $response->json()['status']['status']);
         }
+
+        return $order;
     }
 
     private function updateOrderStatus(Order $order, string $status): void

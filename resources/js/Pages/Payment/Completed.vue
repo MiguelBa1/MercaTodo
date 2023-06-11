@@ -2,12 +2,7 @@
 import MainLayout from "@/Layouts/MainLayout.vue";
 import {Head, Link, usePage} from "@inertiajs/vue3";
 import {Ref, ref} from "vue";
-
-interface Order {
-    reference: string;
-    total: string;
-    created_at: string;
-}
+import {Order} from "@/types";
 
 defineOptions({
     layout: MainLayout,
@@ -67,7 +62,7 @@ const order: Ref<Order> = ref(page.props.order);
                         </dl>
                     </div>
                     <div class="mt-4">
-                        <Link href="/" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-500 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                        <Link href="/" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                             Go back to home
                         </Link>
                     </div>
