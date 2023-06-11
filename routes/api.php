@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\Brands\AdminBrandController;
 use App\Http\Controllers\Api\Brands\BrandController;
+use App\Http\Controllers\Api\Cart\CartProductController;
 use App\Http\Controllers\Api\Categories\AdminCategoryController;
 use App\Http\Controllers\Api\Categories\CategoryController;
 use App\Http\Controllers\Api\HomeController;
@@ -76,6 +77,8 @@ Route::middleware(['auth:sanctum', 'verified', 'checkStatus'])->prefix('cart')->
     Route::get('/', [CartController::class, 'index'])->name('api.cart.index');
     Route::post('/add', [CartController::class, 'store'])->name('api.cart.store');
     Route::delete('/remove/{product_id}', [CartController::class, 'destroy'])->name('api.cart.destroy');
+
+    Route::get('/products', [CartProductController::class, 'index'])->name('api.cart.products.index');
 });
 
 Route::middleware(['auth:sanctum', 'verified', 'checkStatus'])->prefix('order')->group(function () {
