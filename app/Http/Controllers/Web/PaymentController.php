@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Web;
 use App\Enums\OrderStatusEnum;
 use App\Http\Controllers\Controller;
 use App\Services\Payment\PaymentService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use App\Models\Order;
@@ -14,52 +15,65 @@ use Inertia\Response;
 
 class PaymentController extends Controller
 {
-    public function handleRedirect(Request $request, PaymentService $paymentService): RedirectResponse|Response
+    public function handleRedirect(Request $request, Order $order, PaymentService $paymentService): RedirectResponse|Response
     {
-        /* @var ?Order $order */
-        $order= Order::query()
-            ->where('user_id', $request->user()->id)
-            ->where('status', OrderStatusEnum::PENDING)
-            ->latest()
-            ->first();
-
-        if (!$order) {
+        if ($order->status !== OrderStatusEnum::PENDING) {
             return Redirect::to(route('home'));
         }
 
-        try {
-            $paymentService->handlePaymentResponse($order);
-
-            return Inertia::render('Payment/Result', [
-                'order' => $order->only('reference', 'total', 'created_at')
-            ]);
-        } catch (\Exception $e) {
-            return Inertia::render('Payment/Result', [
-                'error' => $e->getMessage()
-            ]);
+        if ($order->user_id !== $request->user()->id) {
+            return Redirect::to(route('home'));
         }
+
+        $paymentService->handlePaymentResponse($order);
+
+        return Inertia::render('Payment/Result', [
+            'order' => $order->only('reference', 'total', 'created_at')
+        ]);
     }
 
-    public function handleCanceled(Request $request, PaymentService $paymentService): RedirectResponse|Response
+    public function handleCanceled(Request $request, Order $order, PaymentService $paymentService): RedirectResponse|Response
     {
-        /* @var ?Order $pendingOrder */
-        $pendingOrder = Order::query()
-            ->where('user_id', $request->user()->id)
-            ->where('status', OrderStatusEnum::PENDING)
-            ->latest()
-            ->first();
-
-        if (!$pendingOrder) {
+        if ($order->status !== OrderStatusEnum::PENDING) {
             return Redirect::to(route('home'));
         }
 
-        try {
-            $paymentService->handlePaymentResponse($pendingOrder);
-            return Inertia::render('Payment/Canceled');
-        } catch (\Exception $e) {
-            return Inertia::render('Payment/Canceled', [
-                'error' => $e->getMessage()
-            ]);
+        if ($order->user_id !== $request->user()->id) {
+            return Redirect::to(route('home'));
         }
+
+        $paymentService->handlePaymentResponse($order);
+        return Inertia::render('Payment/Canceled');
+    }
+
+    public function retryPayment(Request $request, Order $order, PaymentService $paymentService): RedirectResponse|JsonResponse
+    {
+        if ($order->user_id !== $request->user()->id) {
+            return Redirect::to(route('home'));
+        }
+
+        if ($order->status === OrderStatusEnum::COMPLETED) {
+            return Redirect::to(route('home'));
+        }
+
+        if ($order->status === OrderStatusEnum::PENDING) {
+            return response()->json([
+                'redirect_url' => $order->process_url
+            ], 201);
+        } elseif ($order->status === OrderStatusEnum::REJECTED) {
+            try {
+                $redirectUrl = $paymentService->retryPayment($order, $request->ip(), $request->userAgent());
+
+                return response()->json([
+                    'redirect_url' => $redirectUrl
+                ], 201);
+            } catch (\Exception $e) {
+                return response()->json([
+                    'message' => $e->getMessage()
+                ], 500);
+            }
+        }
+
+        return Redirect::to(route('home'));
     }
 }

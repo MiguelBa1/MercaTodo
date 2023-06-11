@@ -79,6 +79,5 @@ Route::middleware(['auth:sanctum', 'verified', 'checkStatus'])->prefix('cart')->
 });
 
 Route::middleware(['auth:sanctum', 'verified', 'checkStatus'])->prefix('order')->group(function () {
-    Route::get('/', [OrderController::class, 'index'])->name('api.order.index');
     Route::post('/', [OrderController::class, 'store'])->name('api.order.store');
 });

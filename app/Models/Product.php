@@ -55,11 +55,4 @@ class Product extends Model
     {
         return $value ? 'Active' : 'Inactive';
     }
-
-    public function checkStock(): void
-    {
-        if ($this->getAttribute('stock') == 0) {
-            $this->setAttribute('status', false);
-        }
-    }
 }

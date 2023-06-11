@@ -26,7 +26,11 @@ const checkout = async () => {
             window.location.href = response.data.redirect_url;
         }
     } catch (e) {
-        $toast.error("Something went wrong, please try again later.");
+        if (e.response.status === 400) {
+            $toast.error(e.response.data.message);
+        } else {
+            $toast.error('Something went wrong. Please try again later.');
+        }
         isLoading.value = false;
     }
 };

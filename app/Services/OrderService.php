@@ -17,7 +17,7 @@ class OrderService
             return $product['price'] * $product['quantity'];
         });
 
-        /* @var Order $order */
+        /** @var Order $order */
         $order = $user->orders()->create([
             'reference' => crc32(uniqid()),
             'user_id' => $user->getAttribute('id'),
@@ -34,9 +34,9 @@ class OrderService
     {
         return Order::query()
             ->latest()
-            ->select('id', 'reference', 'status', 'total', 'created_at')
+            ->select('id', 'reference', 'process_url', 'status', 'total', 'created_at')
             ->where('user_id', $user_id)
-            ->with('orderDetails:id,product_id,order_id,product_name,product_price,quantity')
+            ->with('orderDetails:id,order_id,product_name,product_price,quantity')
             ->get();
     }
 
@@ -44,8 +44,8 @@ class OrderService
     {
         $productService = new ProductService();
         foreach ($order->orderDetails as $orderDetail) {
-            /* @var Product $product */
-            $product = Product::query()->find($orderDetail->product_id)->first();
+            /** @var Product $product */
+            $product = Product::query()->find($orderDetail->product_id);
             $productService->updateStock($product->id, $orderDetail->quantity, true);
 
             $orderDetail->delete();
@@ -68,11 +68,9 @@ class OrderService
         $productService = new ProductService();
 
         foreach ($order->orderDetails as $orderDetail) {
-            /* @var Product $product */
-            $product = Product::query()->find($orderDetail->product_id)->first();
+            /** @var Product $product */
+            $product = Product::query()->find($orderDetail->product_id);
             $productService->updateStock($product->id, $orderDetail->quantity, true);
-
-            $orderDetail->delete();
         }
     }
 }

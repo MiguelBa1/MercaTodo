@@ -37,8 +37,9 @@ Route::middleware(['auth', 'checkStatus', 'verified'])->group(function () {
     Route::get('/orders', [OrderController::class, 'index'])->name('order.index');
 
     Route::prefix('/payment')->group(function () {
-        Route::get('/result', [PaymentController::class, 'handleRedirect'])->name('payment.result');
-        Route::get('/canceled', [PaymentController::class, 'handleCanceled'])->name('payment.canceled');
+        Route::get('/result/{order}', [PaymentController::class, 'handleRedirect'])->name('payment.result');
+        Route::get('/canceled/{order}', [PaymentController::class, 'handleCanceled'])->name('payment.canceled');
+        Route::get('/retry/{order}', [PaymentController::class, 'retryPayment'])->name('payment.retry');
     });
 });
 

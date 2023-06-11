@@ -20,17 +20,13 @@ class CartService
     public function getProductsWithDetails(int $userId): array
     {
         $cartData = Redis::client()->hgetall("user:$userId:cart");
+        /** @var array<Product> $activeProducts */
         $activeProducts = [];
 
         foreach ($cartData as $productId => $quantity) {
+            /** @var Product $product */
             $product = Product::query()
                 ->find($productId, ['id', 'name', 'image', 'price', 'status', 'stock']);
-
-            $product = $product->toArray();
-
-            if (!$product || !$product['status'] || !$product['stock'] > 0) {
-                $this->removeProduct($userId, $productId);
-            }
 
             $product['quantity'] = (int)$quantity;
             $activeProducts[] = $product;
@@ -42,20 +38,5 @@ class CartService
     public function clear(int $userId): void
     {
         Redis::client()->del("user:$userId:cart");
-    }
-
-    public function getTotal(array $cart): float
-    {
-        $total = 0;
-
-        foreach ($cart as $productId => $quantity) {
-            $product = Product::query()->find($productId);
-
-            if ($product) {
-                $total += $product->getAttribute('price') * $quantity;
-            }
-        }
-
-        return $total;
     }
 }
