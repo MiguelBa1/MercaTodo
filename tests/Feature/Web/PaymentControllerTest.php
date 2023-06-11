@@ -40,7 +40,7 @@ class PaymentControllerTest extends ProductTestCase
     }
 
 
-    public function testHandleRedirectWithPendingOrder(): void
+    public function testHandleRedirectWithPendingOrderIsApproved(): void
     {
         $mockResponse = [
             "requestId" => $this->pendingOrder->request_id,
@@ -59,13 +59,71 @@ class PaymentControllerTest extends ProductTestCase
         $response->assertStatus(200);
         $response->assertInertia(
             fn (AssertableInertia $page) => $page
-                ->component('Payment/Result')
+                ->component('Payment/Completed')
                 ->has('order')
         );
 
         $this->assertDatabaseHas('orders', [
             'id' => $this->pendingOrder->id,
             'status' => OrderStatusEnum::COMPLETED,
+        ]);
+    }
+
+    public function testHandleRedirectWithPendingOrderIsRejected(): void
+    {
+        $mockResponse = [
+            "requestId" => $this->pendingOrder->request_id,
+            "status" => [
+                "status" => "REJECTED",
+                "reason" => "00",
+                "message" => "La petición ha sido rechazada",
+                "date" => "2021-11-30T15:08:27-05:00",
+            ],
+        ];
+
+        Http::fake([config('placetopay.url') . '/*' => $mockResponse,]);
+
+        $response = $this->actingAs($this->customerUser)->get(route('payment.result', $this->pendingOrder->id));
+
+        $response->assertStatus(200);
+        $response->assertInertia(
+            fn (AssertableInertia $page) => $page
+                ->component('Payment/Rejected')
+                ->has('order')
+        );
+
+        $this->assertDatabaseHas('orders', [
+            'id' => $this->pendingOrder->id,
+            'status' => OrderStatusEnum::REJECTED,
+        ]);
+    }
+
+    public function testHandleRedirectWithPendingOrderStillPending(): void
+    {
+        $mockResponse = [
+            "requestId" => $this->pendingOrder->request_id,
+            "status" => [
+                "status" => "PENDING",
+                "reason" => "00",
+                "message" => "La petición ha sido rechazada",
+                "date" => "2021-11-30T15:08:27-05:00",
+            ],
+        ];
+
+        Http::fake([config('placetopay.url') . '/*' => $mockResponse,]);
+
+        $response = $this->actingAs($this->customerUser)->get(route('payment.result', $this->pendingOrder->id));
+
+        $response->assertStatus(200);
+        $response->assertInertia(
+            fn (AssertableInertia $page) => $page
+                ->component('Payment/Pending')
+                ->has('order')
+        );
+
+        $this->assertDatabaseHas('orders', [
+            'id' => $this->pendingOrder->id,
+            'status' => OrderStatusEnum::PENDING,
         ]);
     }
 

@@ -18,7 +18,6 @@ class CartProductControllerTest extends ProductTestCase
 
     public function testCartProductIndex(): void
     {
-
         $this->postJson(route('api.cart.store'), [
             'product_id' => $this->product->id,
             'quantity' => 1,
