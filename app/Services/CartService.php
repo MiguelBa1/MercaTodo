@@ -11,7 +11,7 @@ class CartService
         $key = "user:$userId:cart";
         $cart = Cache::get($key, []);
         $cart[$productId] = $quantity;
-        Cache::put($key, $cart);
+        Cache::put($key, $cart, 60 * 24 * 7);
     }
 
     public function removeProduct(int $userId, int $productId): void
@@ -19,7 +19,7 @@ class CartService
         $key = "user:$userId:cart";
         $cart = Cache::get($key, []);
         unset($cart[$productId]);
-        Cache::put($key, $cart);
+        Cache::put($key, $cart, 60 * 24 * 7);
     }
 
     public function getCart(int $userId): array
