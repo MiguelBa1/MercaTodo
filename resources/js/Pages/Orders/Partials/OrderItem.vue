@@ -2,13 +2,30 @@
 import {defineProps} from 'vue';
 import OrderDetailItem from "./OrderDetailItem.vue";
 import {Order} from "@/types";
+import axios from "axios";
+import {useToast} from "vue-toast-notification";
 
-const props = defineProps({
+const {order} = defineProps({
     order: Object as () => Order,
 });
+const toast = useToast();
 
-const retryPayment = () => {
-    location.href = props.order.process_url;
+const retryPayment = async () => {
+    try {
+        const response = await axios.get(route('payment.retry', order.id));
+
+        if (response.status === 201) {
+            window.location.href = response.data.redirect_url;
+        }
+    } catch (e) {
+        // console.log(e.response.data.message);
+        if (e.response.status === 400) {
+            toast.error(e.response.data.message);
+        } else {
+            toast.error('Something went wrong. Please try again later.');
+        }
+    }
+
 }
 </script>
 
@@ -23,7 +40,7 @@ const retryPayment = () => {
                     Created at {{ order.created_at }}
                 </p>
             </div>
-            <div v-if="order.status === 'PENDING'">
+            <div v-if="order.status === 'PENDING' || order.status === 'REJECTED'">
                 <button @click="retryPayment" type="button"
                         class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-black bg-yellow-400 hover:bg-yellow-500 focus:outline-none">
                     Retry Payment

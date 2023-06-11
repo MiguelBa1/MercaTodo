@@ -2,12 +2,15 @@
 
 namespace App\Services\Payment;
 
+use App\Enums\OrderStatusEnum;
 use App\Enums\TransactionStatusEnum;
 use App\Models\Order;
+use App\Models\Product;
 use App\Services\OrderService;
 use App\Services\Payment\Entities\AuthEntity;
 use App\Services\Payment\Entities\BuyerEntity;
 use App\Services\Payment\Entities\PaymentEntity;
+use App\Services\ProductService;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\Http;
@@ -36,7 +39,7 @@ class PaymentService
 
             $orderService->deleteOrder($order);
 
-            throw new Exception($response->json()['message']);
+            throw new Exception('Error creating payment session');
         }
     }
 
@@ -52,8 +55,8 @@ class PaymentService
             'buyer' => $buyer->toArray(),
             'payment' => $payment->toArray(),
             'expiration' => Carbon::now()->addMinutes(6),
-            'returnUrl' => route('payment.result'),
-            'cancelUrl' => route('payment.canceled'),
+            'returnUrl' => route('payment.result', $order->id),
+            'cancelUrl' => route('payment.canceled', $order->id),
             'ipAddress' => $ipAddress,
             'userAgent' => $userAgent,
         ];
@@ -84,5 +87,31 @@ class PaymentService
                 $orderService->rejectOrder($order);
                 break;
         }
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function retryPayment(Order $order, string $ipAddress, string $userAgent): string
+    {
+        $productService = new ProductService();
+
+        foreach ($order->orderDetails as $orderDetail) {
+            /** @var Product $product */
+            $product = Product::query()->find($orderDetail->product_id);
+
+            if (!$productService->verifyProductAvailability($product, $orderDetail->quantity)) {
+                throw new Exception("Product {$product->name} is not available, please do a new order");
+            }
+
+            $productService->updateStock($product->id, $orderDetail->quantity);
+        }
+
+        $processUrl = $this->processPayment($order, $ipAddress, $userAgent);
+
+        $order->status = OrderStatusEnum::PENDING;
+        $order->save();
+
+        return $processUrl;
     }
 }
