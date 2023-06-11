@@ -18,7 +18,6 @@ const retryPayment = async () => {
             window.location.href = response.data.redirect_url;
         }
     } catch (e) {
-        // console.log(e.response.data.message);
         if (e.response.status === 400) {
             toast.error(e.response.data.message);
         } else {
