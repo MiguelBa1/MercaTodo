@@ -2,41 +2,53 @@
 
 namespace App\Services;
 
-use App\Models\Product;
-use Illuminate\Support\Facades\Redis;
+use Illuminate\Support\Facades\Cache;
 
 class CartService
 {
     public function addProduct(int $userId, int $productId, int $quantity): void
     {
-        Redis::client()->hset("user:$userId:cart", $productId, $quantity);
+        $key = "user:$userId:cart";
+        $cart = Cache::get($key, []);
+        $cart[$productId] = $quantity;
+        Cache::put($key, $cart, 60 * 24 * 7);
     }
 
     public function removeProduct(int $userId, int $productId): void
     {
-        Redis::client()->hdel("user:$userId:cart", $productId);
+        $key = "user:$userId:cart";
+        $cart = Cache::get($key, []);
+
+        $cart = array_diff_key($cart, [$productId => '']);
+
+        Cache::put($key, $cart, 60 * 24 * 7);
+    }
+
+    public function getCart(int $userId): array
+    {
+        $key = "user:$userId:cart";
+        return Cache::get($key, []);
     }
 
     public function getProductsWithDetails(int $userId): array
     {
-        $cartData = Redis::client()->hgetall("user:$userId:cart");
-        /** @var array<Product> $activeProducts */
-        $activeProducts = [];
+        $cartData = $this->getCart($userId);
+        $productIds = array_keys($cartData);
+
+        $productService = new ProductService();
+        $productsDetails = $productService->getProductsDetails($productIds);
 
         foreach ($cartData as $productId => $quantity) {
-            /** @var Product $product */
-            $product = Product::query()
-                ->find($productId, ['id', 'name', 'image', 'price', 'status', 'stock']);
-
-            $product['quantity'] = (int)$quantity;
-            $activeProducts[] = $product;
+            if (isset($productsDetails[$productId])) {
+                $productsDetails[$productId]['quantity'] = $quantity;
+            }
         }
 
-        return $activeProducts;
+        return $productsDetails;
     }
 
     public function clear(int $userId): void
     {
-        Redis::client()->del("user:$userId:cart");
+        Cache::forget("user:$userId:cart");
     }
 }

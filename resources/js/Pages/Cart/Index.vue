@@ -6,14 +6,20 @@ import {computed, onMounted, ref} from "vue";
 import ProductCard from "@/Pages/Cart/Partials/ProductCard.vue";
 import LoadingSpinner from "@/Components/LoadingSpinner.vue";
 import {useToast} from "vue-toast-notification";
+import axios from "axios";
+
 
 const store = useCartStore();
 const $toast = useToast();
 
+const cartProducts = ref({});
+
 const total = computed(() => {
-    return store.cart.reduce((total, product) => {
-        return total + (product.price * product.quantity);
-    }, 0);
+    let total = 0;
+    for (const [key, value] of Object.entries(cartProducts.value)) {
+        total += value.price * value.quantity;
+    }
+    return total;
 });
 
 const isLoading = ref(true);
@@ -35,7 +41,18 @@ const checkout = async () => {
     }
 };
 
+const fetchProducts = async () => {
+    try {
+        const response = await axios.get(route('api.cart.products.index'), {
+        });
+        cartProducts.value = response.data;
+    } catch (e) {
+        $toast.error('Something went wrong getting your cart products. Please try again later.');
+    }
+};
+
 onMounted(async () => {
+    await fetchProducts();
     isLoading.value = false;
 });
 </script>
@@ -53,8 +70,8 @@ onMounted(async () => {
             <div v-if="store.cartItemsCount > 0" class="flex flex-col lg:flex-row items-center lg:items-start gap-6">
                 <div
                     class="w-full grid grid-cols-1 gap-2">
-                    <ProductCard v-for="product in store.cart" :key="product.id" :product="product"
-                                 :quantity="product.quantity"
+                    <ProductCard v-for="product in cartProducts" :key="product.id" :product="product"
+                                 :quantity="product.quantity" :fetch-products="fetchProducts"
                     />
                 </div>
 

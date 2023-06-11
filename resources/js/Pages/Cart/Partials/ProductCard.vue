@@ -46,13 +46,17 @@ import {useToast} from "vue-toast-notification";
 const store = useCartStore();
 const $toast = useToast();
 
-const props = defineProps({
+const {product, quantity, fetchProducts} = defineProps({
     product: {
         type: Object,
         required: true,
     },
     quantity: {
         type: Number,
+        required: true
+    },
+    fetchProducts: {
+        type: Function,
         required: true
     }
 });
@@ -63,18 +67,17 @@ const updateQuantity = async (product_id, quantity) => {
         await removeProduct(product_id);
         return;
     }
-    if (quantity > props.product.stock) {
+    if (quantity > product.stock) {
         $toast.error('Not enough stock!');
         return;
     }
     $toast.default('Updating quantity...')
     try {
         await store.addToCart(product_id, quantity);
-        await store.syncCart();
+        await fetchProducts();
         $toast.success('Quantity updated!')
     } catch (e) {
-        const {message} = e.response.data;
-        $toast.error(message);
+        $toast.error('Something went wrong!')
     }
 };
 
@@ -83,7 +86,7 @@ const removeProduct = async (product_id) => {
     $toast.default('Removing product...')
     try {
         await store.removeFromCart(product_id);
-        await store.syncCart();
+        await fetchProducts();
         $toast.success('Product removed!')
     } catch (e) {
         $toast.error('Something went wrong!')
