@@ -4,6 +4,8 @@ namespace App\Services\Payment;
 
 use App\Enums\OrderStatusEnum;
 use App\Enums\TransactionStatusEnum;
+use App\Exceptions\ProcessPaymentException;
+use App\Exceptions\ProductUnavailableException;
 use App\Models\Order;
 use App\Models\Product;
 use App\Services\OrderService;
@@ -12,13 +14,12 @@ use App\Services\Payment\Entities\BuyerEntity;
 use App\Services\Payment\Entities\PaymentEntity;
 use App\Services\ProductService;
 use Carbon\Carbon;
-use Exception;
 use Illuminate\Support\Facades\Http;
 
 class PaymentService
 {
     /**
-     * @throws Exception
+     * @throws ProcessPaymentException
      */
     public function processPayment(Order $order, string $ipAddress, string $userAgent): string
     {
@@ -39,7 +40,7 @@ class PaymentService
 
             $orderService->deleteOrder($order);
 
-            throw new Exception('Error creating payment session');
+            throw new ProcessPaymentException('Error creating payment session');
         }
     }
 
@@ -92,7 +93,7 @@ class PaymentService
     }
 
     /**
-     * @throws Exception
+     * @throws ProductUnavailableException
      */
     public function retryPayment(Order $order, string $ipAddress, string $userAgent): string
     {
@@ -103,7 +104,7 @@ class PaymentService
             $product = Product::query()->find($orderDetail->product_id);
 
             if (!$productService->verifyProductAvailability($product, $orderDetail->quantity)) {
-                throw new Exception("Product {$product->name} is not available, please do a new order");
+                throw new ProductUnavailableException($product, "Product {$product->name} is not available", 400);
             }
 
             $productService->updateStock($product->id, $orderDetail->quantity);

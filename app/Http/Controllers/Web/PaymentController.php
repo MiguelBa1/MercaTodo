@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Web;
 
 use App\Enums\OrderStatusEnum;
+use App\Exceptions\ProductUnavailableException;
 use App\Http\Controllers\Controller;
 use App\Services\Payment\PaymentService;
 use Illuminate\Http\JsonResponse;
@@ -51,11 +52,7 @@ class PaymentController extends Controller
 
     public function retryPayment(Request $request, Order $order, PaymentService $paymentService): RedirectResponse|JsonResponse
     {
-        if ($order->user_id !== $request->user()->id) {
-            return Redirect::to(route('home'));
-        }
-
-        if ($order->status === OrderStatusEnum::COMPLETED) {
+        if ($order->user_id !== $request->user()->id || $order->status === OrderStatusEnum::COMPLETED) {
             return Redirect::to(route('home'));
         }
 
@@ -63,13 +60,17 @@ class PaymentController extends Controller
             return response()->json([
                 'redirect_url' => $order->process_url
             ], 201);
-        } elseif ($order->status === OrderStatusEnum::REJECTED) {
+        }
+
+        if ($order->status === OrderStatusEnum::REJECTED) {
             try {
                 $redirectUrl = $paymentService->retryPayment($order, $request->ip(), $request->userAgent());
 
                 return response()->json([
                     'redirect_url' => $redirectUrl
                 ], 201);
+            } catch (ProductUnavailableException $e) {
+                return $e->render();
             } catch (\Exception $e) {
                 return response()->json([
                     'message' => $e->getMessage()
