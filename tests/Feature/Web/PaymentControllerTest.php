@@ -212,4 +212,41 @@ class PaymentControllerTest extends ProductTestCase
             'redirect_url' => $this->pendingOrder->process_url
         ]);
     }
+
+    public function testProductStockIsRestoredInRejectedOrder(): void
+    {
+        $mockResponse = [
+            "requestId" => $this->pendingOrder->request_id,
+            "status" => [
+                "status" => "REJECTED",
+                "reason" => "00",
+                "message" => "La petición ha sido rechazada",
+                "date" => "2021-11-30T15:08:27-05:00",
+            ],
+        ];
+
+        Http::fake([config('placetopay.url') . 'api/session/*' => $mockResponse,]);
+
+        $this->product->stock = 1;
+        $this->product->save();
+
+        $this->assertDatabaseHas('products', [
+            'id' => $this->product->id,
+            'stock' => 1,
+        ]);
+
+        $response = $this->actingAs($this->customerUser)->get(route('payment.result', $this->pendingOrder->id));
+
+        $response->assertStatus(200);
+        $response->assertInertia(
+            fn (AssertableInertia $page) => $page
+                ->component('Payment/Rejected')
+                ->has('order')
+        );
+
+        $this->assertDatabaseHas('products', [
+            'id' => $this->product->id,
+            'stock' => 2,
+        ]);
+    }
 }
