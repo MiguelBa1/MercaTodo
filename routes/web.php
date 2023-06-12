@@ -58,6 +58,6 @@ Route::middleware(['auth', 'role:admin', 'checkStatus', 'verified'])->prefix('ad
     Route::get('/auxiliary-tables', [AuxiliaryTablesController::class, 'index'])->name('admin.auxiliary.tables.index');
 });
 
-Route::get('/products/{product}', [ProductDetailController::class, 'show'])->name('products.show');
+Route::get('/products/{product}', [ProductDetailController::class, 'show'])->name('products.show')->middleware('check.product.status');
 
 require __DIR__ . '/auth.php';
