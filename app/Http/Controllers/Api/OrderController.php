@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Exceptions\ProcessPaymentException;
 use App\Http\Controllers\Controller;
 use App\Services\CartService;
 use App\Services\OrderService;
 use App\Services\Payment\PaymentService;
 use App\Services\ProductService;
-use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -53,7 +53,9 @@ class OrderController extends Controller
             return response()->json([
                 'redirect_url' => $redirectUrl
             ], 201);
-        } catch (Exception $e) {
+        } catch (ProcessPaymentException $e) {
+            return $e->render();
+        } catch (\Exception $e) {
             return response()->json([
                 'message' => $e->getMessage()
             ], 500);
