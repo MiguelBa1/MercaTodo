@@ -2,9 +2,6 @@
 
 namespace Tests\Feature\Api\Order;
 
-use App\Enums\OrderStatusEnum;
-use App\Models\Order;
-use App\Models\OrderDetail;
 use App\Services\CartService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
@@ -22,7 +19,7 @@ class OrderControllerTest extends ProductTestCase
         $this->product['quantity'] = 1;
     }
 
-    public function testStoreAnOrder()
+    public function testStoreANewOrderAndRedirectsToPlaceToPay()
     {
         $mockResponse = [
             "status" => [
@@ -36,7 +33,8 @@ class OrderControllerTest extends ProductTestCase
         ];
 
         Http::fake([
-            config('placetopay.url') . '/*' => Http::response($mockResponse)]);
+            config('placetopay.url') . '/*' => Http::response($mockResponse)
+        ]);
 
         $this->mock(CartService::class, function ($mock) {
             $mock->shouldReceive('getProductsWithDetails')->andReturn([
@@ -68,43 +66,52 @@ class OrderControllerTest extends ProductTestCase
         ]);
     }
 
-//    public function testIndexOrders()
-//    {
-//        $order = Order::factory()->create([
-//            'user_id' => $this->customerUser->getAttribute('id'),
-//            'total' => 100,
-//            'status' => OrderStatusEnum::PENDING->value
-//        ]);
-//
-//        $orderDetail = OrderDetail::factory()->create([
-//            'order_id' => $order->getAttribute('id'),
-//            'product_id' => $this->product->getAttribute('id'),
-//            'product_name' => $this->product->getAttribute('name'),
-//            'product_price' => 100,
-//            'quantity' => 1,
-//        ]);
-//
-//        $response = $this->getJson(route('api.order.index'));
-//
-//        $response->assertStatus(200);
-//
-//        $response->assertJson([
-//            'orders' => [
-//                [
-//                    'id' => $order->getAttribute('id'),
-//                    'total' => $order->getAttribute('total'),
-//                    'status' => OrderStatusEnum::PENDING->value,
-//                    'order_details' => [
-//                        [
-//                            'id' => $orderDetail->getAttribute('id'),
-//                            'product_id' => $this->product->getAttribute('id'),
-//                            'product_name' => $this->product->getAttribute('name'),
-//                            'product_price' => 100.00,
-//                            'quantity' => 1,
-//                        ]
-//                    ]
-//                ]
-//            ]
-//        ]);
-//    }
+    public function testStoreWithEmptyCart(): void
+    {
+        $this->mock(CartService::class, function ($mock) {
+            $mock->shouldReceive('getProductsWithDetails')->andReturn([]);
+        });
+
+        $response = $this->post(route('api.order.store'));
+
+        $response->assertStatus(400);
+        $response->assertJson([
+            'message' => 'Cart is empty',
+        ]);
+    }
+
+    public function testStoreWithUnavailableProducts(): void
+    {
+        $this->mock(CartService::class, function ($mock) {
+            $mock->shouldReceive('getProductsWithDetails')->andReturn([
+                $this->product->id => $this->product
+            ]);
+        });
+
+        $this->product->stock = 0;
+
+        $response = $this->post(route('api.order.store'));
+
+        $response->assertStatus(400);
+        $response->assertJson([
+            'message' => 'Product ' . $this->product->name . ' is not available, please remove it from cart',
+        ]);
+    }
+
+    public function testProductIsDecrementedOnStoreOrder(): void
+    {
+        $this->mock(CartService::class, function ($mock) {
+            $mock->shouldReceive('getProductsWithDetails')->andReturn([
+                $this->product
+            ]);
+            $mock->shouldReceive('clear');
+        });
+
+        $this->post(route('api.order.store'));
+
+        $this->assertDatabaseHas('products', [
+            'id' => $this->product->getKey(),
+            'stock' => $this->product->stock - 1,
+        ]);
+    }
 }
