@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class () extends Migration {
     /**
      * Run the migrations.
      */
@@ -12,17 +12,15 @@ return new class extends Migration {
     {
         Schema::create('products', function (Blueprint $table) {
             $table->id();
-            $table->string('sku')->unique();
-            $table->string('name');
+            $table->string('sku', 20)->unique();
+            $table->string('name', 100);
             $table->text('description');
-            $table->decimal('price', 8, 2);
+            $table->unsignedDecimal('price');
             $table->string('image')->nullable();
-            $table->integer('stock');
+            $table->unsignedInteger('stock');
             $table->boolean('status');
-            $table->unsignedBigInteger('brand_id')->nullable();
-            $table->unsignedBigInteger('category_id')->nullable();
-            $table->foreign('brand_id')->references('id')->on('brands')->onDelete('set null')->onUpdate('cascade');
-            $table->foreign('category_id')->references('id')->on('categories')->onDelete('set null')->onUpdate('cascade');
+            $table->foreignId('category_id')->nullable()->constrained()->onDelete('set null');
+            $table->foreignId('brand_id')->nullable()->constrained()->onDelete('set null');
             $table->timestamps();
         });
     }

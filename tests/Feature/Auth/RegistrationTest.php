@@ -3,10 +3,8 @@
 namespace Tests\Feature\Auth;
 
 use App\Enums\DocumentTypeEnum;
-use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Spatie\Permission\Models\Role;
-use Tests\TestCase;
 
 class RegistrationTest extends BaseTestCase
 {
@@ -24,12 +22,13 @@ class RegistrationTest extends BaseTestCase
         $role = new Role();
         $role->create(['name' => 'customer']);
         $response = $this->post('/register', [
-            'name' => 'Test User',
+            'name' => 'John',
+            'surname' => 'Doe',
             'email' => 'test@example.com',
             'password' => 'password',
             'password_confirmation' => 'password',
             'document' => '123456789',
-            'document_type' => DocumentTypeEnum::PASSPORT,
+            'document_type' => DocumentTypeEnum::CC->value,
             'phone' => '123456789',
             'address' => 'Test Address',
             'city_id' => 1

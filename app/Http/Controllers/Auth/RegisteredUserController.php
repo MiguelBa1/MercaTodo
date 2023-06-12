@@ -23,7 +23,7 @@ class RegisteredUserController extends Controller
     {
         return Inertia::render('Auth/Register', [
             'departments' => \App\Models\Department::all(),
-            'document_types' => DocumentTypeEnum::getValues(),
+            'document_types' => array_column(DocumentTypeEnum::cases(), 'value')
         ]);
     }
 
@@ -35,8 +35,9 @@ class RegisteredUserController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:'.User::class,
+            'name' => 'required|string|max:100',
+            'surname' => 'required|string|max:100',
+            'email' => 'required|string|email|max:100|unique:'.User::class,
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'document' => 'required|integer|digits_between:6,12|unique:'.User::class,
             'document_type' => 'required|string|max:255',
@@ -45,8 +46,9 @@ class RegisteredUserController extends Controller
             'city_id' => 'required|integer',
         ]);
 
-        $user = User::create([
+        $user = User::query()->create([
             'name' => $request['name'],
+            'surname' => $request['surname'],
             'email' => $request['email'],
             'password' => Hash::make($request['password']),
             'document' => $request['document'],

@@ -7,7 +7,6 @@ use Tests\Feature\Utilities\UserTestCase;
 
 class UserManagementTest extends UserTestCase
 {
-
     public function testIndexRendersCorrectView(): void
     {
         $response = $this
@@ -16,7 +15,8 @@ class UserManagementTest extends UserTestCase
 
         $response->assertOk();
         $response->assertStatus(200);
-        $response->assertInertia(fn(AssertableInertia $page) => $page
+        $response->assertInertia(
+            fn (AssertableInertia $page) => $page
             ->component('Admin/Users/Index')
         );
     }
@@ -25,8 +25,11 @@ class UserManagementTest extends UserTestCase
     {
         $response = $this->actingAs($this->adminUser)->get(route('admin.edit.user', $this->customerUser->id));
         $response->assertStatus(200);
-        $response->assertInertia(fn(AssertableInertia $page) => $page
-            ->component('Admin/Users/Edit')->has('user', fn(AssertableInertia $page) => $page
+        $response->assertInertia(
+            fn (AssertableInertia $page) => $page
+            ->component('Admin/Users/Edit')->has(
+                'user',
+                fn (AssertableInertia $page) => $page
                 ->where('id', $this->customerUser->id)
                 ->where('name', $this->customerUser->name)
                 ->where('email', $this->customerUser->email)

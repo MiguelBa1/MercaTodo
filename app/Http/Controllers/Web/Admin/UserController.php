@@ -5,13 +5,14 @@ namespace App\Http\Controllers\Web\Admin;
 use App\Enums\DocumentTypeEnum;
 use App\Http\Controllers\Controller;
 use App\Models\City;
+use App\Models\Department;
 use App\Models\User;
 use Inertia\Inertia;
 use Inertia\Response;
+use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
-
     public function index(): Response
     {
         return Inertia::render('Admin/Users/Index');
@@ -30,9 +31,9 @@ class UserController extends Controller
 
         return Inertia::render('Admin/Users/Edit', [
             'user' => $userData,
-            'departments' => \App\Models\Department::all(),
-            'document_types' => DocumentTypeEnum::getValues(),
+            'departments' => Department::all('id', 'name'),
+            'document_types' => array_column(DocumentTypeEnum::cases(), 'value'),
+            'roles' => Role::all('name')
         ]);
     }
-
 }

@@ -52,15 +52,13 @@ class BrandControllerTest extends UserTestCase
         $this->assertDatabaseHas('brands', array_merge(['id' => $brand->getAttribute('id')], $data));
     }
 
-    public function testReturnErrorIfDataIsInvalid()
+    public function testReturnsErrorIfDataIsInvalid()
     {
         $data = ['name' => ''];
 
         $response = $this->actingAs($this->adminUser)->post(route('admin.api.brands.store'), $data);
 
+        $response->assertFound();
         $response->assertSessionHasErrors(['name']);
-        $response->assertStatus(302);
     }
-
-
 }

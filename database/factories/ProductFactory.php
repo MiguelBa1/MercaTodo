@@ -5,7 +5,6 @@ namespace Database\Factories;
 use App\Models\Brand;
 use App\Models\Category;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Intervention\Image\Facades\Image;
@@ -31,9 +30,9 @@ class ProductFactory extends Factory
             'sku' => fake()->ean8(),
             'name' => fake()->sentence(2),
             'description' => fake()->text(),
-            'price' => fake()->randomFloat(2, 1, 1000),
-            'stock' => fake()->numberBetween(1, 100),
-            'status' => fake()->boolean(),
+            'price' => $this->faker->numberBetween(0, 1000),
+            'stock' => fake()->numberBetween(1, 10),
+            'status' => true,
             'brand_id' => Brand::query()->inRandomOrder()->first()->getAttribute('id'),
             'category_id' => Category::query()->inRandomOrder()->first()->getAttribute('id'),
             'image' => $imageName

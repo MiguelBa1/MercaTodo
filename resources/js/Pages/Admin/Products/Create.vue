@@ -1,6 +1,6 @@
 <script setup>
 import MainLayout from "@/Layouts/MainLayout.vue";
-import CreateProductForm from "@/Pages/Admin/Products/Partials/CreateProductForm.vue";
+import CreateProductForm from "@/Components/Forms/Admin/CreateProductForm.vue";
 import {Head} from "@inertiajs/vue3";
 
 </script>

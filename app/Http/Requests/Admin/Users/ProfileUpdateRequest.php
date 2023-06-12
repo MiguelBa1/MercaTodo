@@ -26,17 +26,18 @@ class ProfileUpdateRequest extends FormRequest
     {
         $id = $request->route('user')['id'];
         return [
-            'name' => 'required|string|max:255',
-            'role_name' => 'required|string',
+            'name' => 'required|string|max:100',
+            'surname' => 'required|string|max:100',
+            'role_name' => 'required|string|exists:roles,name',
             'document' => [
                 'required',
                 'integer',
                 'digits_between:6,12',
                 Rule::unique(User::class)->ignore($id),
             ],
-            'document_type' => 'required|string|max:255',
+            'document_type' => 'required|string|max:50',
             'phone' => 'required|integer|digits_between:6,12',
-            'address' => 'required|string|max:255',
+            'address' => 'required|string|min:3|max:100',
             'city_id' => 'required|integer',
         ];
     }

@@ -15,12 +15,17 @@ class ProductStatusUpdateTest extends ProductTestCase
         $this->product->save();
 
         $response = $this->actingAs($this->adminUser)->patch(
-            route('admin.api.products.updateStatus', $this->product->getAttribute('id'))
+            route('admin.api.products.status.update', $this->product->getAttribute('id'))
         );
 
         $this->product->refresh();
         $response->assertStatus(200);
         $this->assertEquals('Inactive', $this->product->status);
+
+        $this->assertDatabaseHas('products', [
+            'id' => $this->product->getAttribute('id'),
+            'status' => false,
+        ]);
     }
 
     /**
@@ -33,11 +38,16 @@ class ProductStatusUpdateTest extends ProductTestCase
 
 
         $response = $this->actingAs($this->adminUser)->patch(
-            route('admin.api.products.updateStatus', $this->product->getAttribute('id'))
+            route('admin.api.products.status.update', $this->product->getAttribute('id'))
         );
 
         $this->product->refresh();
         $response->assertStatus(200);
         $this->assertEquals('Active', $this->product->status);
+
+        $this->assertDatabaseHas('products', [
+            'id' => $this->product->getAttribute('id'),
+            'status' => true,
+        ]);
     }
 }

@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use \App\Models\User;
+use App\Models\User;
 
 class DatabaseSeeder extends Seeder
 {
@@ -30,6 +30,7 @@ class DatabaseSeeder extends Seeder
         // Create the admin user
         User::factory()->create([
             'name' => env('ADMIN_NAME'),
+            'surname' => env('ADMIN_SURNAME'),
             'document_type' => env('ADMIN_DOCUMENT_TYPE'),
             'document' => env('ADMIN_DOCUMENT'),
             'email' => env('ADMIN_EMAIL'),
@@ -38,6 +39,5 @@ class DatabaseSeeder extends Seeder
             'password' => bcrypt(env('ADMIN_PASSWORD')),
             'city_id' => env('ADMIN_CITY_ID'),
         ])->assignRole('admin');
-
     }
 }

@@ -1,7 +1,7 @@
 <script setup>
 import MainLayout from '@/Layouts/MainLayout.vue';
-import UpdatePasswordForm from './Partials/UpdatePasswordForm.vue';
-import UpdateProfileInformationForm from './Partials/UpdateProfileInformationForm.vue';
+import UpdatePasswordForm from '../../../Components/Forms/Admin/UpdatePasswordForm.vue';
+import UpdateProfileInformationForm from '../../../Components/Forms/Admin/UpdateProfileInformationForm.vue';
 import { Head } from '@inertiajs/vue3';
 
 import { usePage } from '@inertiajs/vue3';
