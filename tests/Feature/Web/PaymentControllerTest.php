@@ -225,7 +225,7 @@ class PaymentControllerTest extends ProductTestCase
             ],
         ];
 
-        Http::fake([config('placetopay.url') . 'api/session/*' => $mockResponse,]);
+        Http::fake([config('placetopay.url') . '/api/session/*' => $mockResponse,]);
 
         $this->product->stock = 1;
         $this->product->save();

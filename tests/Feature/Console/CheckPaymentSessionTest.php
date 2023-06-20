@@ -4,6 +4,7 @@ namespace Tests\Feature\Console;
 
 use App\Enums\OrderStatusEnum;
 use App\Models\Order;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Http;
 use Tests\Feature\Utilities\UserTestCase;
 
@@ -18,7 +19,7 @@ class CheckPaymentSessionTest extends UserTestCase
         ]);
 
         Http::fake([
-            config('placetopay.url') . 'api/session/*' => Http::response([
+            config('placetopay.url') . '/api/session/*' => Http::response([
                 "status" => [
                     "status" => "APPROVED",
                     "reason" => "00",
@@ -28,7 +29,7 @@ class CheckPaymentSessionTest extends UserTestCase
             ])
         ]);
 
-        $this->artisan('app:check-payment-session');
+        Artisan::call('app:check-payment-session');
 
         foreach ($orders as $order) {
             $this->assertDatabaseHas('orders', [
