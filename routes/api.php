@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\Cart\CartProductController;
 use App\Http\Controllers\Api\Categories\AdminCategoryController;
 use App\Http\Controllers\Api\Categories\CategoryController;
 use App\Http\Controllers\Api\HomeController;
+use App\Http\Controllers\Api\Cities\CityController;
 use App\Http\Controllers\Api\Products\AdminProductController;
 use App\Http\Controllers\Api\Products\AdminProductStatusController;
 use App\Http\Controllers\Api\Users\AdminPasswordController;
@@ -59,9 +60,7 @@ Route::middleware(['auth:sanctum', 'role:admin', 'checkStatus', 'verified'])->pr
     });
 });
 
-Route::get('cities/{department_id}', function (int $department_id) {
-    return City::query()->where('department_id', $department_id)->get();
-})->name('api.list.cities');
+Route::get('cities/{department_id}', [CityController::class, 'index'])->name('api.list.cities');
 
 Route::get('/brands', [BrandController::class, 'index'])
     ->name('api.brands.index');

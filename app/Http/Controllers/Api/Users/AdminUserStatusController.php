@@ -4,19 +4,17 @@ namespace App\Http\Controllers\Api\Users;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use Illuminate\Http\JsonResponse;
+use App\Services\UserService;
 
 class AdminUserStatusController extends Controller
 {
     /**
+     * @param UserService $userService
      * @param User $user
-     * @return JsonResponse
+     * @return void
      */
-    public function update(User $user): JsonResponse
+    public function update(UserService $userService, User $user): void
     {
-        $user->setAttribute('status', !$user->getRawOriginal('status'));
-        $user->save();
-
-        return response()->json(['message' => 'User status updated successfully']);
+        $userService->updateStatus($user);
     }
 }
