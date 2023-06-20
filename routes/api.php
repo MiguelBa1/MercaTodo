@@ -41,7 +41,6 @@ Route::middleware(['auth:sanctum', 'role:admin', 'checkStatus', 'verified'])->pr
         Route::patch('{user}/profile', [AdminProfileController::class, 'update'])->name('admin.api.users.profile.update');
     });
     Route::prefix('products')->group(function () {
-        Route::get('/', [AdminProductController::class, 'index'])->name('admin.api.products.index');
         Route::post('/', [AdminProductController::class, 'store'])->name('admin.api.products.store');
         Route::post('{product}', [AdminProductController::class, 'update'])->name('admin.api.products.update');
         Route::delete('{product}', [AdminProductController::class, 'destroy'])->name('admin.api.products.destroy');

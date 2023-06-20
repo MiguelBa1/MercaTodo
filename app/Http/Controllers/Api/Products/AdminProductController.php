@@ -60,31 +60,6 @@ class AdminProductController extends Controller
     }
 
     /**
-     * @return LengthAwarePaginator
-     */
-    public function index(): LengthAwarePaginator
-    {
-        return Product::query()
-            ->join('categories', 'categories.id', '=', 'products.category_id')
-            ->join('brands', 'brands.id', '=', 'products.brand_id')
-            ->select(
-                'products.id',
-                'products.sku',
-                'products.name',
-                'products.description',
-                'products.price',
-                'products.image',
-                'products.stock',
-                'products.status',
-                'categories.name as category_name',
-                'brands.name as brand_name'
-            )
-            ->orderBy('products.id', 'desc')
-            ->latest('products.id')
-            ->paginate(10);
-    }
-
-    /**
      * @param Product $product
      * @return JsonResponse
      */

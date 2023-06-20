@@ -11,13 +11,30 @@ class ProductController extends Controller
 {
     public function index(): Response
     {
-        return Inertia::render('Admin/Products/Index');
+        $products = Product::query()
+            ->with(['category:id,name', 'brand:id,name'])
+            ->select(
+                'id',
+                'sku',
+                'name',
+                'price',
+                'stock',
+                'status',
+                'category_id',
+                'brand_id',
+            )
+            ->latest()
+            ->paginate(10);
+
+        return Inertia::render('Admin/Products/Index', [
+            'products' => $products
+        ]);
     }
 
     public function edit(Product $product): Response
     {
         return Inertia::render('Admin/Products/Edit', [
-            'product' => $product->load('category:id,name', 'brand:id,name')
+            'product' => $product->load(['category:id,name', 'brand:id,name'])
         ]);
     }
 
