@@ -10,7 +10,6 @@ use App\Http\Controllers\Api\Products\AdminProductController;
 use App\Http\Controllers\Api\Products\AdminProductStatusController;
 use App\Http\Controllers\Api\Users\AdminPasswordController;
 use App\Http\Controllers\Api\Users\AdminProfileController;
-use App\Http\Controllers\Api\Users\AdminUserController;
 use App\Http\Controllers\Api\Users\AdminUserStatusController;
 use App\Http\Controllers\Api\Cart\CartController;
 use App\Http\Controllers\Api\OrderController;
@@ -37,7 +36,6 @@ Route::get('/', [HomeController::class, 'index'])->name('api.home.index');
 
 Route::middleware(['auth:sanctum', 'role:admin', 'checkStatus', 'verified'])->prefix('admin')->group(function () {
     Route::prefix('users')->group(function () {
-        Route::get('/', [AdminUserController::class, 'index'])->name('admin.api.users.index');
         Route::patch('{user}/status', [AdminUserStatusController::class, 'update'])->name('admin.api.users.status.update');
         Route::patch('{user}/password', [AdminPasswordController::class, 'update'])->name('admin.api.users.password.update');
         Route::patch('{user}/profile', [AdminProfileController::class, 'update'])->name('admin.api.users.profile.update');

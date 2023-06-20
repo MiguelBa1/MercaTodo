@@ -1,16 +1,9 @@
-<script setup lang="ts">
+<script setup>
 import {usePage, Head} from '@inertiajs/vue3'
 import MainLayout from "@/Layouts/MainLayout.vue";
 import UsersTable from "@/Components/Tables/UsersTable.vue";
 
-defineProps({
-    auth: {
-        type: Object,
-        required: true
-    },
-})
-
-const {auth} = usePage().props
+const {users} = usePage().props
 
 </script>
 
@@ -25,7 +18,7 @@ const {auth} = usePage().props
         </template>
 
         <div class="max-w-[100rem] mx-auto sm:px-6 lg:px-8 space-y-6 py-12">
-            <UsersTable />
+            <UsersTable :users="users" />
         </div>
     </MainLayout>
 </template>

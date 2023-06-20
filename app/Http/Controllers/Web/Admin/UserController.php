@@ -7,27 +7,52 @@ use App\Http\Controllers\Controller;
 use App\Models\City;
 use App\Models\Department;
 use App\Models\User;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
-    public function index(): Response
+    public function index(Request $request): Response
     {
-        return Inertia::render('Admin/Users/Index');
+        $currentUserId = $request->user()->id;
+
+        $users = User::with([
+            'roles:id,name',
+            'city:id,name'
+        ])
+            ->select(
+                'id',
+                'name',
+                'surname',
+                'email',
+                'document',
+                'document_type',
+                'phone',
+                'address',
+                'status',
+                'city_id'
+            )
+            ->whereNot('id', $currentUserId)
+            ->latest('id')
+            ->paginate(10);
+
+        return Inertia::render('Admin/Users/Index', [
+            'users' => $users
+        ]);
     }
 
-    public function edit(User $user): Response
+    public function edit(Request $request, User $user): Response
     {
-        if ($user->getAttribute('id') === auth()->user()['id']) {
+        if ($user->id === $request->user()->id) {
             return Inertia::render('Profile/Edit');
         }
-        $user->setAttribute('role_name', $user->getAttribute('roles')->first()->getAttribute('name'));
 
         $userData = $user->withoutRelations()->toArray();
-        $userData['city_name'] = $user->getCityNameAttribute($userData['city_id']);
-        $userData['department_id'] = City::query()->where('id', $userData['city_id'])->first()->getAttribute('department_id');
+        $userData['role_name'] = $user->roles->first()->name;
+        $userData['city_name'] = $user->city->name;
+        $userData['department_id'] = $user->city->department_id;
 
         return Inertia::render('Admin/Users/Edit', [
             'user' => $userData,
