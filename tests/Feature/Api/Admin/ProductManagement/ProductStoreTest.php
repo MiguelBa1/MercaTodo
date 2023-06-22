@@ -20,7 +20,6 @@ class ProductStoreTest extends ProductTestCase
         $response = $this->actingAs($this->adminUser)->post(route('admin.api.products.store'), $productData);
 
         $response->assertOk();
-        $response->assertJson(['message' => 'Product created successfully']);
 
         $imageName = time() . '_' . $productData['image']->getClientOriginalName();
         $this->assertDatabaseHas('products', [

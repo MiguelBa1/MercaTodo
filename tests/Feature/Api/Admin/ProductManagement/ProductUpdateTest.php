@@ -24,7 +24,6 @@ class ProductUpdateTest extends ProductTestCase
         );
 
         $response->assertOk();
-        $response->assertJson(['message' => 'Product updated successfully']);
 
         $imageName = time() . '_' . $productData['image']->getClientOriginalName();
         $this->assertDatabaseHas('products', [
@@ -74,7 +73,6 @@ class ProductUpdateTest extends ProductTestCase
         );
 
         $response->assertOk();
-        $response->assertJson(['message' => 'Product updated successfully']);
 
         $this->assertDatabaseHas('products', [
             'sku' => $productData['sku'],

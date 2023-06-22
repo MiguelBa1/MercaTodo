@@ -6,6 +6,44 @@ use App\Models\Product;
 
 class ProductService
 {
+    public function createProduct(array $data): void
+    {
+        if (isset($data['image'])) {
+            $imageName = (new ProductImageService())->storeImage($data['image']);
+            $data['image'] = $imageName;
+        }
+
+        $data['status'] = true;
+
+        Product::query()->create($data);
+    }
+
+    public function updateProduct(Product $product, array $data): void
+    {
+        if (isset($data['image']) && $product->image !== $data['image']) {
+            (new ProductImageService())->deleteImage($product->image);
+        }
+
+        if (isset($data['image'])) {
+            $imageName = (new ProductImageService())->storeImage($data['image']);
+            $data['image'] = $imageName;
+        }
+
+        $product->update($data);
+    }
+
+    public function deleteProduct(Product $product): void
+    {
+        (new ProductImageService())->deleteImage($product->image);
+        $product->delete();
+    }
+
+    public function toggleStatus(Product $product): void
+    {
+        $product->status = !$product->getRawOriginal('status');
+        $product->save();
+    }
+
     public function getProductsDetails(array $productIds): array
     {
         $products = Product::query()

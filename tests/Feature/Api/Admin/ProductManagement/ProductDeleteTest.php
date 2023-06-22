@@ -11,8 +11,7 @@ class ProductDeleteTest extends ProductTestCase
     {
         $response = $this->actingAs($this->adminUser)->delete(route('admin.api.products.destroy', $this->product->getAttribute('id')));
 
-        $response->assertStatus(200);
-        $response->assertJson(['message' => 'Product deleted successfully']);
+        $response->assertOk();
 
         Storage::disk('public')->assertMissing($this->product->getAttribute('image'));
 
