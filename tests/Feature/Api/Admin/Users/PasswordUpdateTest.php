@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Api\Admin\UserManagement;
+namespace Tests\Feature\Api\Admin\Users;
 
 use Illuminate\Support\Facades\Hash;
 use Tests\Feature\Utilities\UserTestCase;

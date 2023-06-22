@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Api\Admin\ProductManagement;
+namespace Tests\Feature\Api\Admin\Products;
 
 use Tests\Feature\Utilities\ProductTestCase;
 

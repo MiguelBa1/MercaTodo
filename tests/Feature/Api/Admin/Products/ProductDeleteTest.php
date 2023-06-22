@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Api\Admin\ProductManagement;
+namespace Tests\Feature\Api\Admin\Products;
 
 use Illuminate\Support\Facades\Storage;
 use Tests\Feature\Utilities\ProductTestCase;

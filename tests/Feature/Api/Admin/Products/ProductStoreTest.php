@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Api\Admin\ProductManagement;
+namespace Tests\Feature\Api\Admin\Products;
 
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;

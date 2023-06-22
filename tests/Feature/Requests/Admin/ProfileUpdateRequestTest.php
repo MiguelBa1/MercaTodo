@@ -1,10 +1,10 @@
 <?php
 
-namespace Tests\Feature\Api\Admin\UserManagement;
+namespace Tests\Feature\Requests\Admin;
 
 use Tests\Feature\Utilities\UserTestCase;
 
-class ProfileUpdateValidationTest extends UserTestCase
+class ProfileUpdateRequestTest extends UserTestCase
 {
     /**
      * @dataProvider invalidUserData

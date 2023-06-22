@@ -1,11 +1,11 @@
 <?php
 
-namespace Tests\Feature\Api\Admin\ProductManagement;
+namespace Tests\Feature\Requests\Admin;
 
 use Illuminate\Http\UploadedFile;
 use Tests\Feature\Utilities\ProductTestCase;
 
-class ProductValidationTest extends ProductTestCase
+class ProductRequestTest extends ProductTestCase
 {
     /**
      * @dataProvider invalidProductData
