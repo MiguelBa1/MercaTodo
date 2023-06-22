@@ -37,9 +37,4 @@ class CartController extends Controller
     {
         return $this->cartService->getCart($request->user()->id);
     }
-
-    public function getDetailedCartContents(Request $request): array
-    {
-        return $this->cartService->getProductsWithDetails($request->user()->id);
-    }
 }

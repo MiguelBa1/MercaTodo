@@ -2,12 +2,9 @@
 
 namespace App\Services;
 
-use App\Enums\DocumentTypeEnum;
-use App\Models\Department;
 use App\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Hash;
-use Spatie\Permission\Models\Role;
 
 class UserService
 {

@@ -28,7 +28,7 @@ Route::get(
     [HomeController::class, 'index']
 )->name('home');
 
-Route::middleware(['auth', 'checkStatus', 'verified'])->group(function () {
+Route::middleware(['auth', 'check.user.status', 'verified'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -43,7 +43,7 @@ Route::middleware(['auth', 'checkStatus', 'verified'])->group(function () {
     });
 });
 
-Route::middleware(['auth', 'role:admin', 'checkStatus', 'verified'])->prefix('admin')->group(function () {
+Route::middleware(['auth', 'role:admin', 'check.user.status', 'verified'])->prefix('admin')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('admin.dashboard');
     Route::prefix('users')->group(function () {
         Route::get('/', [AdminUserController::class, 'index'])->name('admin.view.users');

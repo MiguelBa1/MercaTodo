@@ -33,10 +33,10 @@ class OrderService
     public function getOrders(int $user_id): collection
     {
         return Order::query()
+            ->with('orderDetails:id,order_id,product_name,product_price,quantity')
             ->latest()
             ->select('id', 'reference', 'process_url', 'status', 'total', 'created_at')
             ->where('user_id', $user_id)
-            ->with('orderDetails:id,order_id,product_name,product_price,quantity')
             ->get();
     }
 

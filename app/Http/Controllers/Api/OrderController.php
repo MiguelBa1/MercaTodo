@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Exceptions\ProcessPaymentException;
 use App\Http\Controllers\Controller;
+use App\Models\Order;
 use App\Services\CartService;
 use App\Services\OrderService;
 use App\Services\Payment\PaymentService;
@@ -36,6 +37,7 @@ class OrderController extends Controller
             }
         }
 
+        /** @var Order $order */
         $order = $orderService->createOrder(
             $request->user(),
             collect($cartProducts)

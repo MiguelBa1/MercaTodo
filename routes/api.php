@@ -14,7 +14,6 @@ use App\Http\Controllers\Api\Users\AdminProfileController;
 use App\Http\Controllers\Api\Users\AdminUserStatusController;
 use App\Http\Controllers\Api\Cart\CartController;
 use App\Http\Controllers\Api\OrderController;
-use App\Models\City;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -35,7 +34,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::get('/', [HomeController::class, 'index'])->name('api.home.index');
 
-Route::middleware(['auth:sanctum', 'role:admin', 'checkStatus', 'verified'])->prefix('admin')->group(function () {
+Route::middleware(['auth:sanctum', 'role:admin', 'check.user.status', 'verified'])->prefix('admin')->group(function () {
     Route::prefix('users')->group(function () {
         Route::patch('{user}/status', [AdminUserStatusController::class, 'update'])->name('admin.api.users.status.update');
         Route::patch('{user}/password', [AdminPasswordController::class, 'update'])->name('admin.api.users.password.update');
@@ -69,7 +68,7 @@ Route::get('/categories', [CategoryController::class, 'index'])
     ->name('api.categories.index');
 
 
-Route::middleware(['auth:sanctum', 'verified', 'checkStatus'])->prefix('cart')->group(function () {
+Route::middleware(['auth:sanctum', 'verified', 'check.user.status'])->prefix('cart')->group(function () {
     Route::get('/', [CartController::class, 'index'])->name('api.cart.index');
     Route::post('/add', [CartController::class, 'store'])->name('api.cart.store');
     Route::delete('/remove/{product_id}', [CartController::class, 'destroy'])->name('api.cart.destroy');
@@ -77,6 +76,6 @@ Route::middleware(['auth:sanctum', 'verified', 'checkStatus'])->prefix('cart')->
     Route::get('/products', [CartProductController::class, 'index'])->name('api.cart.products.index');
 });
 
-Route::middleware(['auth:sanctum', 'verified', 'checkStatus'])->prefix('order')->group(function () {
+Route::middleware(['auth:sanctum', 'verified', 'check.user.status'])->prefix('order')->group(function () {
     Route::post('/', [OrderController::class, 'store'])->name('api.order.store');
 });

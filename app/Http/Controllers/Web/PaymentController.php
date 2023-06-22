@@ -77,7 +77,5 @@ class PaymentController extends Controller
                 ], 500);
             }
         }
-
-        return Redirect::to(route('home'));
     }
 }
