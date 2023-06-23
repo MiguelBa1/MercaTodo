@@ -1,11 +1,8 @@
 <?php
 
 use App\Http\Controllers\Api\Brands\AdminBrandController;
-use App\Http\Controllers\Api\Brands\BrandController;
 use App\Http\Controllers\Api\Cart\CartProductController;
 use App\Http\Controllers\Api\Categories\AdminCategoryController;
-use App\Http\Controllers\Api\Categories\CategoryController;
-use App\Http\Controllers\Api\HomeController;
 use App\Http\Controllers\Api\Cities\CityController;
 use App\Http\Controllers\Api\Products\AdminProductController;
 use App\Http\Controllers\Api\Products\AdminProductStatusController;
@@ -31,8 +28,6 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
-
-Route::get('/', [HomeController::class, 'index'])->name('api.home.index');
 
 Route::middleware(['auth:sanctum', 'role:admin', 'check.user.status', 'verified'])->prefix('admin')->group(function () {
     Route::prefix('users')->group(function () {
@@ -60,13 +55,6 @@ Route::middleware(['auth:sanctum', 'role:admin', 'check.user.status', 'verified'
 });
 
 Route::get('cities/{department_id}', [CityController::class, 'index'])->name('api.list.cities');
-
-Route::get('/brands', [BrandController::class, 'index'])
-    ->name('api.brands.index');
-
-Route::get('/categories', [CategoryController::class, 'index'])
-    ->name('api.categories.index');
-
 
 Route::middleware(['auth:sanctum', 'verified', 'check.user.status'])->prefix('cart')->group(function () {
     Route::get('/', [CartController::class, 'index'])->name('api.cart.index');

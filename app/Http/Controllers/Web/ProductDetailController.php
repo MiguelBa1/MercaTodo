@@ -12,12 +12,14 @@ class ProductDetailController extends Controller
     public function show(Product $product): Response
     {
         $relatedProducts = Product::query()
-            ->where('category_id', $product->getAttribute('category_id'))
-            ->where('id', '!=', $product->getAttribute('id'))
-            ->where('status', '=', true)
-            ->select('id', 'name', 'price', 'image')
+            ->with('category:id,name')
+            ->where('category_id', $product->category_id)
+            ->where('status', true)
+            ->whereKeyNot($product->getKey())
+            ->select(['id', 'name', 'price', 'image', 'category_id'])
             ->inRandomOrder()
-            ->limit(4)->get();
+            ->limit(6)
+            ->get();
 
         return Inertia::render('Products/Show', [
             'product' => $product->load('category:id,name', 'brand:id,name')
