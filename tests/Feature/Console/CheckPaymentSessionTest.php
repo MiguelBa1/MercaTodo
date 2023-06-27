@@ -19,7 +19,7 @@ class CheckPaymentSessionTest extends UserTestCase
         ]);
 
         Http::fake([
-            config('placetopay.url') . '/api/session/*' => Http::response([
+            config('placetopay.url') . '/*' => Http::response([
                 "status" => [
                     "status" => "APPROVED",
                     "reason" => "00",
