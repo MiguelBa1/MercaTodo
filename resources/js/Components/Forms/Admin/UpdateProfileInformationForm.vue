@@ -6,7 +6,7 @@ import TextInput from '@/Components/TextInput.vue';
 import {useForm, usePage} from '@inertiajs/vue3';
 import axios from "axios";
 import {useToast} from "vue-toast-notification";
-import {ref} from 'vue';
+import {onMounted, ref} from 'vue';
 
 const $toast = useToast();
 
@@ -33,15 +33,13 @@ const getCities = async () => {
     cities.value = await response.json();
 };
 
-getCities();
-
 const updateProfileInformation = () => {
     $toast.info('Updating profile information...');
     form.clearErrors();
 
     axios.patch(route('admin.api.users.profile.update', user.id), form.data())
         .then(response => {
-            $toast.success(response.data.message);
+            $toast.success('Profile information updated successfully.');
         })
         .catch(error => {
             form.setError(error.response.data.errors);
@@ -49,6 +47,9 @@ const updateProfileInformation = () => {
         });
 };
 
+onMounted(async () => {
+    await getCities();
+});
 </script>
 
 <template>
@@ -82,7 +83,7 @@ const updateProfileInformation = () => {
                     <InputLabel for="surname" value="Surname"/>
 
                     <TextInput
-                        id="name"
+                        id="surname"
                         type="text"
                         class="mt-1 block w-full"
                         v-model="form.surname"

@@ -19,7 +19,7 @@ class CheckUserStatus
     public function handle(Request $request, Closure $next): Response
     {
         if (!$request->user()->status) {
-            Auth::guard('web')->logout();
+            Auth::logout();
 
             $request->session()->invalidate();
 

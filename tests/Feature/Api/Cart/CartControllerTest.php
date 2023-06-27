@@ -11,7 +11,7 @@ class CartControllerTest extends ProductTestCase
     {
         parent::setUp();
 
-        $this->actingAs($this->adminUser);
+        $this->actingAs($this->customerUser);
     }
 
     public function testAddingProductToCart(): void
@@ -21,37 +21,34 @@ class CartControllerTest extends ProductTestCase
             'quantity' => 1,
         ]);
 
-        $cacheKey = 'user:' . $this->adminUser->id . ':cart';
+        $cacheKey = 'user:' . $this->customerUser->id . ':cart';
 
         $response->assertOk();
-        Cache::shouldReceive('put')->with($cacheKey, [$this->product->id => 1]);
+        $cart = Cache::get($cacheKey);
+        $this->assertArrayHasKey($this->product->id, $cart);
+        $this->assertEquals(1, $cart[$this->product->id]);
     }
 
     public function testRemovingProductFromCart(): void
     {
         $response = $this->deleteJson(route('api.cart.destroy', ['product_id' => $this->product->id]));
 
-        $cacheKey = 'user:' . $this->adminUser->id . ':cart';
+        $cacheKey = 'user:' . $this->customerUser->id . ':cart';
 
         $response->assertOk();
-        Cache::shouldReceive('put')->with($cacheKey, []);
+        $cart = Cache::get($cacheKey);
+        $this->assertArrayNotHasKey($this->product->id, $cart);
     }
 
     public function testFetchingCartContents(): void
     {
-        $this->postJson(route('api.cart.store'), [
-            'product_id' => $this->product->id,
-            'quantity' => 1,
-        ]);
+        $cacheKey = 'user:' . $this->customerUser->id . ':cart';
+        Cache::put($cacheKey, [$this->product->id => 1]);
 
         $response = $this->getJson(route('api.cart.index'));
 
-        $cacheKey = 'user:' . $this->adminUser->id . ':cart';
-
         $response->assertOk();
-        Cache::shouldReceive('get')->with($cacheKey);
-
-        $response->assertJson([
+        $response->assertJsonFragment([
             $this->product->id => 1,
         ]);
     }

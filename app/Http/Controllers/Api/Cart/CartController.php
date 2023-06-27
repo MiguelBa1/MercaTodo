@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api\Cart;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CartStoreRequest;
-use App\Services\CartService;
+use App\Services\Cart\CartService;
 use Illuminate\Http\Request;
 
 class CartController extends Controller
@@ -36,10 +36,5 @@ class CartController extends Controller
     public function index(Request $request): array
     {
         return $this->cartService->getCart($request->user()->id);
-    }
-
-    public function getDetailedCartContents(Request $request): array
-    {
-        return $this->cartService->getProductsWithDetails($request->user()->id);
     }
 }

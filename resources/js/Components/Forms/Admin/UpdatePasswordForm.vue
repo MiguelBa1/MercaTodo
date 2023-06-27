@@ -26,7 +26,7 @@ const updatePassword = () => {
     }
     axios.patch(route('admin.api.users.password.update', user.id), form.data())
         .then(response => {
-            $toast.success(response.data.message);
+            $toast.success('Password updated successfully.');
             form.reset();
         })
         .catch(error => {

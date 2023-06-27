@@ -6,9 +6,7 @@
                  class="w-full h-full object-cover">
         </div>
         <h2 class="text-xl font-semibold">{{ product.name }}</h2>
-        <div class="flex justify-between">
-            <p class="text-gray-600 text-sm">{{ product.category_name }}</p>
-        </div>
+        <p class="text-gray-600 text-sm">{{ product.category.name }}</p>
         <p class="text-md font-bold">Price: $ {{ product.price }}</p>
     </Link>
 </template>

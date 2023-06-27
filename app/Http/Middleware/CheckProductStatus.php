@@ -22,7 +22,6 @@ class CheckProductStatus
         $product = Product::query()->find($request->route('product'))->first();
 
         if (!$product || !$product->getRawOriginal('status')) {
-            dump(!$product->getRawOriginal('status'));
             return redirect()->route('home');
         }
 
