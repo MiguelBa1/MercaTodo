@@ -8,11 +8,11 @@ use App\Exceptions\ProcessPaymentException;
 use App\Exceptions\ProductUnavailableException;
 use App\Models\Order;
 use App\Models\Product;
-use App\Services\OrderService;
+use App\Services\Order\OrderService;
 use App\Services\Payment\Entities\AuthEntity;
 use App\Services\Payment\Entities\BuyerEntity;
 use App\Services\Payment\Entities\PaymentEntity;
-use App\Services\ProductService;
+use App\Services\Product\ProductService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Http;
 

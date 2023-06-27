@@ -1,16 +1,16 @@
 <?php
 
-use App\Http\Controllers\Api\Brands\AdminBrandController;
-use App\Http\Controllers\Api\Cart\CartProductController;
-use App\Http\Controllers\Api\Categories\AdminCategoryController;
-use App\Http\Controllers\Api\Cities\CityController;
-use App\Http\Controllers\Api\Products\AdminProductController;
-use App\Http\Controllers\Api\Products\AdminProductStatusController;
-use App\Http\Controllers\Api\Users\AdminPasswordController;
-use App\Http\Controllers\Api\Users\AdminProfileController;
-use App\Http\Controllers\Api\Users\AdminUserStatusController;
+use App\Http\Controllers\Api\Admin\Brand\BrandController as AdminBrandController;
+use App\Http\Controllers\Api\Admin\Category\CategoryController as AdminCategoryController;
+use App\Http\Controllers\Api\Admin\Product\ProductController as AdminProductController;
+use App\Http\Controllers\Api\Admin\Product\ProductStatusController as AdminProductStatusController;
+use App\Http\Controllers\Api\Admin\User\PasswordController as AdminPasswordController;
+use App\Http\Controllers\Api\Admin\User\ProfileController as AdminProfileController;
+use App\Http\Controllers\Api\Admin\User\UserStatusController as AdminUserStatusController;
 use App\Http\Controllers\Api\Cart\CartController;
-use App\Http\Controllers\Api\OrderController;
+use App\Http\Controllers\Api\Cart\CartProductController;
+use App\Http\Controllers\Api\Cities\CityController;
+use App\Http\Controllers\Api\Order\OrderController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 

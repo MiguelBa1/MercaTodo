@@ -1,15 +1,15 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\Web\Admin\AuxiliaryTablesController;
-use App\Http\Controllers\Web\Admin\ProductController as AdminProductController;
-use App\Http\Controllers\Web\Admin\UserController as AdminUserController;
-use App\Http\Controllers\Web\CartController;
-use App\Http\Controllers\Web\Admin\DashboardController;
-use App\Http\Controllers\Web\HomeController;
-use App\Http\Controllers\Web\ProductDetailController;
-use App\Http\Controllers\Web\OrderController;
-use App\Http\Controllers\Web\PaymentController;
+use App\Http\Controllers\Web\Admin\Auxiliary\AuxiliaryTablesController as AdminAuxiliaryTablesController;
+use App\Http\Controllers\Web\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\Web\Admin\Product\ProductController as AdminProductController;
+use App\Http\Controllers\Web\Admin\User\UserController as AdminUserController;
+use App\Http\Controllers\Web\Cart\CartController;
+use App\Http\Controllers\Web\Home\HomeController;
+use App\Http\Controllers\Web\Order\OrderController;
+use App\Http\Controllers\Web\Payment\PaymentController;
+use App\Http\Controllers\Web\Product\ProductController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -44,7 +44,7 @@ Route::middleware(['auth', 'check.user.status', 'verified'])->group(function () 
 });
 
 Route::middleware(['auth', 'role:admin', 'check.user.status', 'verified'])->prefix('admin')->group(function () {
-    Route::get('/', [DashboardController::class, 'index'])->name('admin.dashboard');
+    Route::get('/', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
     Route::prefix('users')->group(function () {
         Route::get('/', [AdminUserController::class, 'index'])->name('admin.view.users');
         Route::get('edit/{user}', [AdminUserController::class, 'edit'])->name('admin.edit.user');
@@ -55,9 +55,9 @@ Route::middleware(['auth', 'role:admin', 'check.user.status', 'verified'])->pref
         Route::get('{product}/edit', [AdminProductController::class, 'edit'])->name('admin.products.edit');
     });
 
-    Route::get('/auxiliary-tables', [AuxiliaryTablesController::class, 'index'])->name('admin.auxiliary.tables.index');
+    Route::get('/auxiliary-tables', [AdminAuxiliaryTablesController::class, 'index'])->name('admin.auxiliary.tables.index');
 });
 
-Route::get('/products/{product}', [ProductDetailController::class, 'show'])->name('products.show')->middleware('check.product.status');
+Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show')->middleware('check.product.status');
 
 require __DIR__ . '/auth.php';

@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Api\Order;
 
-use App\Services\CartService;
+use App\Services\Cart\CartService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
 use Tests\Feature\Utilities\ProductTestCase;

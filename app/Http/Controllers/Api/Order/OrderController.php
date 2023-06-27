@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\Order;
 
 use App\Exceptions\ProcessPaymentException;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
-use App\Services\CartService;
-use App\Services\OrderService;
+use App\Services\Cart\CartService;
+use App\Services\Order\OrderService;
 use App\Services\Payment\PaymentService;
-use App\Services\ProductService;
+use App\Services\Product\ProductService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 

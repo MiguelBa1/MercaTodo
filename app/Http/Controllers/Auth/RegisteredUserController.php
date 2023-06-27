@@ -6,7 +6,7 @@ use App\Enums\DocumentTypeEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\User\UserRegisterRequest;
 use App\Models\Department;
-use App\Services\UserService;
+use App\Services\User\UserService;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
