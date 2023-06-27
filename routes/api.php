@@ -8,7 +8,6 @@ use App\Http\Controllers\Api\Admin\User\PasswordController as AdminPasswordContr
 use App\Http\Controllers\Api\Admin\User\ProfileController as AdminProfileController;
 use App\Http\Controllers\Api\Admin\User\UserStatusController as AdminUserStatusController;
 use App\Http\Controllers\Api\Cart\CartController;
-use App\Http\Controllers\Api\Cart\CartProductController;
 use App\Http\Controllers\Api\Cities\CityController;
 use App\Http\Controllers\Api\Order\OrderController;
 use Illuminate\Http\Request;
@@ -60,8 +59,6 @@ Route::middleware(['auth:sanctum', 'verified', 'check.user.status'])->prefix('ca
     Route::get('/', [CartController::class, 'index'])->name('api.cart.index');
     Route::post('/add', [CartController::class, 'store'])->name('api.cart.store');
     Route::delete('/remove/{product_id}', [CartController::class, 'destroy'])->name('api.cart.destroy');
-
-    Route::get('/products', [CartProductController::class, 'index'])->name('api.cart.products.index');
 });
 
 Route::middleware(['auth:sanctum', 'verified', 'check.user.status'])->prefix('order')->group(function () {
