@@ -36,7 +36,6 @@ class CategoryControllerTest extends UserTestCase
         $response = $this->actingAs($this->adminUser)->post(route('admin.api.categories.store'), $data);
 
         $response->assertOk();
-        $response->assertJson(['message' => 'Category created successfully']);
         $this->assertDatabaseHas('categories', $data);
     }
 
@@ -49,7 +48,6 @@ class CategoryControllerTest extends UserTestCase
         $response = $this->actingAs($this->adminUser)->patch(route('admin.api.categories.update', $category->getAttribute('id')), $data);
 
         $response->assertOk();
-        $response->assertJson(['message' => 'Category updated successfully']);
         $this->assertDatabaseHas('categories', array_merge(['id' => $category->getAttribute('id')], $data));
     }
 

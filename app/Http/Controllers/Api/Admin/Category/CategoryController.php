@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Api\Admin\Category;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\CategoryRequest;
 use App\Models\Category;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Http\JsonResponse;
 
 class CategoryController extends Controller
 {
@@ -20,26 +20,28 @@ class CategoryController extends Controller
 
     /**
      * @param CategoryRequest $request
-     * @return JsonResponse
+     * @return void
      */
-    public function store(CategoryRequest $request): JsonResponse
+    public function store(CategoryRequest $request): void
     {
         $data = $request->validated();
 
-        $category = Category::query()->create($data);
-        return response()->json(['message' => 'Category created successfully', 'category' => $category]);
+        Category::query()->create($data);
+
+        Cache::forget('categories');
     }
 
     /**
      * @param CategoryRequest $request
      * @param Category $category
-     * @return JsonResponse
+     * @return void
      */
-    public function update(CategoryRequest $request, Category $category): JsonResponse
+    public function update(CategoryRequest $request, Category $category): void
     {
         $data = $request->validated();
 
         $category->update($data);
-        return response()->json(['message' => 'Category updated successfully']);
+
+        Cache::forget('categories');
     }
 }

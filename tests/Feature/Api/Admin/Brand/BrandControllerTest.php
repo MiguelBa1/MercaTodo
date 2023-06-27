@@ -35,7 +35,6 @@ class BrandControllerTest extends UserTestCase
         $response = $this->actingAs($this->adminUser)->post(route('admin.api.brands.store'), $data);
 
         $response->assertOk();
-        $response->assertJson(['message' => 'Brand created successfully']);
         $this->assertDatabaseHas('brands', $data);
     }
 
@@ -47,7 +46,6 @@ class BrandControllerTest extends UserTestCase
         $response = $this->actingAs($this->adminUser)->patch(route('admin.api.brands.update', $brand->getAttribute('id')), $data);
 
         $response->assertOk();
-        $response->assertJson(['message' => 'Brand updated successfully']);
         $this->assertDatabaseHas('brands', array_merge(['id' => $brand->getAttribute('id')], $data));
     }
 

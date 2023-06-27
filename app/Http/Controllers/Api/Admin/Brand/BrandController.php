@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Api\Admin\Brand;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\BrandRequest;
 use App\Models\Brand;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Http\JsonResponse;
 
 class BrandController extends Controller
 {
@@ -20,26 +20,28 @@ class BrandController extends Controller
 
     /**
      * @param BrandRequest $request
-     * @return JsonResponse
+     * @return void
      */
-    public function store(BrandRequest $request): JsonResponse
+    public function store(BrandRequest $request): void
     {
         $data = $request->validated();
 
-        $brand = Brand::query()->create($data);
-        return response()->json(['message' => 'Brand created successfully', 'brand' => $brand]);
+        Brand::query()->create($data);
+
+        Cache::forget('brands');
     }
 
     /**
      * @param BrandRequest $request
      * @param Brand $brand
-     * @return JsonResponse
+     * @return void
      */
-    public function update(BrandRequest $request, Brand $brand): JsonResponse
+    public function update(BrandRequest $request, Brand $brand): void
     {
         $data = $request->validated();
 
         $brand->update($data);
-        return response()->json(['message' => 'Brand updated successfully']);
+
+        Cache::forget('brands');
     }
 }

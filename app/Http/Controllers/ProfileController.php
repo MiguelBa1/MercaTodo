@@ -8,6 +8,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -19,14 +20,13 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): Response
     {
-        // Add department_id to the authenticated user
-        $request->user()->setAttribute('department_id', $request->user()->city->department_id);
+        $request->user()->department_id = $request->user()->city->department->id;
 
         return Inertia::render('Profile/Edit', [
             'user' => $request->user()->withoutRelations()->toArray(),
             'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
             'status' => session('status'),
-            'departments' => Department::all(),
+            'departments' => Cache::remember('departments', 3600, fn () => Department::all('id', 'name')),
         ]);
     }
 

@@ -7,6 +7,7 @@ use App\Http\Requests\HomeRequest;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Product;
+use Illuminate\Support\Facades\Cache;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -31,8 +32,8 @@ class HomeController extends Controller
 
         return Inertia::render('Home', [
             'products' => fn () => $products,
-            'brands' => fn () => Brand::query()->select('id', 'name')->get(),
-            'categories' => fn () => Category::query()->select('id', 'name')->get(),
+            'brands' => fn () => Cache::remember('brands', 3600, fn () => Brand::all('id', 'name')),
+            'categories' => fn () => Cache::remember('categories', 3600, fn () => Category::all('id', 'name')),
             'filters' => fn () => $request->all(),
         ]);
     }

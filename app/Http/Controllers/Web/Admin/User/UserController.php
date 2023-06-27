@@ -7,9 +7,11 @@ use App\Http\Controllers\Controller;
 use App\Models\Department;
 use App\Models\User;
 use App\Services\User\UserService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
+use Illuminate\Support\Facades\Cache;
 use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
@@ -33,9 +35,9 @@ class UserController extends Controller
 
         return Inertia::render('Admin/Users/Edit', [
             'user' => $userData,
-            'departments' => Department::all('id', 'name'),
+            'departments' => Cache::remember('departments', 3600, fn () => Department::all()),
             'document_types' => array_column(DocumentTypeEnum::cases(), 'value'),
-            'roles' => Role::all('name')
+            'roles' => Cache::remember('roles', Carbon::now()->addWeek(), fn () => Role::all()),
         ]);
     }
 }
