@@ -27,10 +27,10 @@ class HomeController extends Controller
                 return $query->where('name', 'like', "%{$request->get('search')}%");
             })
             ->where('status', true)
-            ->orderBy('id', 'desc')
+            ->latest()
             ->paginate(10);
 
-        return Inertia::render('Home', [
+        return Inertia::render('Home/Index', [
             'products' => fn () => $products,
             'brands' => fn () => Cache::remember('brands', 3600, fn () => Brand::all('id', 'name')),
             'categories' => fn () => Cache::remember('categories', 3600, fn () => Category::all('id', 'name')),
