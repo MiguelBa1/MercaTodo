@@ -15,6 +15,7 @@ use App\Services\Payment\Entities\PaymentEntity;
 use App\Services\Product\ProductService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class PaymentService
 {
@@ -35,12 +36,23 @@ class PaymentService
             ]);
 
             return $response->json()['processUrl'];
+        } elseif ($response->failed()) {
+            $statusCode = $response->json()['status']['reason'];
+            $errorMessage = $response->json()['status']['message'];
+
+            (new OrderService())->deleteOrder($order);
+
+            Log::error('Payment processing failed with status code ' . $statusCode . ': ' . $errorMessage);
+
+            if ($statusCode == 401) {
+                throw ProcessPaymentException::invalidRequestError();
+            }
+
+            throw ProcessPaymentException::sessionError();
         } else {
-            $orderService = new OrderService();
+            Log::error('Unexpected response status when processing payment: ' . $response->status());
 
-            $orderService->deleteOrder($order);
-
-            throw new ProcessPaymentException('Error creating payment session');
+            throw ProcessPaymentException::unexpectedError();
         }
     }
 
@@ -63,6 +75,9 @@ class PaymentService
         ];
     }
 
+    /**
+     * @throws ProcessPaymentException
+     */
     public function handlePaymentResponse(Order $order): Order
     {
         $auth = new AuthEntity();
@@ -73,6 +88,21 @@ class PaymentService
 
         if ($response->ok()) {
             $this->updateOrderStatus($order, $response->json()['status']['status']);
+        } elseif ($response->failed()) {
+            $statusCode = $response->json()['status']['reason'] ?? $response->status();
+            $errorMessage = $response->json()['status']['message'] ?? 'Unknown error';
+
+            Log::error('Failed to handle payment response with status code ' . $statusCode . ': ' . $errorMessage);
+
+            if ($statusCode == 401) {
+                throw ProcessPaymentException::invalidRequestError();
+            }
+
+            throw ProcessPaymentException::sessionError();
+        } else {
+            Log::error('Unexpected response status when handling payment response: ' . $response->status());
+
+            throw ProcessPaymentException::unexpectedError();
         }
 
         return $order;
@@ -94,6 +124,7 @@ class PaymentService
 
     /**
      * @throws ProductUnavailableException
+     * @throws ProcessPaymentException
      */
     public function retryPayment(Order $order, string $ipAddress, string $userAgent): string
     {
@@ -104,7 +135,7 @@ class PaymentService
             $product = Product::query()->find($orderDetail->product_id);
 
             if (!$productService->verifyProductAvailability($product, $orderDetail->quantity)) {
-                throw new ProductUnavailableException($product, "Product {$product->name} is not available", 400);
+                throw ProductUnavailableException::unavailable($product->name);
             }
 
             $productService->updateStock($product->id, $orderDetail->quantity);

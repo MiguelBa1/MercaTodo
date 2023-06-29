@@ -2,8 +2,10 @@
 
 namespace App\Services\Cart;
 
+use App\Exceptions\ProductUnavailableException;
 use App\Services\Product\ProductService;
 use Illuminate\Support\Facades\Cache;
+use App\Exceptions\CartValidationException;
 
 class CartService
 {
@@ -36,8 +38,7 @@ class CartService
         $cartData = $this->getCart($userId);
         $productIds = array_keys($cartData);
 
-        $productService = new ProductService();
-        $productsDetails = $productService->getProductsDetails($productIds);
+        $productsDetails = (new ProductService())->getProductsDetails($productIds);
 
         foreach ($cartData as $productId => $quantity) {
             if (isset($productsDetails[$productId])) {
@@ -51,5 +52,26 @@ class CartService
     public function clear(int $userId): void
     {
         Cache::forget("user:$userId:cart");
+    }
+
+    /**
+     * @throws CartValidationException
+     * @throws ProductUnavailableException
+     */
+    public function validatedCart(int $userId): array
+    {
+        $cartData = $this->getProductsWithDetails($userId);
+
+        if (empty($cartData)) {
+            throw CartValidationException::empty();
+        }
+
+        foreach ($cartData as $cartProduct) {
+            if (!(new ProductService())->verifyProductAvailability($cartProduct, $cartProduct['quantity'])) {
+                throw ProductUnavailableException::unavailable($cartProduct['name']);
+            }
+        }
+
+        return $cartData;
     }
 }

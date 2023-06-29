@@ -5,7 +5,7 @@ namespace App\Exceptions;
 use Exception;
 use Illuminate\Http\JsonResponse;
 
-class ProductUnavailableException extends Exception
+class CartValidationException extends Exception
 {
     protected $code = 422;
 
@@ -16,10 +16,8 @@ class ProductUnavailableException extends Exception
         ], $this->getCode());
     }
 
-    public static function unavailable(string $product_name): self
+    public static function empty(): self
     {
-        return new self(__('validation.custom.product.unavailable', [
-            'product_name' => $product_name
-        ]));
+        return new self(__('validation.custom.cart.empty'));
     }
 }

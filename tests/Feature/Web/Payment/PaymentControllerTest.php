@@ -39,7 +39,6 @@ class PaymentControllerTest extends ProductTestCase
         ]);
     }
 
-
     public function testHandleRedirectWithPendingOrderIsApproved(): void
     {
         $mockResponse = [
@@ -56,11 +55,15 @@ class PaymentControllerTest extends ProductTestCase
 
         $response = $this->actingAs($this->customerUser)->get(route('payment.result', $this->pendingOrder->id));
 
-        $response->assertStatus(200);
+        $response->assertOk();
         $response->assertInertia(
             fn (AssertableInertia $page) => $page
-                ->component('Payment/Completed')
-                ->has('order')
+                ->component('Payment/Result', function (AssertableInertia $page) {
+                    $page->where('order.status', OrderStatusEnum::COMPLETED)
+                        ->where('order.reference', $this->pendingOrder->reference)
+                        ->where('order.total', $this->pendingOrder->total)
+                        ->where('order.created_at', $this->pendingOrder->created_at->format('Y-m-d H:i:s'));
+                })
         );
 
         $this->assertDatabaseHas('orders', [
@@ -85,11 +88,15 @@ class PaymentControllerTest extends ProductTestCase
 
         $response = $this->actingAs($this->customerUser)->get(route('payment.result', $this->pendingOrder->id));
 
-        $response->assertStatus(200);
+        $response->assertOk();
         $response->assertInertia(
             fn (AssertableInertia $page) => $page
-                ->component('Payment/Rejected')
-                ->has('order')
+                ->component('Payment/Result', function (AssertableInertia $page) {
+                    $page->where('order.status', OrderStatusEnum::REJECTED)
+                        ->where('order.reference', $this->pendingOrder->reference)
+                        ->where('order.total', $this->pendingOrder->total)
+                        ->where('order.created_at', $this->pendingOrder->created_at->format('Y-m-d H:i:s'));
+                })
         );
 
         $this->assertDatabaseHas('orders', [
@@ -110,15 +117,19 @@ class PaymentControllerTest extends ProductTestCase
             ],
         ];
 
-        Http::fake([config('placetopay.url') . '/*' => $mockResponse,]);
+        Http::fake([config('placetopay.url') .'/*' => $mockResponse,]);
 
         $response = $this->actingAs($this->customerUser)->get(route('payment.result', $this->pendingOrder->id));
 
-        $response->assertStatus(200);
+        $response->assertOk();
         $response->assertInertia(
             fn (AssertableInertia $page) => $page
-                ->component('Payment/Pending')
-                ->has('order')
+                ->component('Payment/Result', function (AssertableInertia $page) {
+                    $page->where('order.status', OrderStatusEnum::PENDING)
+                        ->where('order.reference', $this->pendingOrder->reference)
+                        ->where('order.total', $this->pendingOrder->total)
+                        ->where('order.created_at', $this->pendingOrder->created_at->format('Y-m-d H:i:s'));
+                })
         );
 
         $this->assertDatabaseHas('orders', [
@@ -131,7 +142,7 @@ class PaymentControllerTest extends ProductTestCase
     {
         $response = $this->actingAs($this->customerUser)->get(route('payment.result', $this->completedOrder->id));
 
-        $response->assertStatus(302);
+        $response->assertFound();
         $response->assertRedirect(route('home'));
     }
 
@@ -139,7 +150,7 @@ class PaymentControllerTest extends ProductTestCase
     {
         $response = $this->actingAs($this->customerUser)->get(route('payment.canceled', $this->completedOrder->id));
 
-        $response->assertStatus(302);
+        $response->assertFound();
         $response->assertRedirect(route('home'));
     }
 
@@ -158,7 +169,7 @@ class PaymentControllerTest extends ProductTestCase
         Http::fake([config('placetopay.url') . '/*' => $mockResponse,]);
         $response = $this->actingAs($this->customerUser)->get(route('payment.canceled', $this->pendingOrder->id));
 
-        $response->assertStatus(200);
+        $response->assertOk();
         $response->assertInertia(
             fn (AssertableInertia $page) => $page
                 ->component('Payment/Canceled')
@@ -182,7 +193,7 @@ class PaymentControllerTest extends ProductTestCase
     {
         $response = $this->actingAs($this->customerUser)->get(route('payment.retry', $this->pendingOrder->id));
 
-        $response->assertStatus(201);
+        $response->assertCreated();
         $response->assertJson([
             'redirect_url' => $this->pendingOrder->process_url
         ]);
@@ -207,7 +218,7 @@ class PaymentControllerTest extends ProductTestCase
 
         $response = $this->actingAs($this->customerUser)->get(route('payment.retry', $this->pendingOrder->id));
 
-        $response->assertStatus(201);
+        $response->assertCreated();
         $response->assertJson([
             'redirect_url' => $this->pendingOrder->process_url
         ]);
@@ -237,11 +248,15 @@ class PaymentControllerTest extends ProductTestCase
 
         $response = $this->actingAs($this->customerUser)->get(route('payment.result', $this->pendingOrder->id));
 
-        $response->assertStatus(200);
+        $response->assertOk();
         $response->assertInertia(
             fn (AssertableInertia $page) => $page
-                ->component('Payment/Rejected')
-                ->has('order')
+                ->component('Payment/Result', function (AssertableInertia $page) {
+                    $page->where('order.status', OrderStatusEnum::REJECTED)
+                        ->where('order.reference', $this->pendingOrder->reference)
+                        ->where('order.total', $this->pendingOrder->total)
+                        ->where('order.created_at', $this->pendingOrder->created_at->format('Y-m-d H:i:s'));
+                })
         );
 
         $this->assertDatabaseHas('products', [

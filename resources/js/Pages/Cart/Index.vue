@@ -2,17 +2,18 @@
 import MainLayout from "@/Layouts/MainLayout.vue";
 import {Head, Link} from '@inertiajs/vue3';
 import {useCartStore} from "@/store/cart";
-import {computed, onMounted, ref} from "vue";
+import {computed, ref} from "vue";
 import ProductCard from "@/Pages/Cart/Partials/ProductCard.vue";
 import LoadingSpinner from "@/Components/LoadingSpinner.vue";
 import {useToast} from "vue-toast-notification";
+import {usePage, router} from "@inertiajs/vue3";
 import axios from "axios";
 
 
 const store = useCartStore();
 const $toast = useToast();
 
-const cartProducts = ref({});
+const cartProducts = ref(usePage().props.cartProducts);
 
 const total = computed(() => {
     let total = 0;
@@ -22,17 +23,17 @@ const total = computed(() => {
     return total;
 });
 
-const isLoading = ref(true);
+const isLoading = ref(false);
 
 const checkout = async () => {
     isLoading.value = true;
     try {
         const response = await axios.post(route('api.order.store'));
         if (response.status === 201) {
-            window.location.href = response.data.redirect_url;
+            location.href = response.data.redirect_url;
         }
     } catch (e) {
-        if (e.response.status === 400) {
+        if (e.response.status === 503) {
             $toast.error(e.response.data.message);
         } else {
             $toast.error('Something went wrong. Please try again later.');
@@ -42,19 +43,15 @@ const checkout = async () => {
 };
 
 const fetchProducts = async () => {
-    try {
-        const response = await axios.get(route('api.cart.products.index'), {
-        });
-        cartProducts.value = response.data;
-    } catch (e) {
-        $toast.error('Something went wrong getting your cart products. Please try again later.');
-    }
+    router.visit(route('cart.index'),
+        {
+            replace: true,
+            preserveScroll: true,
+            only: ['cartProducts']
+        }
+    )
 };
 
-onMounted(async () => {
-    await fetchProducts();
-    isLoading.value = false;
-});
 </script>
 
 <template>

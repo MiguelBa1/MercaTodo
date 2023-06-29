@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\DB;
 
 class OrderDetailService
 {
-    public function createOrderDetails(Order $order, Collection $productData): Collection
+    public function createOrderDetails(Order $order, array $productData): Collection
     {
         $orderDetails = collect();
         $productService = new ProductService();

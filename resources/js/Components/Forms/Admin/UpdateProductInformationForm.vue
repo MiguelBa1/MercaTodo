@@ -4,14 +4,25 @@ import InputLabel from "@/Components/InputLabel.vue";
 import InputError from "@/Components/InputError.vue";
 import {useToast} from "vue-toast-notification";
 import {useForm} from "@inertiajs/vue3";
-import {onMounted, ref} from "vue";
+import {ref} from "vue";
 import axios from "axios";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 
 const $toast = useToast()
 
-const {product} = defineProps({
-    product: Object
+let {product, brands, categories} = defineProps({
+    product: {
+        type: Object,
+        required: true
+    },
+    brands: {
+        type: Array,
+        required: true
+    },
+    categories: {
+        type: Array,
+        required: true
+    }
 })
 
 const imageUrl = ref(product.image ? `/storage/images/${product.image}` : null)
@@ -52,26 +63,8 @@ const updateProduct = () => {
         form.setError(error.response.data.errors);
         $toast.error('Something went wrong, please verify the information and try again.')
     })
-
 }
 
-const brands = ref([])
-const categories = ref([])
-
-const fetchBrands = async () => {
-    const response = await axios.get(route('api.brands.index'))
-    brands.value = response.data.brands
-}
-
-const fetchCategories = async () => {
-    const response = await axios.get(route('api.categories.index'))
-    categories.value = response.data.categories
-}
-
-onMounted(() => {
-    fetchBrands();
-    fetchCategories();
-})
 </script>
 <template>
     <header>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Web\Payment;
 
 use App\Enums\OrderStatusEnum;
+use App\Exceptions\ProcessPaymentException;
 use App\Exceptions\ProductUnavailableException;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
@@ -16,6 +17,9 @@ use Inertia\Response;
 
 class PaymentController extends Controller
 {
+    /**
+     * @throws ProcessPaymentException
+     */
     public function handleRedirect(Request $request, Order $order, PaymentService $paymentService): RedirectResponse|Response
     {
         if ($order->status !== OrderStatusEnum::PENDING || $order->user_id !== $request->user()->id) {
@@ -23,19 +27,15 @@ class PaymentController extends Controller
         }
 
         $updatedOrder = $paymentService->handlePaymentResponse($order);
-        $status = $updatedOrder->status;
 
-        $viewName = match ($status) {
-            OrderStatusEnum::COMPLETED => 'Payment/Completed',
-            OrderStatusEnum::REJECTED => 'Payment/Rejected',
-            default => 'Payment/Pending',
-        };
-
-        return Inertia::render($viewName, [
+        return Inertia::render('Payment/Result', [
             'order' => $updatedOrder->only(['reference', 'total', 'status', 'created_at'])
         ]);
     }
 
+    /**
+     * @throws ProcessPaymentException
+     */
     public function handleCanceled(Request $request, Order $order, PaymentService $paymentService): RedirectResponse|Response
     {
         if ($order->status !== OrderStatusEnum::PENDING) {
@@ -50,6 +50,10 @@ class PaymentController extends Controller
         return Inertia::render('Payment/Canceled');
     }
 
+    /**
+     * @throws ProcessPaymentException
+     * @throws ProductUnavailableException
+     */
     public function retryPayment(Request $request, Order $order, PaymentService $paymentService): RedirectResponse|JsonResponse
     {
         if ($order->user_id !== $request->user()->id || $order->status === OrderStatusEnum::COMPLETED) {
@@ -63,19 +67,11 @@ class PaymentController extends Controller
         }
 
         if ($order->status === OrderStatusEnum::REJECTED) {
-            try {
-                $redirectUrl = $paymentService->retryPayment($order, $request->ip(), $request->userAgent());
+            $redirectUrl = $paymentService->retryPayment($order, $request->ip(), $request->userAgent());
 
-                return response()->json([
-                    'redirect_url' => $redirectUrl
-                ], 201);
-            } catch (ProductUnavailableException $e) {
-                return $e->render();
-            } catch (\Exception $e) {
-                return response()->json([
-                    'message' => $e->getMessage()
-                ], 500);
-            }
+            return response()->json([
+                'redirect_url' => $redirectUrl
+            ], 201);
         }
     }
 }

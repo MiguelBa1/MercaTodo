@@ -20,7 +20,7 @@ class ProductService
 
     public function updateProduct(Product $product, array $data): void
     {
-        if (isset($data['image']) && $product->image !== $data['image']) {
+        if (isset($data['image']) && $product->image !== $data['image'] && $product->image !== null) {
             (new ProductImageService())->deleteImage($product->image);
         }
 
@@ -81,6 +81,6 @@ class ProductService
 
     public function verifyProductAvailability(Product $product, int $quantity): bool
     {
-        return $product->getRawOriginal('status') && $product->stock >= $quantity && $product->stock > 0;
+        return $product->getRawOriginal('status') && $product->stock >= $quantity;
     }
 }

@@ -3,8 +3,8 @@ import {Head, router, usePage} from '@inertiajs/vue3';
 import MainLayout from "@/Layouts/MainLayout.vue";
 import {ref} from 'vue'
 import {TailwindPagination} from 'laravel-vue-pagination';
-import ProductFilter from "@/Pages/Products/Partials/ProductFilter.vue";
-import ProductGallery from "@/Pages/Products/Partials/ProductGallery.vue";
+import ProductFilter from "@/Pages/Home/Partials/ProductFilter.vue";
+import ProductGallery from "@/Pages/Home/Partials/ProductGallery.vue";
 
 const productsData = ref(usePage().props.products);
 const brands = ref(usePage().props.brands);

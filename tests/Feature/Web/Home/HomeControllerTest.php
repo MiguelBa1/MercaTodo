@@ -24,7 +24,7 @@ class HomeControllerTest extends TestCase
         $response->assertOk();
         $response->assertInertia(
             fn (AssertableInertia $page) => $page
-            ->component('Home')
+            ->component('Home/Index')
             ->has(
                 'products',
                 fn (AssertableInertia $page) => $page
@@ -67,7 +67,7 @@ class HomeControllerTest extends TestCase
         $response->assertOk();
         $response->assertInertia(
             fn (AssertableInertia $page) => $page
-            ->component('Home')
+            ->component('Home/Index')
             ->has(
                 'products',
                 fn (AssertableInertia $page) => $page

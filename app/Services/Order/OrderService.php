@@ -13,11 +13,13 @@ use Illuminate\Support\Collection;
 
 class OrderService
 {
-    public function createOrder(User $user, Collection $cartProducts): Order|Model
+    public function createOrder(User $user, array $cartProducts): Order|Model
     {
-        $total = $cartProducts->sum(function ($product) {
-            return $product['price'] * $product['quantity'];
-        });
+        $total = 0;
+
+        foreach ($cartProducts as $cartProduct) {
+            $total += $cartProduct['price'] * $cartProduct['quantity'];
+        }
 
         /** @var Order $order */
         $order = $user->orders()->create([
