@@ -5,7 +5,7 @@ import DropdownLink from "@/Components/DropdownLink.vue";
 import {Link} from "@inertiajs/vue3";
 import ResponsiveNavLink from "@/Components/ResponsiveNavLink.vue";
 import {ref} from "vue";
-import CartIcon from "@/Components/CartIcon.vue";
+import CartIcon from "@/Components/Icons/CartIcon.vue";
 
 const showingNavigationDropdown = ref(false);
 </script>

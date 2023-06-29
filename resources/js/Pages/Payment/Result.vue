@@ -3,35 +3,51 @@ import MainLayout from "@/Layouts/MainLayout.vue";
 import {Head, Link, usePage} from "@inertiajs/vue3";
 import {Ref, ref} from "vue";
 import {Order} from "@/types";
+import CompletedIcon from "@/Components/Icons/CompletedIcon.vue";
+import RejectedIcon from "@/Components/Icons/RejectedIcon.vue";
+import PendingIcon from "@/Components/Icons/PendingIcon.vue";
 
 defineOptions({
     layout: MainLayout,
+    components: {
+        CompletedIcon,
+        RejectedIcon,
+        PendingIcon,
+    }
 })
 
 const page = usePage();
-
 const order: Ref<Order> = ref(page.props.order);
+const title: Ref<string> = ref("");
 
+switch (order.value.status) {
+    case "COMPLETED":
+        title.value = "Payment Successful";
+        break;
+    case "REJECTED":
+        title.value = "Payment Rejected";
+        break;
+    default:
+        title.value = "Payment Pending";
+        break;
+}
 </script>
 
 <template>
     <Head>
-        <title>Payment Successful</title>
+        <title>{{ title }}</title>
     </Head>
     <div class="bg-white flex flex-col justify-center py-12">
         <div class="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl m-4">
             <div class="md:flex p-8">
-                <!-- Success SVG icon -->
                 <div class="md:flex-shrink-0 flex items-center justify-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                         class="h-24 w-24 text-green-500 m-4">
-                        <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12l3 3l6 -6"/>
-                    </svg>
+                    <CompletedIcon v-if="order.status === 'COMPLETED'" />
+                    <RejectedIcon v-else-if="order.status === 'REJECTED'" />
+                    <PendingIcon v-else />
                 </div>
                 <div class="p-8">
                     <h3 class="text-xl leading-6 font-medium text-gray-900">
-                        Payment Successful
+                        {{ title }}
                     </h3>
                     <div class="mt-2">
                         <dl class="grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2">

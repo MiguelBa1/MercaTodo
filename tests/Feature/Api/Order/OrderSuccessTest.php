@@ -32,7 +32,7 @@ class OrderSuccessTest extends ProductTestCase
 
         $response = $this->post(route('api.order.store'));
 
-        $response->assertStatus(201);
+        $response->assertCreated();
         $this->assertOrderCreated();
     }
 
@@ -77,7 +77,7 @@ class OrderSuccessTest extends ProductTestCase
 
         $response = $this->post(route('api.order.store'));
 
-        $response->assertStatus(201);
+        $response->assertCreated();
         $response->assertJson([
             'redirect_url' => 'https://test.placetopay.com/',
         ]);
@@ -85,6 +85,11 @@ class OrderSuccessTest extends ProductTestCase
 
     public function testProductIsDecrementedOnStoreOrder(): void
     {
+        $mockResponse = $this->getMockResponse();
+        Http::fake([
+            config('placetopay.url') . '/*' => Http::response($mockResponse)
+        ]);
+
         $this->product->stock = 2;
         $this->product->save();
 
@@ -93,7 +98,7 @@ class OrderSuccessTest extends ProductTestCase
         $firstStock = $this->product->stock;
         $this->product->refresh();
 
-        $response->assertStatus(201);
+        $response->assertCreated();
         $this->assertDatabaseHas('products', [
             'id' => $this->product->getKey(),
             'stock' => $firstStock - self::QUANTITY,
