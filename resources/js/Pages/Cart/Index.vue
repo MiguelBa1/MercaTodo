@@ -30,10 +30,10 @@ const checkout = async () => {
     try {
         const response = await axios.post(route('api.order.store'));
         if (response.status === 201) {
-            window.location.href = response.data.redirect_url;
+            location.href = response.data.redirect_url;
         }
     } catch (e) {
-        if (e.response.status === 422) {
+        if (e.response.status === 503) {
             $toast.error(e.response.data.message);
         } else {
             $toast.error('Something went wrong. Please try again later.');

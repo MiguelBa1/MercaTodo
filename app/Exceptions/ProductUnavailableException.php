@@ -2,7 +2,6 @@
 
 namespace App\Exceptions;
 
-use App\Models\Product;
 use Exception;
 use Illuminate\Http\JsonResponse;
 

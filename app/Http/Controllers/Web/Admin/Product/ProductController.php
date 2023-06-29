@@ -37,17 +37,17 @@ class ProductController extends Controller
     public function edit(Product $product): Response
     {
         return Inertia::render('Admin/Products/Edit', [
-            'product' => fn() => $product->load(['category:id,name', 'brand:id,name']),
-            'categories' => fn() => Cache::remember('categories', 3600, fn() => Category::all(['id', 'name'])),
-            'brands' => fn() => Cache::remember('brands', 3600, fn() => Brand::all(['id', 'name'])),
+            'product' => fn () => $product->load(['category:id,name', 'brand:id,name']),
+            'categories' => fn () => Cache::remember('categories', 3600, fn () => Category::all(['id', 'name'])),
+            'brands' => fn () => Cache::remember('brands', 3600, fn () => Brand::all(['id', 'name'])),
         ]);
     }
 
     public function create(): Response
     {
         return Inertia::render('Admin/Products/Create', [
-            'categories' => fn() => Cache::remember('categories', 3600, fn() => Category::all(['id', 'name'])),
-            'brands' => fn() => Cache::remember('brands', 3600, fn() => Brand::all(['id', 'name'])),
+            'categories' => fn () => Cache::remember('categories', 3600, fn () => Category::all(['id', 'name'])),
+            'brands' => fn () => Cache::remember('brands', 3600, fn () => Brand::all(['id', 'name'])),
         ]);
     }
 }

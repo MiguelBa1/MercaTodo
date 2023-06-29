@@ -169,6 +169,11 @@ return [
         'product' => [
             'unavailable' => 'The product :product_name is no longer available, please remove it from the cart.',
         ],
+        'payment' => [
+            'session_error' => 'There was an error creating the payment session, please try again.',
+            'invalid_request_error' => 'The payment data provided is incorrect or incomplete, please verify it and try again.',
+            'unexpected_error' => 'There was an unexpected error processing your payment. Please try again.',
+        ],
         'attribute-name' => [
             'rule-name' => 'custom-message',
         ],
