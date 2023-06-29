@@ -12,7 +12,8 @@ class CartController extends Controller
 {
     public function index(Request $request): Response
     {
-        return Inertia::render('Cart/Index',
+        return Inertia::render(
+            'Cart/Index',
             [
                 "cartProducts" => fn () => (new CartService())->getProductsWithDetails($request->user()->id),
             ]

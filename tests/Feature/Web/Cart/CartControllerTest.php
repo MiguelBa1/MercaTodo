@@ -26,7 +26,7 @@ class CartControllerTest extends ProductTestCase
         $response->assertOk();
 
         $response->assertInertia(
-            fn(AssertableInertia $page) => $page
+            fn (AssertableInertia $page) => $page
                 ->component('Cart/Index', function (AssertableInertia $page) {
                     $page->has('products', 1, function (AssertableInertia $page) {
                         $page->where('id', $this->product->id)

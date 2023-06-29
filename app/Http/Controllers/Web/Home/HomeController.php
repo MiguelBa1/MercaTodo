@@ -27,7 +27,7 @@ class HomeController extends Controller
                 return $query->where('name', 'like', "%{$request->get('search')}%");
             })
             ->where('status', true)
-            ->latest()
+            ->latest('id')
             ->paginate(10);
 
         return Inertia::render('Home/Index', [

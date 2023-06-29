@@ -4,7 +4,7 @@ import UpdateProductInformationForm from "@/Components/Forms/Admin/UpdateProduct
 import {usePage, Head} from "@inertiajs/vue3";
 import DeleteProductForm from "@/Components/Forms/Admin/DeleteProductForm.vue";
 
-const {product} = usePage().props;
+const {product, brands, categories} = usePage().props;
 </script>
 
 <template>
@@ -19,7 +19,7 @@ const {product} = usePage().props;
 
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6 p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                <UpdateProductInformationForm :product="product"/>
+                <UpdateProductInformationForm :product="product" :brands="brands" :categories="categories"/>
             </div>
         </div>
 
