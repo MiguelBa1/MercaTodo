@@ -33,7 +33,7 @@ const checkout = async () => {
             window.location.href = response.data.redirect_url;
         }
     } catch (e) {
-        if (e.response.status === 400) {
+        if (e.response.status === 422) {
             $toast.error(e.response.data.message);
         } else {
             $toast.error('Something went wrong. Please try again later.');

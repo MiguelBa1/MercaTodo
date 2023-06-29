@@ -94,6 +94,7 @@ class PaymentService
 
     /**
      * @throws ProductUnavailableException
+     * @throws ProcessPaymentException
      */
     public function retryPayment(Order $order, string $ipAddress, string $userAgent): string
     {
@@ -104,7 +105,7 @@ class PaymentService
             $product = Product::query()->find($orderDetail->product_id);
 
             if (!$productService->verifyProductAvailability($product, $orderDetail->quantity)) {
-                throw new ProductUnavailableException($product, "Product {$product->name} is not available", 400);
+                throw ProductUnavailableException::unavailable($product->name);
             }
 
             $productService->updateStock($product->id, $orderDetail->quantity);
