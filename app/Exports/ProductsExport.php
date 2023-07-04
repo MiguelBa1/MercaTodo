@@ -2,22 +2,29 @@
 
 namespace App\Exports;
 
+use App\Enums\ExportStatusEnum;
+use App\Models\Export;
 use App\Models\Product;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Concerns\FromQuery;
+use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\WithHeadings;
+use Maatwebsite\Excel\Events\AfterSheet;
 
-class ProductsExport implements FromQuery, WithHeadings, ShouldQueue
+class ProductsExport implements FromQuery, WithHeadings, ShouldQueue, WithEvents
 {
     private int $from;
     private int $to;
+    private Export $export;
 
-    public function __construct(int $from = null, int $to = null)
+    public function __construct(int $from, int $to, Export $export)
     {
         $this->from = $from;
         $this->to = $to;
+        $this->export = $export;
     }
 
     public function query(): Relation|Builder|\Illuminate\Database\Query\Builder
@@ -58,5 +65,27 @@ class ProductsExport implements FromQuery, WithHeadings, ShouldQueue
             'Category',
             'Brand',
         ];
+    }
+    public function registerEvents(): array
+    {
+        return [
+            AfterSheet::class => function (AfterSheet $event) {
+                $this->export->status = ExportStatusEnum::READY->value;
+                $this->export->save();
+            },
+        ];
+    }
+
+    public function failed(\Throwable $e): void
+    {
+        $this->export->status = ExportStatusEnum::REJECTED->value;
+        $this->export->error = $e->getMessage();
+        $this->export->save();
+
+        Log::error('Export failed', [
+            'export_id' => $this->export->id,
+            'error' => $e->getMessage(),
+            'trace' => $e->getTraceAsString(),
+        ]);
     }
 }

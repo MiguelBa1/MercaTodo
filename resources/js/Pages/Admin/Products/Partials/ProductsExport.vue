@@ -49,7 +49,7 @@ const checkExport = async (filename) => {
         const response = await axios.get(route('admin.api.products.export.check', {
             fileName: filename,
         }));
-        if (response.data.status === 'ready') {
+        if (response.status === 200 && response.data.status === 'READY') {
             loading.value = false;
             downloadLink.value = route('admin.api.products.export.download', {
                 fileName: filename,

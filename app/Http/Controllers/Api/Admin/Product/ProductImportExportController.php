@@ -2,12 +2,10 @@
 
 namespace App\Http\Controllers\Api\Admin\Product;
 
-use App\Exports\ProductsExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Products\ProductsExportRequest;
+use App\Services\Product\ProductExportService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Storage;
-use Maatwebsite\Excel\Facades\Excel;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ProductImportExportController extends Controller
@@ -17,32 +15,20 @@ class ProductImportExportController extends Controller
         $from = (int)$request->query('from');
         $to = (int)$request->query('to');
 
-        $fileName = 'products-' . date('Y-m-d-H-i-s') . '.xlsx';
-
-        Excel::queue(new ProductsExport($from, $to), 'exports/' . $fileName);
+        $fileName = (new ProductExportService())->exportProducts($from, $to);
 
         return response()->json(['filename' => $fileName]);
     }
 
     public function download(string $fileName): StreamedResponse
     {
-        $filePath = 'exports/' . $fileName;
-
-        if (!Storage::exists($filePath)) {
-            abort(404);
-        }
-
-        return Storage::download($filePath);
+        return (new ProductExportService())->download($fileName);
     }
 
     public function checkExport(string $fileName): JsonResponse
     {
-        $filePath = 'exports/' . $fileName;
+        $status = (new ProductExportService())->checkExportStatus($fileName);
 
-        if (Storage::exists($filePath)) {
-            return response()->json(['status' => 'ready']);
-        }
-
-        return response()->json(['status' => 'pending']);
+        return response()->json(['status' => $status]);
     }
 }
