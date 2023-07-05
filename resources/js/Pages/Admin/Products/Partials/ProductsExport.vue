@@ -19,6 +19,8 @@ let downloadLink = ref(null);
 let pollingInterval = null;
 let isPolling = ref(false);
 
+const errorMessage = ref('');
+
 const exportProducts = async (from = 1, to = products.total) => {
     if (loading.value) {
         toast.info('Export already in progress');
@@ -34,6 +36,8 @@ const exportProducts = async (from = 1, to = products.total) => {
         localStorage.setItem('exportFilename', response.data.filename);
         startPolling(response.data.filename);
     } catch (error) {
+        errorMessage.value = error.response.data.message;
+        loading.value = false;
         toast.error('Something went wrong');
     }
 }
@@ -61,6 +65,8 @@ const checkExport = async (filename) => {
         isPolling.value = false;
     } catch (error) {
         isPolling.value = false;
+        loading.value = false;
+        errorMessage.value = error.response.data.message;
         toast.error('Something went wrong');
     }
 }
@@ -111,9 +117,10 @@ onUnmounted(() => {
         </div>
         <p class="ml-2 inline-block align-middle">Generating</p>
     </div>
-    <a v-if="downloadLink" :href="downloadLink" class="flex items-center underline">
+    <a v-if="downloadLink && !errorMessage" :href="downloadLink" class="flex items-center underline">
         Download Export
     </a>
+    <p v-if="errorMessage" class="text-red-500">{{ errorMessage }}</p>
 </template>
 
 <style>

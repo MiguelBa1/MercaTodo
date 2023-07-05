@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\Admin\Product;
 
+use App\Exceptions\ProductsExportException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Products\ProductsExportRequest;
 use App\Services\Product\ProductExportService;
@@ -20,11 +21,17 @@ class ProductImportExportController extends Controller
         return response()->json(['filename' => $fileName]);
     }
 
+    /**
+     * @throws ProductsExportException
+     */
     public function download(string $fileName): StreamedResponse
     {
         return (new ProductExportService())->download($fileName);
     }
 
+    /**
+     * @throws ProductsExportException
+     */
     public function checkExport(string $fileName): JsonResponse
     {
         $status = (new ProductExportService())->checkExportStatus($fileName);

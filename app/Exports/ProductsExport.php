@@ -70,7 +70,7 @@ class ProductsExport implements FromQuery, WithHeadings, ShouldQueue, WithEvents
     {
         return [
             AfterSheet::class => function (AfterSheet $event) {
-                $this->export->status = ExportStatusEnum::READY->value;
+                $this->export->status = ExportStatusEnum::READY;
                 $this->export->save();
             },
         ];
@@ -78,7 +78,7 @@ class ProductsExport implements FromQuery, WithHeadings, ShouldQueue, WithEvents
 
     public function failed(\Throwable $e): void
     {
-        $this->export->status = ExportStatusEnum::REJECTED->value;
+        $this->export->status = ExportStatusEnum::FAILED;
         $this->export->error = $e->getMessage();
         $this->export->save();
 

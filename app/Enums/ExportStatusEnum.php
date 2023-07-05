@@ -6,5 +6,5 @@ enum ExportStatusEnum: string
 {
     case PENDING = 'PENDING';
     case READY = 'READY';
-    case REJECTED = 'REJECTED';
+    case FAILED = 'FAILED';
 }

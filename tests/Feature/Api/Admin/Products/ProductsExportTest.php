@@ -2,9 +2,11 @@
 
 namespace Tests\Feature\Api\Admin\Products;
 
+use App\Enums\ExportStatusEnum;
 use App\Exports\ProductsExport;
 use App\Models\Brand;
 use App\Models\Category;
+use App\Models\Export;
 use App\Models\Product;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Storage;
@@ -30,16 +32,20 @@ class ProductsExportTest extends UserTestCase
         Excel::fake();
 
         $response = $this->getJson(route('admin.api.products.export', [
-            'from' => 1,
-            'to' => 10,
+            'from' => Product::all()->min('id'),
+            'to' => Product::all()->max('id'),
         ]));
 
         $response->assertOk();
         $response->assertJsonStructure(['filename']);
         $this->assertNotNull($response->json('filename'));
+        $this->assertDatabaseHas('exports', [
+            'filename' => $response->json('filename'),
+            'status' => ExportStatusEnum::PENDING,
+        ]);
 
         Excel::assertQueued('exports/' . $response->json('filename'), function (ProductsExport $export) {
-            return $export->query()->count() === 10;
+            return $export->query()->count() === Product::all()->count();
         });
     }
 
@@ -47,15 +53,17 @@ class ProductsExportTest extends UserTestCase
     {
         $fileName = 'products-' . date('Y-m-d-H-i-s') . '.xlsx';
 
-        Storage::fake();
-        Storage::put('exports/' . $fileName, 'test');
+        Export::factory()->create([
+            'filename' => $fileName,
+            'status' => ExportStatusEnum::READY,
+        ]);
 
         $response = $this->getJson(route('admin.api.products.export.check', [
             'fileName' => $fileName,
         ]));
 
         $response->assertOk();
-        $response->assertJson(['status' => 'ready']);
+        $response->assertJson(['status' => ExportStatusEnum::READY->value]);
     }
 
     public function testDownloadExport(): void
@@ -76,5 +84,56 @@ class ProductsExportTest extends UserTestCase
         $downloadedContent = $response->streamedContent();
         $expectedContent = Storage::get('exports/' . $fileName);
         $this->assertEquals($expectedContent, $downloadedContent);
+    }
+
+    public function testCheckExportWhenExportRecordDoesNotExist(): void
+    {
+        $response = $this->getJson(route('admin.api.products.export.check', [
+            'fileName' => 'non-existing-file.xlsx',
+        ]));
+
+        $response->assertNotFound();
+        $response->assertJsonStructure(['message']);
+        $response->assertJson([
+            'message' => __('validation.custom.export.record_not_found_error'),
+        ]);
+    }
+
+    public function testDownloadExportWhenExportDoesNotExist(): void
+    {
+        Export::factory()->create([
+            'filename' => 'existing-file.xlsx',
+            'status' => ExportStatusEnum::READY,
+        ]);
+
+        $response = $this->get(route('admin.api.products.export.download', [
+            'fileName' => 'existing-file.xlsx',
+        ]));
+
+        $response->assertNotFound();
+        $response->assertJsonStructure(['message']);
+        $response->assertJson([
+            'message' => __('validation.custom.export.file_not_found_error'),
+        ]);
+    }
+
+    public function testCheckExportWhenExportFailed(): void
+    {
+        $fileName = 'products-' . date('Y-m-d-H-i-s') . '.xlsx';
+
+        Export::factory()->create([
+            'filename' => $fileName,
+            'status' => ExportStatusEnum::FAILED,
+        ]);
+
+        $response = $this->getJson(route('admin.api.products.export.check', [
+            'fileName' => $fileName,
+        ]));
+
+        $response->assertServerError();
+        $response->assertJsonStructure(['message']);
+        $response->assertJson([
+            'message' => __('validation.custom.export.export_failed_error'),
+        ]);
     }
 }
