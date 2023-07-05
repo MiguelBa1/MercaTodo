@@ -174,6 +174,11 @@ return [
             'invalid_request_error' => 'The payment data provided is incorrect or incomplete, please verify it and try again.',
             'unexpected_error' => 'There was an unexpected error processing your payment. Please try again.',
         ],
+        'export' => [
+            'file_not_found_error' => 'The requested file does not exist. Please generate the export again.',
+            'record_not_found_error' => 'The requested export record does not exist. Please generate the export again.',
+            'export_failed_error' => 'The export failed. Please contact the IT department.',
+        ],
         'attribute-name' => [
             'rule-name' => 'custom-message',
         ],

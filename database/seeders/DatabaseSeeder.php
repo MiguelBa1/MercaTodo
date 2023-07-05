@@ -18,7 +18,7 @@ class DatabaseSeeder extends Seeder
 
         // Reset the storage
         Storage::disk('public')->deleteDirectory('images');
-        Storage::disk('public')->makeDirectory('images');
+        Storage::disk()->deleteDirectory('exports');
 
         $this->call([
             DepartmentsCitiesSeeder::class,
