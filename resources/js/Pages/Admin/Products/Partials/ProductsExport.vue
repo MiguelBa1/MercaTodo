@@ -1,7 +1,7 @@
 <script setup>
 import Dropdown from "@/Components/Dropdown.vue";
 import DropdownButton from "@/Components/DropdownButton.vue";
-import {onMounted, onUnmounted, ref} from "vue";
+import {onUnmounted, ref} from "vue";
 import axios from "axios";
 import {useToast} from "vue-toast-notification";
 
@@ -26,14 +26,12 @@ const exportProducts = async (from = 1, to = products.total) => {
         toast.info('Export already in progress');
         return;
     }
-    localStorage.removeItem('exportFilename');
     downloadLink.value = null;
     try {
         const response = await axios.get(route('admin.api.products.export', {
             from: from,
             to: to,
         }));
-        localStorage.setItem('exportFilename', response.data.filename);
         startPolling(response.data.filename);
     } catch (error) {
         errorMessage.value = error.response.data.message;
@@ -61,11 +59,9 @@ const checkExport = async (filename) => {
             clearInterval(pollingInterval);
             localStorage.removeItem('exportFilename');
             toast.success('Export ready');
+            isPolling.value = false;
         }
-        isPolling.value = false;
     } catch (error) {
-        isPolling.value = false;
-        loading.value = false;
         errorMessage.value = error.response.data.message;
         toast.error('Something went wrong');
     }
@@ -74,13 +70,6 @@ const checkExport = async (filename) => {
 const exportCurrentPageProducts = () => exportProducts(products.from, products.to);
 
 const exportAllProducts = () => exportProducts();
-
-onMounted(() => {
-    const exportFilename = localStorage.getItem('exportFilename');
-    if (exportFilename) {
-        startPolling(exportFilename);
-    }
-});
 
 onUnmounted(() => {
     clearInterval(pollingInterval);

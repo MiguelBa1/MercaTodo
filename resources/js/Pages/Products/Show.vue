@@ -8,6 +8,7 @@ import {useCartStore} from "@/store/cart";
 import {ref} from "vue";
 import {useToast} from "vue-toast-notification";
 import {usePage} from "@inertiajs/vue3";
+import {getProductImage} from "@/Utils/getProductImage";
 
 const toast = useToast();
 const quantity = ref(1);
@@ -70,7 +71,7 @@ const addToCart = async () => {
 
         <div class="pt-12">
             <div class="grid grid-cols-1 sm:grid-cols-2 p-8 md:p-12 border max-w-5xl gap-10 mx-auto shadow">
-                <img :src="'/storage/images/' + product.image" :alt="product.name"
+                <img :src="getProductImage(product.image)" :alt="product.name"
                      class="">
                 <div class="grid grid-cols-1 gap-4">
                     <div class="grid-cols-1 gap-2">

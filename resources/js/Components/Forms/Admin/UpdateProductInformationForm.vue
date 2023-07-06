@@ -5,6 +5,7 @@ import InputError from "@/Components/InputError.vue";
 import {useToast} from "vue-toast-notification";
 import {useForm} from "@inertiajs/vue3";
 import {ref} from "vue";
+import {getProductImage} from "@/Utils/getProductImage";
 import axios from "axios";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 
@@ -25,7 +26,7 @@ let {product, brands, categories} = defineProps({
     }
 })
 
-const imageUrl = ref(product.image ? `/storage/images/${product.image}` : null)
+const imageUrl = ref(getProductImage(product.image))
 
 const form = useForm(
     {
