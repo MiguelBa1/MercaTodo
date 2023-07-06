@@ -2,7 +2,7 @@
     <div class="flex items-center p-4 border rounded shadow-md">
         <div class="mr-4">
             <Link :href="`/products/${product.id}`">
-                <img :src="'/storage/images/' + product.image" :alt="product.name" class="w-32 h-32 object-cover rounded">
+                <img :src="getProductImage(product.image)" :alt="product.name" class="w-32 h-32 object-cover rounded">
             </Link>
         </div>
         <div class="flex-1">
@@ -42,6 +42,7 @@
 import {useCartStore} from "@/store/cart";
 import {Link} from "@inertiajs/vue3";
 import {useToast} from "vue-toast-notification";
+import {getProductImage} from "@/Utils/getProductImage";
 
 const store = useCartStore();
 const $toast = useToast();
