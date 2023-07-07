@@ -76,7 +76,7 @@ const createProduct = () => {
 
                 <TextInput
                     id="sku"
-                    type="text"
+                    type="number"
                     class="mt-1 block w-full"
                     v-model="form.sku"
                     required

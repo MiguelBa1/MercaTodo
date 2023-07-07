@@ -94,7 +94,7 @@ class ProductUpdateTest extends ProductTestCase
         return [
             'valid product data' => [
                 [
-                    'sku' => 'TEST-PRODUCT',
+                    'sku' => fake()->unique()->ean8(),
                     'name' => 'Test Product',
                     'description' => 'Test Description',
                     'price' => 1000.00,

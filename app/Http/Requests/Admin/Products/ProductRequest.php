@@ -29,9 +29,8 @@ class ProductRequest extends FormRequest
         return [
             'sku' => [
                 'required',
-                'string',
-                'max:20',
-                Rule::unique(Product::class)->ignore($id),
+                'numeric',
+                Rule::unique(Product::class, 'sku')->ignore($id),
             ],
             'name' => 'required|string|min:3|max:100',
             'description' => 'required|string|min:3|max:500',

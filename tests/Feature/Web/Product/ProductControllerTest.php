@@ -31,7 +31,7 @@ class ProductControllerTest extends TestCase
     public function testViewRenders(): void
     {
         $response = $this->get(route('products.show', $this->product[0]['id']));
-        $response->assertStatus(200);
+        $response->assertOk();
         $response->assertInertia(
             fn (AssertableInertia $page) => $page
             ->component('Products/Show')
@@ -43,7 +43,7 @@ class ProductControllerTest extends TestCase
     public function testRelatedProductsHasTheSameCategory(): void
     {
         $response = $this->get(route('products.show', $this->product[0]['id']));
-        $response->assertStatus(200);
+        $response->assertOk();
         $response->assertInertia(
             fn (AssertableInertia $page) => $page
             ->component('Products/Show', function ($page) {
