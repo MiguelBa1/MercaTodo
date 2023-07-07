@@ -16,7 +16,6 @@ use Illuminate\Support\Carbon;
  * @property int $user_id
  * @property ImportStatusEnum $status
  * @property array|null $errors
- * @property int $total_rows
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property-read User $user
@@ -30,11 +29,11 @@ class Import extends Model
         'filename',
         'status',
         'errors',
-        'total_rows'
     ];
 
     protected $casts = [
         'status' => ImportStatusEnum::class,
+        'errors' => 'array',
     ];
 
     public function user(): BelongsTo

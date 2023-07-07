@@ -3,7 +3,8 @@
 use App\Http\Controllers\Api\Admin\Brand\BrandController as AdminBrandController;
 use App\Http\Controllers\Api\Admin\Category\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Api\Admin\Product\ProductController as AdminProductController;
-use App\Http\Controllers\Api\Admin\Product\ProductExportController as AdminProductImportExportController;
+use App\Http\Controllers\Api\Admin\Product\ProductExportController as AdminProductExportController;
+use App\Http\Controllers\Api\Admin\Product\ProductImportController as AdminProductImportController;
 use App\Http\Controllers\Api\Admin\Product\ProductStatusController as AdminProductStatusController;
 use App\Http\Controllers\Api\Admin\User\PasswordController as AdminPasswordController;
 use App\Http\Controllers\Api\Admin\User\ProfileController as AdminProfileController;
@@ -44,19 +45,26 @@ Route::middleware(['auth:sanctum', 'role:admin', 'check.user.status', 'verified'
         });
         Route::prefix('products')->group(function () {
             Route::post('/', [AdminProductController::class, 'store'])->name('admin.api.products.store');
+            Route::get('export', [AdminProductExportController::class, 'export'])->name(
+                'admin.api.products.export'
+            );
+            Route::get('export/{fileName}', [AdminProductExportController::class, 'checkExport'])->name(
+                'admin.api.products.export.check'
+            );
+            Route::get('download/{fileName}', [AdminProductExportController::class, 'download'])->name(
+                'admin.api.products.export.download'
+            );
+            Route::post('import', [AdminProductImportController::class, 'import'])->name(
+                'admin.api.products.import'
+            );
+            Route::get('import/{fileName}', [AdminProductImportController::class, 'checkImport'])->name(
+                'admin.api.products.import.check'
+            );
+
             Route::post('{product}', [AdminProductController::class, 'update'])->name('admin.api.products.update');
             Route::delete('{product}', [AdminProductController::class, 'destroy'])->name('admin.api.products.destroy');
             Route::patch('{product}/status', [AdminProductStatusController::class, 'update'])->name(
                 'admin.api.products.status.update'
-            );
-            Route::get('export', [AdminProductImportExportController::class, 'export'])->name(
-                'admin.api.products.export'
-            );
-            Route::get('export/{fileName}', [AdminProductImportExportController::class, 'checkExport'])->name(
-                'admin.api.products.export.check'
-            );
-            Route::get('download/{fileName}', [AdminProductImportExportController::class, 'download'])->name(
-                'admin.api.products.export.download'
             );
         });
         Route::prefix('brands')->group(function () {

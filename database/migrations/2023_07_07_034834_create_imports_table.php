@@ -17,7 +17,7 @@ return new class () extends Migration {
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->enum('status', array_column(ImportStatusEnum::cases(), 'value'))->default(ImportStatusEnum::PENDING->value);
             $table->json('errors')->nullable();
-            $table->integer('total_rows')->default(0);
+            $table->unique(['user_id', 'filename']);
             $table->timestamps();
         });
     }
