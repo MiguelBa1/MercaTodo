@@ -14,7 +14,6 @@ class ProductControllerTest extends ProductTestCase
             ->get(route('admin.view.products'));
 
         $response->assertOk();
-        $response->assertStatus(200);
         $response->assertInertia(
             fn (AssertableInertia $page) => $page
             ->component('Admin/Products/Index')
@@ -24,13 +23,13 @@ class ProductControllerTest extends ProductTestCase
     public function testEditRendersCorrectView(): void
     {
         $response = $this->actingAs($this->adminUser)->get(route('admin.products.edit', $this->product->id));
-        $response->assertStatus(200);
+        $response->assertOk();
         $response->assertInertia(
             fn (AssertableInertia $page) => $page
             ->component('Admin/Products/Edit')->has(
                 'product',
                 fn (AssertableInertia $page) => $page
-                ->where('sku', $this->product->sku)
+                ->where('sku', (int)$this->product->sku)
                 ->where('name', $this->product->name)
                 ->where('description', $this->product->description)
                 ->where('image', $this->product->image)
@@ -45,7 +44,7 @@ class ProductControllerTest extends ProductTestCase
     public function testCreateRendersCorrectView(): void
     {
         $response = $this->actingAs($this->adminUser)->get(route('admin.products.create'));
-        $response->assertStatus(200);
+        $response->assertOk();
         $response->assertInertia(fn (AssertableInertia $page) => $page
             ->component('Admin/Products/Create'));
     }

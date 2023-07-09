@@ -33,7 +33,6 @@ class ProductsExport implements FromQuery, WithHeadings, ShouldQueue, WithEvents
             ->leftJoin('categories', 'categories.id', '=', 'products.category_id')
             ->leftJoin('brands', 'brands.id', '=', 'products.brand_id')
             ->select(
-                'products.id',
                 'products.sku',
                 'products.name',
                 'products.description',
@@ -55,7 +54,6 @@ class ProductsExport implements FromQuery, WithHeadings, ShouldQueue, WithEvents
     public function headings(): array
     {
         return [
-            'ID',
             'SKU',
             'Name',
             'Description',

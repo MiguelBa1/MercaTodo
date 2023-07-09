@@ -15,8 +15,8 @@ class ProductStoreTest extends ProductTestCase
      */
     public function testAdminCanCreateProduct(array $productData): void
     {
-        $productData['brand_id'] = $this->brand->getAttribute('id');
-        $productData['category_id'] = $this->category->getAttribute('id');
+        $productData['brand_id'] = $this->brand->id;
+        $productData['category_id'] = $this->category->id;
         $response = $this->actingAs($this->adminUser)->post(route('admin.api.products.store'), $productData);
 
         $response->assertOk();
@@ -46,7 +46,7 @@ class ProductStoreTest extends ProductTestCase
     {
         $response = $this->actingAs($this->customerUser)->post(route('admin.api.products.store'), $productData);
 
-        $response->assertStatus(403);
+        $response->assertForbidden();
     }
 
     public static function validProductData(): array
@@ -55,7 +55,7 @@ class ProductStoreTest extends ProductTestCase
         return [
             'valid product data' => [
                 [
-                    'sku' => 'TEST-PRODUCT',
+                    'sku' => fake()->unique()->ean8(),
                     'name' => 'Test Product',
                     'description' => 'Test Description',
                     'price' => 1000.00,

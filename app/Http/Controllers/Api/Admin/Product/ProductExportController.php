@@ -9,7 +9,7 @@ use App\Services\Product\ProductExportService;
 use Illuminate\Http\JsonResponse;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
-class ProductImportExportController extends Controller
+class ProductExportController extends Controller
 {
     public function export(ProductsExportRequest $request): JsonResponse
     {

@@ -179,6 +179,9 @@ return [
             'record_not_found_error' => 'The requested export record does not exist. Please generate the export again.',
             'export_failed_error' => 'The export failed. Please contact the IT department.',
         ],
+        'import' => [
+            'import_failed_error' => 'The import failed. Please contact the IT department.',
+        ],
         'attribute-name' => [
             'rule-name' => 'custom-message',
         ],

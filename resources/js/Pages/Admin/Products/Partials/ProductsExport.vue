@@ -80,7 +80,7 @@ onUnmounted(() => {
     <Dropdown>
         <template #trigger>
             <button
-                class="inline-flex w-full items-center px-4 py-2 bg-blue-500 hover:bg-blue-600 focus:outline-none text-white rounded shadow">
+                class="flex w-full sm:w-auto items-center px-4 py-2 bg-blue-500 hover:bg-blue-600 font-bold focus:outline-none text-white rounded">
                 <svg class="text-white h-6 w-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
                      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M12 5v14M5 12l7 7 7-7"/>
@@ -111,45 +111,3 @@ onUnmounted(() => {
     </a>
     <p v-if="errorMessage" class="text-red-500">{{ errorMessage }}</p>
 </template>
-
-<style>
-.dots-loading {
-    position: relative;
-    width: 30px;
-    height: 20px;
-}
-
-.dots-loading div {
-    display: inline-block;
-    width: 6px;
-    height: 6px;
-    margin: 0 2px;
-    background: #3490dc;
-    border-radius: 50%;
-    animation: dots-loading 1.2s cubic-bezier(0, 0.5, 0.5, 1) infinite;
-}
-
-.dots-loading div:nth-child(1) {
-    animation-delay: -0.24s;
-}
-
-.dots-loading div:nth-child(2) {
-    animation-delay: -0.12s;
-}
-
-.dots-loading div:nth-child(3) {
-    animation-delay: 0s;
-}
-
-@keyframes dots-loading {
-    0% {
-        transform: scale(0);
-    }
-    100% {
-        transform: scale(1);
-    }
-    50% {
-        transform: scale(1.5);
-    }
-}
-</style>
