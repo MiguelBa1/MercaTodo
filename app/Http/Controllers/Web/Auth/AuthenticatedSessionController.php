@@ -5,9 +5,10 @@ namespace App\Http\Controllers\Web\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Providers\RouteServiceProvider;
-use Illuminate\Contracts\Auth\StatefulGuard;
+use Illuminate\Auth\SessionGuard;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -41,9 +42,13 @@ class AuthenticatedSessionController extends Controller
      * Destroy an authenticated session.
      */
 
-    public function destroy(Request $request, StatefulGuard $guard): RedirectResponse
+    public function destroy(Request $request): RedirectResponse
     {
-        $guard->logout();
+        $guard = Auth::guard('web');
+
+        if($guard instanceof SessionGuard) {
+            $guard->logout();
+        }
 
         $request->session()->invalidate();
 
