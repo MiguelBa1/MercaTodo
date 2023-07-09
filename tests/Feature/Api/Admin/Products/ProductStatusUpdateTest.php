@@ -15,7 +15,7 @@ class ProductStatusUpdateTest extends ProductTestCase
         $this->product->save();
 
         $response = $this->actingAs($this->adminUser)->patch(
-            route('admin.api.products.status.update', $this->product->id)
+            route('api.admin.products.status.update', $this->product->id)
         );
 
         $this->product->refresh();
@@ -37,7 +37,7 @@ class ProductStatusUpdateTest extends ProductTestCase
         $this->product->save();
 
         $response = $this->actingAs($this->adminUser)->patch(
-            route('admin.api.products.status.update', $this->product->id)
+            route('api.admin.products.status.update', $this->product->id)
         );
 
         $this->product->refresh();

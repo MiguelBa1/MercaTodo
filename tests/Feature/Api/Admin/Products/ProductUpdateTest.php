@@ -19,7 +19,7 @@ class ProductUpdateTest extends ProductTestCase
         $productData['category_id'] = $this->category->getAttribute('id');
 
         $response = $this->actingAs($this->adminUser)->post(
-            route('admin.api.products.update', $this->product->getAttribute('id')),
+            route('api.admin.products.update', $this->product->getAttribute('id')),
             $productData
         );
 
@@ -49,7 +49,7 @@ class ProductUpdateTest extends ProductTestCase
     public function testCustomerCanNotUpdateProduct(array $productData): void
     {
         $response = $this->actingAs($this->customerUser)->post(
-            route('admin.api.products.update', $this->product->getAttribute('id')),
+            route('api.admin.products.update', $this->product->getAttribute('id')),
             $productData
         );
 
@@ -68,7 +68,7 @@ class ProductUpdateTest extends ProductTestCase
 
         $productData['image'] = null;
         $response = $this->actingAs($this->adminUser)->post(
-            route('admin.api.products.update', $this->product->getAttribute('id')),
+            route('api.admin.products.update', $this->product->getAttribute('id')),
             $productData
         );
 

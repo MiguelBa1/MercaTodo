@@ -15,7 +15,7 @@ class ProfileUpdateTest extends UserTestCase
     public function testUpdateProfileUpdatesUserProfile(array $userData): void
     {
         $response = $this->actingAs($this->adminUser)->patch(
-            route('admin.api.users.profile.update', $this->customerUser->getAttribute('id')),
+            route('api.admin.users.profile.update', $this->customerUser->getAttribute('id')),
             $userData
         );
         $response->assertOk();
@@ -44,7 +44,7 @@ class ProfileUpdateTest extends UserTestCase
         $oldDocument = $this->customerUser->document;
 
         $response = $this->actingAs($this->adminUser)->patch(
-            route('admin.api.users.profile.update', $this->customerUser->id),
+            route('api.admin.users.profile.update', $this->customerUser->id),
             [
                 'name' => $this->customerUser->getAttribute('name'),
                 'surname' => $this->customerUser->getAttribute('surname'),

@@ -29,7 +29,7 @@ const cities = ref({});
 const roles = ref(usePage().props.roles);
 
 const getCities = async () => {
-    const response = await fetch(route('api.list.cities', department_id.value));
+    const response = await fetch(route('api.cities.index', department_id.value));
     cities.value = await response.json();
 };
 
@@ -37,7 +37,7 @@ const updateProfileInformation = () => {
     $toast.info('Updating profile information...');
     form.clearErrors();
 
-    axios.patch(route('admin.api.users.profile.update', user.id), form.data())
+    axios.patch(route('api.admin.users.profile.update', user.id), form.data())
         .then(response => {
             $toast.success('Profile information updated successfully.');
         })

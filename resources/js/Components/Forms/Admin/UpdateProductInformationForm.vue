@@ -54,7 +54,7 @@ const updateProduct = () => {
     $toast.info('Updating product information...')
     form.clearErrors()
 
-    axios.postForm(route('admin.api.products.update', product.id), form.data(), {
+    axios.postForm(route('api.admin.products.update', product.id), form.data(), {
         headers: {
             'Content-Type': 'multipart/form-data'
         }

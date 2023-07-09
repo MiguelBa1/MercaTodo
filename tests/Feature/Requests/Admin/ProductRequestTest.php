@@ -18,7 +18,7 @@ class ProductRequestTest extends ProductTestCase
     {
         $image = UploadedFile::fake()->image('test-image.png');
 
-        $response = $this->actingAs($this->adminUser)->post(route('admin.api.products.store'), [
+        $response = $this->actingAs($this->adminUser)->post(route('api.admin.products.store'), [
             'sku' => $field === 'sku' ? $value : fake()->ean8(),
             'name' => $field === 'name' ? $value : 'Test Product',
             'description' => $field === 'description' ? $value : 'Test Description',

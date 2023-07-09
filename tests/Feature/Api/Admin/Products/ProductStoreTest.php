@@ -17,7 +17,7 @@ class ProductStoreTest extends ProductTestCase
     {
         $productData['brand_id'] = $this->brand->id;
         $productData['category_id'] = $this->category->id;
-        $response = $this->actingAs($this->adminUser)->post(route('admin.api.products.store'), $productData);
+        $response = $this->actingAs($this->adminUser)->post(route('api.admin.products.store'), $productData);
 
         $response->assertOk();
 
@@ -44,7 +44,7 @@ class ProductStoreTest extends ProductTestCase
      */
     public function testCustomerCanNotCreateProduct(array $productData): void
     {
-        $response = $this->actingAs($this->customerUser)->post(route('admin.api.products.store'), $productData);
+        $response = $this->actingAs($this->customerUser)->post(route('api.admin.products.store'), $productData);
 
         $response->assertForbidden();
     }

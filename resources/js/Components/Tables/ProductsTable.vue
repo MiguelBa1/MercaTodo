@@ -24,7 +24,7 @@ const getProducts = async (page = 1) => {
 
 const manageProductStatus = async (id) => {
     $toast.clear();
-    const response = await axios.patch(route('admin.api.products.status.update', id));
+    const response = await axios.patch(route('api.admin.products.status.update', id));
     if (response.status === 200) {
         const updatedProduct = productsData.value.data.find(product => product.id === id);
         if (updatedProduct) {

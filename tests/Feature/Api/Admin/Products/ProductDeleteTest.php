@@ -9,7 +9,7 @@ class ProductDeleteTest extends ProductTestCase
 {
     public function testAdminCanDeleteProduct(): void
     {
-        $response = $this->actingAs($this->adminUser)->delete(route('admin.api.products.destroy', $this->product->getAttribute('id')));
+        $response = $this->actingAs($this->adminUser)->delete(route('api.admin.products.destroy', $this->product->getAttribute('id')));
 
         $response->assertOk();
 

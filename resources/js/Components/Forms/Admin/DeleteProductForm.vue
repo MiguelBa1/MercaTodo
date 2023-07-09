@@ -8,7 +8,7 @@ const { product } = defineProps({
     product: Object
 })
 const deleteProduct = () => {
-    axios(route('admin.api.products.destroy', product.id), {
+    axios(route('api.admin.products.destroy', product.id), {
         method: 'DELETE'
     }).then(response => {
         $toast.success('Product deleted successfully!')
