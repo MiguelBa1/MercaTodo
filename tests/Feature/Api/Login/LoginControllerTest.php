@@ -5,7 +5,6 @@ namespace Tests\Feature\Api\Login;
 use App\Models\City;
 use App\Models\Department;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use App\Models\User;
 use Tests\TestCase;
 

@@ -7,6 +7,24 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class ProductService
 {
+    public function getAllProducts(): LengthAwarePaginator
+    {
+        return Product::query()
+            ->with(['category:id,name', 'brand:id,name'])
+            ->select(
+                'id',
+                'sku',
+                'name',
+                'price',
+                'stock',
+                'status',
+                'category_id',
+                'brand_id',
+            )
+            ->latest('id')
+            ->paginate(10);
+    }
+
     public function getFilteredProducts(array $filters): LengthAwarePaginator
     {
         return Product::query()->with('category:id,name')

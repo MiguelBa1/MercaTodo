@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Web\Admin\User;
 
 use App\Enums\DocumentTypeEnum;
 use App\Http\Controllers\Controller;
-use App\Models\Department;
 use App\Models\User;
+use App\Services\Department\DepartmentService;
 use App\Services\User\UserService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -16,28 +16,28 @@ use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
-    public function index(Request $request, UserService $userService): Response
+    public function index(Request $request): Response
     {
-        $users = $userService->getAllUsersExceptCurrent($request->user()->id);
+        $users = (new UserService())->getAllUsersExceptCurrent($request->user()->id);
 
         return Inertia::render('Admin/Users/Index', [
             'users' => $users
         ]);
     }
 
-    public function edit(Request $request, User $user, UserService $userService): Response
+    public function edit(Request $request, User $user): Response
     {
         if ($user->id === $request->user()->id) {
             return Inertia::render('Profile/Edit');
         }
 
-        $userData = $userService->getUserDataForEdit($user);
+        $userData = (new UserService())->getUserDataForEdit($user);
 
         return Inertia::render('Admin/Users/Edit', [
             'user' => $userData,
-            'departments' => Cache::remember('departments', 3600, fn () => Department::all()),
+            'departments' => (new DepartmentService())->getAllDepartments(),
             'document_types' => array_column(DocumentTypeEnum::cases(), 'value'),
-            'roles' => Cache::remember('roles', Carbon::now()->addWeek(), fn () => Role::all()),
+            'roles' => Role::all('id', 'name'),
         ]);
     }
 }

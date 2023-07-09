@@ -46,7 +46,7 @@ class AuthenticatedSessionController extends Controller
     {
         $guard = Auth::guard('web');
 
-        if($guard instanceof SessionGuard) {
+        if ($guard instanceof SessionGuard) {
             $guard->logout();
         }
 
