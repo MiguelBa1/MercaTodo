@@ -3,9 +3,28 @@
 namespace App\Services\Product;
 
 use App\Models\Product;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class ProductService
 {
+    public function getFilteredProducts(array $filters): LengthAwarePaginator
+    {
+        return Product::query()->with('category:id,name')
+            ->select(['id', 'sku', 'name', 'price', 'image', 'category_id'])
+            ->when(!empty($filters['category_id']), function ($query) use ($filters) {
+                return $query->where('category_id', $filters['category_id']);
+            })
+            ->when(!empty($filters['brand_id']), function ($query) use ($filters) {
+                return $query->where('brand_id', $filters['brand_id']);
+            })
+            ->when(!empty($filters['search']), function ($query) use ($filters) {
+                return $query->where('name', 'like', "%{$filters['search']}%");
+            })
+            ->where('status', true)
+            ->latest('id')
+            ->paginate(10);
+    }
+
     public function createProduct(array $data): void
     {
         if (isset($data['image'])) {
