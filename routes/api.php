@@ -9,10 +9,10 @@ use App\Http\Controllers\Api\Admin\Product\ProductStatusController as AdminProdu
 use App\Http\Controllers\Api\Admin\User\PasswordController as AdminPasswordController;
 use App\Http\Controllers\Api\Admin\User\ProfileController as AdminProfileController;
 use App\Http\Controllers\Api\Admin\User\UserStatusController as AdminUserStatusController;
+use App\Http\Controllers\Api\Auth\LoginController;
 use App\Http\Controllers\Api\Cart\CartController;
 use App\Http\Controllers\Api\City\CityController;
 use App\Http\Controllers\Api\Order\OrderController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -26,9 +26,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::post('login', LoginController::class)->name('api.login');
 
 Route::middleware(['auth:sanctum', 'role:admin', 'check.user.status', 'verified'])
     ->prefix('admin')->group(function () {
