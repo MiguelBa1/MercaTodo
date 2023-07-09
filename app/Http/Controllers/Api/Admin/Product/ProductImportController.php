@@ -10,7 +10,6 @@ use Illuminate\Http\JsonResponse;
 
 class ProductImportController extends Controller
 {
-
     public function import(ProductImportRequest $request): JsonResponse
     {
         $response = (new ProductImportService())->import($request->file('file'), auth()->id());

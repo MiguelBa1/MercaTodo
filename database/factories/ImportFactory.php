@@ -23,6 +23,7 @@ class ImportFactory extends Factory
             'user_id' => User::all('id')->random(),
             'filename' => $this->faker->word,
             'status' => $this->faker->randomElement(array_column(ExportStatusEnum::cases(), 'value')),
+            'errors' => [],
         ];
     }
 }
