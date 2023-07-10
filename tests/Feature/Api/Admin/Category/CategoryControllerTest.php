@@ -14,7 +14,7 @@ class CategoryControllerTest extends UserTestCase
     {
         Category::factory()->count(15)->create();
 
-        $response = $this->actingAs($this->adminUser)->get(route('admin.api.categories.index'));
+        $response = $this->actingAs($this->adminUser)->get(route('api.admin.categories.index'));
 
         $response->assertOk();
         $response->assertJsonCount(10, 'data');
@@ -33,7 +33,7 @@ class CategoryControllerTest extends UserTestCase
     {
         $data = Category::factory()->make()->toArray();
 
-        $response = $this->actingAs($this->adminUser)->post(route('admin.api.categories.store'), $data);
+        $response = $this->actingAs($this->adminUser)->post(route('api.admin.categories.store'), $data);
 
         $response->assertOk();
         $this->assertDatabaseHas('categories', $data);
@@ -45,7 +45,7 @@ class CategoryControllerTest extends UserTestCase
         $category = Category::factory()->create();
         $data = ['name' => 'Updated Name'];
 
-        $response = $this->actingAs($this->adminUser)->patch(route('admin.api.categories.update', $category->getAttribute('id')), $data);
+        $response = $this->actingAs($this->adminUser)->patch(route('api.admin.categories.update', $category->getAttribute('id')), $data);
 
         $response->assertOk();
         $this->assertDatabaseHas('categories', array_merge(['id' => $category->getAttribute('id')], $data));
@@ -55,7 +55,7 @@ class CategoryControllerTest extends UserTestCase
     {
         $data = ['name' => ''];
 
-        $response = $this->actingAs($this->adminUser)->post(route('admin.api.categories.store'), $data);
+        $response = $this->actingAs($this->adminUser)->post(route('api.admin.categories.store'), $data);
 
         $response->assertFound();
         $response->assertSessionHasErrors(['name']);

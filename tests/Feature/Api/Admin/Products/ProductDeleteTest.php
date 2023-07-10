@@ -9,14 +9,18 @@ class ProductDeleteTest extends ProductTestCase
 {
     public function testAdminCanDeleteProduct(): void
     {
-        $response = $this->actingAs($this->adminUser)->delete(route('admin.api.products.destroy', $this->product->getAttribute('id')));
+        $response = $this->actingAs($this->adminUser)->delete(route('api.admin.products.destroy', $this->product->id));
 
         $response->assertOk();
 
-        Storage::disk('public')->assertMissing($this->product->getAttribute('image'));
+        $response->assertJson([
+            'message' => __('message.deleted', ['attribute' => 'Product']),
+        ]);
+
+        Storage::disk('public')->assertMissing($this->product->image);
 
         $this->assertDatabaseMissing('products', [
-            'id' => $this->product->getAttribute('id'),
+            'id' => $this->product->id,
         ]);
     }
 }

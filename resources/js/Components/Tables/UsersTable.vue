@@ -24,7 +24,7 @@ const getUsers = async (page = 1) => {
 
 const manageUserStatus = async (id, name) => {
     $toast.clear();
-    const response = await axios.patch(route('admin.api.users.status.update', id));
+    const response = await axios.patch(route('api.admin.users.status.update', id));
     if (response.status === 200) {
         const updatedUser = usersData.value.data.find(user => user.id === id);
         if (updatedUser) {

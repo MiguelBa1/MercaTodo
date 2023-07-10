@@ -31,7 +31,7 @@ class ProductsExportTest extends UserTestCase
     {
         Excel::fake();
 
-        $response = $this->getJson(route('admin.api.products.export', [
+        $response = $this->getJson(route('api.admin.products.export', [
             'from' => Product::all()->min('id'),
             'to' => Product::all()->max('id'),
         ]));
@@ -58,7 +58,7 @@ class ProductsExportTest extends UserTestCase
             'status' => ExportStatusEnum::READY,
         ]);
 
-        $response = $this->getJson(route('admin.api.products.export.check', [
+        $response = $this->getJson(route('api.admin.products.export.check', [
             'fileName' => $fileName,
         ]));
 
@@ -73,7 +73,7 @@ class ProductsExportTest extends UserTestCase
         Storage::fake();
         Storage::put('exports/' . $fileName, 'test');
 
-        $response = $this->get(route('admin.api.products.export.download', [
+        $response = $this->get(route('api.admin.products.export.download', [
             'fileName' => $fileName,
         ]));
 
@@ -88,7 +88,7 @@ class ProductsExportTest extends UserTestCase
 
     public function testCheckExportWhenExportRecordDoesNotExist(): void
     {
-        $response = $this->getJson(route('admin.api.products.export.check', [
+        $response = $this->getJson(route('api.admin.products.export.check', [
             'fileName' => 'non-existing-file.xlsx',
         ]));
 
@@ -106,7 +106,7 @@ class ProductsExportTest extends UserTestCase
             'status' => ExportStatusEnum::READY,
         ]);
 
-        $response = $this->get(route('admin.api.products.export.download', [
+        $response = $this->get(route('api.admin.products.export.download', [
             'fileName' => 'existing-file.xlsx',
         ]));
 
@@ -126,7 +126,7 @@ class ProductsExportTest extends UserTestCase
             'status' => ExportStatusEnum::FAILED,
         ]);
 
-        $response = $this->getJson(route('admin.api.products.export.check', [
+        $response = $this->getJson(route('api.admin.products.export.check', [
             'fileName' => $fileName,
         ]));
 

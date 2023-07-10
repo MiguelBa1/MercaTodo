@@ -12,7 +12,7 @@ class UserStatusUpdateTest extends UserTestCase
         $this->customerUser->save();
 
         $response = $this->actingAs($this->adminUser)->patch(
-            route('admin.api.users.status.update', $this->customerUser->getAttribute('id'))
+            route('api.admin.users.status.update', $this->customerUser->getAttribute('id'))
         );
 
         $this->customerUser->refresh();
@@ -31,7 +31,7 @@ class UserStatusUpdateTest extends UserTestCase
         $this->customerUser->save();
 
         $response = $this->actingAs($this->adminUser)->patch(
-            route('admin.api.users.status.update', $this->customerUser->getAttribute('id'))
+            route('api.admin.users.status.update', $this->customerUser->getAttribute('id'))
         );
 
         $this->customerUser->refresh();

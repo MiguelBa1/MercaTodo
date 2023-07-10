@@ -28,7 +28,7 @@ const exportProducts = async (from = 1, to = products.total) => {
     }
     downloadLink.value = null;
     try {
-        const response = await axios.get(route('admin.api.products.export', {
+        const response = await axios.get(route('api.admin.products.export', {
             from: from,
             to: to,
         }));
@@ -48,12 +48,12 @@ const startPolling = (filename) => {
 const checkExport = async (filename) => {
     try {
         isPolling.value = true;
-        const response = await axios.get(route('admin.api.products.export.check', {
+        const response = await axios.get(route('api.admin.products.export.check', {
             fileName: filename,
         }));
         if (response.status === 200 && response.data.status === 'READY') {
             loading.value = false;
-            downloadLink.value = route('admin.api.products.export.download', {
+            downloadLink.value = route('api.admin.products.export.download', {
                 fileName: filename,
             });
             clearInterval(pollingInterval);

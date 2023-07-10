@@ -15,15 +15,30 @@ class ProductUpdateTest extends ProductTestCase
      */
     public function testAdminCanUpdateProduct(array $productData): void
     {
-        $productData['brand_id'] = $this->brand->getAttribute('id');
-        $productData['category_id'] = $this->category->getAttribute('id');
+        $productData['brand_id'] = $this->brand->id;
+        $productData['category_id'] = $this->category->id;
 
         $response = $this->actingAs($this->adminUser)->post(
-            route('admin.api.products.update', $this->product->getAttribute('id')),
+            route('api.admin.products.update', $this->product->id),
             $productData
         );
 
         $response->assertOk();
+        $response->assertJsonStructure([
+            'message',
+            'data' => [
+                'id',
+                'sku',
+                'name',
+                'description',
+                'price',
+                'image',
+                'stock',
+                'status',
+                'brand_id',
+                'category_id',
+            ],
+        ]);
 
         $imageName = time() . '_' . $productData['image']->getClientOriginalName();
         $this->assertDatabaseHas('products', [
@@ -49,7 +64,7 @@ class ProductUpdateTest extends ProductTestCase
     public function testCustomerCanNotUpdateProduct(array $productData): void
     {
         $response = $this->actingAs($this->customerUser)->post(
-            route('admin.api.products.update', $this->product->getAttribute('id')),
+            route('api.admin.products.update', $this->product->id),
             $productData
         );
 
@@ -63,16 +78,31 @@ class ProductUpdateTest extends ProductTestCase
      */
     public function testProductCanUpdateWithEmptyImage(array $productData): void
     {
-        $productData['brand_id'] = $this->brand->getAttribute('id');
-        $productData['category_id'] = $this->category->getAttribute('id');
+        $productData['brand_id'] = $this->brand->id;
+        $productData['category_id'] = $this->category->id;
 
         $productData['image'] = null;
         $response = $this->actingAs($this->adminUser)->post(
-            route('admin.api.products.update', $this->product->getAttribute('id')),
+            route('api.admin.products.update', $this->product->id),
             $productData
         );
 
         $response->assertOk();
+        $response->assertJsonStructure([
+            'message',
+            'data' => [
+                'id',
+                'sku',
+                'name',
+                'description',
+                'price',
+                'image',
+                'stock',
+                'status',
+                'brand_id',
+                'category_id',
+            ],
+        ]);
 
         $this->assertDatabaseHas('products', [
             'sku' => $productData['sku'],

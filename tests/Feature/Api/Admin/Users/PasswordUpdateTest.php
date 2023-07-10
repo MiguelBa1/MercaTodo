@@ -12,7 +12,7 @@ class PasswordUpdateTest extends UserTestCase
         $newPassword = 'password123';
         $response = $this->actingAs($this->adminUser)
             ->patch(
-                route('admin.api.users.password.update', $this->customerUser->getAttribute('id')),
+                route('api.admin.users.password.update', $this->customerUser->getAttribute('id')),
                 ['password' => $newPassword, 'password_confirmation' => $newPassword]
             );
         $response->assertOk();

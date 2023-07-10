@@ -16,7 +16,7 @@ class ProfileUpdateRequestTest extends UserTestCase
     public function testUpdateProfileValidationFails(string $field, string|int $value, string $message): void
     {
         $response = $this->actingAs($this->adminUser)->patch(
-            route('admin.api.users.profile.update', $this->customerUser->getAttribute('id')),
+            route('api.admin.users.profile.update', $this->customerUser->getAttribute('id')),
             [$field => $value]
         );
 

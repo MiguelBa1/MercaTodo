@@ -49,7 +49,7 @@ const createProduct = () => {
     $toast.info('Creating product...');
     form.clearErrors()
 
-    axios.postForm(route('admin.api.products.store'), form.data(), {
+    axios.postForm(route('api.admin.products.store'), form.data(), {
         headers: {
             'Content-Type': 'multipart/form-data'
         }

@@ -24,7 +24,7 @@ class ProductsImportTest extends UserTestCase
     {
         $file = UploadedFile::fake()->create('test_1.xlsx');
 
-        $response = $this->postJson(route('admin.api.products.import'), [
+        $response = $this->postJson(route('api.admin.products.import'), [
             'file' => $file,
         ]);
 
@@ -43,7 +43,7 @@ class ProductsImportTest extends UserTestCase
 
         $xlsxFile = UploadedFile::fake()->create('test_1.xlsx');
 
-        $response = $this->postJson(route('admin.api.products.import'), [
+        $response = $this->postJson(route('api.admin.products.import'), [
             'file' => $xlsxFile,
         ]);
 
@@ -53,7 +53,7 @@ class ProductsImportTest extends UserTestCase
 
         $csvFile = UploadedFile::fake()->create('test_1.csv');
 
-        $response = $this->postJson(route('admin.api.products.import'), [
+        $response = $this->postJson(route('api.admin.products.import'), [
             'file' => $csvFile,
         ]);
 
@@ -63,7 +63,7 @@ class ProductsImportTest extends UserTestCase
 
         $xlsFile = UploadedFile::fake()->create('test_1.xls');
 
-        $response = $this->postJson(route('admin.api.products.import'), [
+        $response = $this->postJson(route('api.admin.products.import'), [
             'file' => $xlsFile,
         ]);
 
@@ -73,7 +73,7 @@ class ProductsImportTest extends UserTestCase
 
         $odsFile = UploadedFile::fake()->create('test_1.ods');
 
-        $response = $this->postJson(route('admin.api.products.import'), [
+        $response = $this->postJson(route('api.admin.products.import'), [
             'file' => $odsFile,
         ]);
 
@@ -84,7 +84,7 @@ class ProductsImportTest extends UserTestCase
     {
         $file = UploadedFile::fake()->create('test_1.xlsx');
 
-        $response = $this->postJson(route('admin.api.products.import'), [
+        $response = $this->postJson(route('api.admin.products.import'), [
             'file' => $file,
         ]);
 
@@ -92,7 +92,7 @@ class ProductsImportTest extends UserTestCase
         $response->assertJsonStructure(['status']);
         $response->assertJson(['status' => 'import queued']);
 
-        $response = $this->getJson(route('admin.api.products.import.check', ['fileName' => 'test_1.xlsx']));
+        $response = $this->getJson(route('api.admin.products.import.check', ['fileName' => 'test_1.xlsx']));
 
         $response->assertOk();
         $response->assertJsonStructure(['status']);

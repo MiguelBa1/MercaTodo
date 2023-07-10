@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Web\Admin\Auxiliary\AuxiliaryTablesController as AdminAuxiliaryTablesController;
 use App\Http\Controllers\Web\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Web\Admin\Product\ProductController as AdminProductController;
@@ -10,6 +9,7 @@ use App\Http\Controllers\Web\Home\HomeController;
 use App\Http\Controllers\Web\Order\OrderController;
 use App\Http\Controllers\Web\Payment\PaymentController;
 use App\Http\Controllers\Web\Product\ProductController;
+use App\Http\Controllers\Web\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 /*

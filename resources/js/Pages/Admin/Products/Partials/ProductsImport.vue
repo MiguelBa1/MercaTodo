@@ -43,7 +43,7 @@ const submit = async () => {
     const formData = new FormData();
     formData.append('file', importFile);
     try {
-        await axios.post(route('admin.api.products.import'), formData, {
+        await axios.post(route('api.admin.products.import'), formData, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             }
@@ -66,7 +66,7 @@ const startPolling = (filename) => {
 
 const checkImport = async (filename) => {
     try {
-        const response = await axios.get(route('admin.api.products.import.check', {
+        const response = await axios.get(route('api.admin.products.import.check', {
             fileName: filename,
         }));
 

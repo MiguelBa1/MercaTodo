@@ -25,7 +25,7 @@ const department_id = ref(user.department_id);
 const cities = ref({});
 
 const getCities = async () => {
-    const response = await fetch(route('api.list.cities', department_id.value));
+    const response = await fetch(route('api.cities.index', department_id.value));
     cities.value = await response.json();
 };
 

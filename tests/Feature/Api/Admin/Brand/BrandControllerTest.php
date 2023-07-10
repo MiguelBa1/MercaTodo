@@ -14,7 +14,7 @@ class BrandControllerTest extends UserTestCase
     {
         Brand::factory()->count(15)->create();
 
-        $response = $this->actingAs($this->adminUser)->get(route('admin.api.brands.index'));
+        $response = $this->actingAs($this->adminUser)->get(route('api.admin.brands.index'));
 
         $response->assertOk();
         $response->assertJsonCount(10, 'data');
@@ -32,7 +32,7 @@ class BrandControllerTest extends UserTestCase
     {
         $data = Brand::factory()->make()->toArray();
 
-        $response = $this->actingAs($this->adminUser)->post(route('admin.api.brands.store'), $data);
+        $response = $this->actingAs($this->adminUser)->post(route('api.admin.brands.store'), $data);
 
         $response->assertOk();
         $this->assertDatabaseHas('brands', $data);
@@ -43,7 +43,7 @@ class BrandControllerTest extends UserTestCase
         $brand = Brand::factory()->create();
         $data = ['name' => 'Updated Name'];
 
-        $response = $this->actingAs($this->adminUser)->patch(route('admin.api.brands.update', $brand->getAttribute('id')), $data);
+        $response = $this->actingAs($this->adminUser)->patch(route('api.admin.brands.update', $brand->getAttribute('id')), $data);
 
         $response->assertOk();
         $this->assertDatabaseHas('brands', array_merge(['id' => $brand->getAttribute('id')], $data));
@@ -53,7 +53,7 @@ class BrandControllerTest extends UserTestCase
     {
         $data = ['name' => ''];
 
-        $response = $this->actingAs($this->adminUser)->post(route('admin.api.brands.store'), $data);
+        $response = $this->actingAs($this->adminUser)->post(route('api.admin.brands.store'), $data);
 
         $response->assertFound();
         $response->assertSessionHasErrors(['name']);
