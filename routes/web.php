@@ -11,6 +11,7 @@ use App\Http\Controllers\Web\Payment\PaymentController;
 use App\Http\Controllers\Web\Product\ProductController;
 use App\Http\Controllers\Web\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Enums\RoleEnum;
 
 /*
 |--------------------------------------------------------------------------
@@ -43,7 +44,7 @@ Route::middleware(['auth', 'check.user.status', 'verified'])->group(function () 
     });
 });
 
-Route::middleware(['auth', 'role:admin', 'check.user.status', 'verified'])->prefix('admin')->group(function () {
+Route::middleware(['auth', 'role:'.RoleEnum::ADMIN->value, 'check.user.status', 'verified'])->prefix('admin')->group(function () {
     Route::get('/', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
     Route::prefix('users')->group(function () {
         Route::get('/', [AdminUserController::class, 'index'])->name('admin.view.users');

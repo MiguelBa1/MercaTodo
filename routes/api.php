@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\Cart\CartController;
 use App\Http\Controllers\Api\City\CityController;
 use App\Http\Controllers\Api\Order\OrderController;
 use Illuminate\Support\Facades\Route;
+use App\Enums\RoleEnum;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,7 +29,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('login', LoginController::class)->name('api.login');
 
-Route::middleware(['auth:sanctum', 'role:admin', 'check.user.status', 'verified'])
+Route::middleware(['auth:sanctum', 'verified', 'check.user.status', 'role:'.RoleEnum::ADMIN->value])
     ->prefix('admin')->group(function () {
         Route::prefix('users')->group(function () {
             Route::patch('{user}/status', [AdminUserStatusController::class, 'update'])->name(

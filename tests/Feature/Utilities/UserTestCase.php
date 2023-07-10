@@ -7,6 +7,7 @@ use App\Models\Department;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Spatie\Permission\Models\Role;
+use App\Enums\RoleEnum;
 use Tests\TestCase;
 
 class UserTestCase extends TestCase
@@ -20,17 +21,16 @@ class UserTestCase extends TestCase
         parent::setUp();
 
         // Create a Department and City to be able to create a User
-        $testDepartment = Department::create([
+        $testDepartment = Department::query()->create([
             'name' => 'Test Department',
         ]);
-        $testCity = City::create([
+        City::query()->create([
             'name' => 'Test City',
             'department_id' => $testDepartment->id,
         ]);
 
-        $role = new Role();
-        $adminRole = $role->create(['name' => 'admin']);
-        $customerRole = $role->create(['name' => 'customer']);
+        $adminRole = Role::query()->create(['name' => RoleEnum::ADMIN->value]);
+        $customerRole = Role::query()->create(['name' => RoleEnum::CUSTOMER->value]);
 
         $this->customerUser = User::factory()->create();
         $this->customerUser->assignRole($customerRole);
