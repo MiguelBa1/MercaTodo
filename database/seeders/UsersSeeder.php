@@ -17,16 +17,19 @@ class UsersSeeder extends Seeder
         });
 
         // Create the admin user
-        User::factory()->create([
-            'name' => env('ADMIN_NAME'),
-            'surname' => env('ADMIN_SURNAME'),
-            'document_type' => env('ADMIN_DOCUMENT_TYPE'),
-            'document' => env('ADMIN_DOCUMENT'),
-            'email' => env('ADMIN_EMAIL'),
-            'phone' => env('ADMIN_PHONE'),
-            'address' => env('ADMIN_ADDRESS'),
-            'password' => bcrypt(env('ADMIN_PASSWORD')),
-            'city_id' => env('ADMIN_CITY_ID'),
-        ])->assignRole('admin');
+        /** @var User $user */
+        $user = User::factory()->create([
+            'name' => config('user.admin.name'),
+            'surname' => config('user.admin.surname'),
+            'document_type' => config('user.admin.document_type'),
+            'document' => config('user.admin.document'),
+            'email' => config('user.admin.email'),
+            'phone' => config('user.admin.phone'),
+            'address' => config('user.admin.address'),
+            'password' => bcrypt(config('user.admin.password')),
+            'city_id' => config('user.admin.city_id'),
+        ]);
+
+        $user->assignRole('admin');
     }
 }
