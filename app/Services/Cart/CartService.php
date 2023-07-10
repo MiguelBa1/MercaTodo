@@ -3,6 +3,7 @@
 namespace App\Services\Cart;
 
 use App\Exceptions\ProductUnavailableException;
+use App\Models\Product;
 use App\Services\Product\ProductService;
 use Illuminate\Support\Facades\Cache;
 use App\Exceptions\CartValidationException;
@@ -38,12 +39,20 @@ class CartService
         $cartData = $this->getCart($userId);
         $productIds = array_keys($cartData);
 
-        $productsDetails = (new ProductService())->getProductsDetails($productIds);
+        $products = Product::query()
+            ->whereIn('id', $productIds)
+            ->get(['id', 'name', 'image', 'price', 'status', 'stock']);
 
-        foreach ($cartData as $productId => $quantity) {
-            if (isset($productsDetails[$productId])) {
-                $productsDetails[$productId]['quantity'] = $quantity;
+        $productsDetails = [];
+
+        foreach ($products as $product) {
+            $productId = $product['id'];
+
+            if (isset($cartData[$productId])) {
+                $product['quantity'] = $cartData[$productId];
             }
+
+            $productsDetails[$productId] = $product;
         }
 
         return $productsDetails;
@@ -66,8 +75,10 @@ class CartService
             throw CartValidationException::empty();
         }
 
+        $productService = new ProductService();
+
         foreach ($cartData as $cartProduct) {
-            if (!(new ProductService())->verifyProductAvailability($cartProduct, $cartProduct['quantity'])) {
+            if (!$productService->verifyProductAvailability($cartProduct, $cartProduct['quantity'])) {
                 throw ProductUnavailableException::unavailable($cartProduct['name']);
             }
         }

@@ -3,13 +3,10 @@
 namespace App\Http\Controllers\Web\Admin\Product;
 
 use App\Http\Controllers\Controller;
-use App\Models\Brand;
-use App\Models\Category;
 use App\Models\Product;
 use App\Services\Brand\BrandService;
 use App\Services\Category\CategoryService;
 use App\Services\Product\ProductService;
-use Illuminate\Support\Facades\Cache;
 use Inertia\Inertia;
 use Inertia\Response;
 

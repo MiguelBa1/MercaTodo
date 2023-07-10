@@ -7,11 +7,9 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Services\Department\DepartmentService;
 use App\Services\User\UserService;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
-use Illuminate\Support\Facades\Cache;
 use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
