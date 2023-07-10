@@ -59,6 +59,8 @@ Route::middleware(['auth:sanctum', 'role:admin', 'check.user.status', 'verified'
                 'api.admin.products.import.check'
             );
 
+            Route::get('/', [AdminProductController::class, 'index'])->name('api.admin.products.index');
+            Route::get('{product}', [AdminProductController::class, 'show'])->name('api.admin.products.show');
             Route::post('{product}', [AdminProductController::class, 'update'])->name('api.admin.products.update');
             Route::delete('{product}', [AdminProductController::class, 'destroy'])->name('api.admin.products.destroy');
             Route::patch('{product}/status', [AdminProductStatusController::class, 'update'])->name(

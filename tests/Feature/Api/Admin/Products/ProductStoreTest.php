@@ -19,7 +19,22 @@ class ProductStoreTest extends ProductTestCase
         $productData['category_id'] = $this->category->id;
         $response = $this->actingAs($this->adminUser)->post(route('api.admin.products.store'), $productData);
 
-        $response->assertOk();
+        $response->assertCreated();
+        $response->assertJsonStructure([
+            'message',
+            'data' => [
+                'id',
+                'sku',
+                'name',
+                'description',
+                'price',
+                'image',
+                'stock',
+                'status',
+                'brand_id',
+                'category_id',
+            ],
+        ]);
 
         $imageName = time() . '_' . $productData['image']->getClientOriginalName();
         $this->assertDatabaseHas('products', [

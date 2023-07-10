@@ -5,8 +5,8 @@ namespace App\Services\Product;
 use App\Models\Product;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 class ProductService
 {
@@ -86,7 +86,7 @@ class ProductService
         $product->save();
     }
 
-    public function getRelatedProducts(Product $product): array|Collection
+    public function getRelatedProducts(Product $product): Collection
     {
         return Product::query()
             ->with('category:id,name')

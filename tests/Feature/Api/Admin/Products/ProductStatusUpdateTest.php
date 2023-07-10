@@ -11,7 +11,7 @@ class ProductStatusUpdateTest extends ProductTestCase
      */
     public function testAdminCanUpdateActiveProductStatus(): void
     {
-        $this->product->setAttribute('status', true);
+        $this->product->status = true;
         $this->product->save();
 
         $response = $this->actingAs($this->adminUser)->patch(
@@ -20,6 +20,10 @@ class ProductStatusUpdateTest extends ProductTestCase
 
         $this->product->refresh();
         $response->assertOk();
+        $response->assertJson([
+            'message' => __('message.updated_status', ['attribute' => 'Product']),
+        ]);
+
         $this->assertEquals('Inactive', $this->product->status);
 
         $this->assertDatabaseHas('products', [
@@ -33,7 +37,7 @@ class ProductStatusUpdateTest extends ProductTestCase
      */
     public function testAdminCanUpdateInactiveProductStatus(): void
     {
-        $this->product->setAttribute('status', false);
+        $this->product->status = false;
         $this->product->save();
 
         $response = $this->actingAs($this->adminUser)->patch(
@@ -42,6 +46,11 @@ class ProductStatusUpdateTest extends ProductTestCase
 
         $this->product->refresh();
         $response->assertOk();
+
+        $response->assertJson([
+            'message' => __('message.updated_status', ['attribute' => 'Product']),
+        ]);
+
         $this->assertEquals('Active', $this->product->status);
 
         $this->assertDatabaseHas('products', [
