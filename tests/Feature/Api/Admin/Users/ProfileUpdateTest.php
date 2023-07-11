@@ -45,17 +45,18 @@ class ProfileUpdateTest extends UserTestCase
         $response = $this->actingAs($this->adminUser)->patch(
             route('api.admin.users.profile.update', $this->customerUser->id),
             [
-                'name' => $this->customerUser->getAttribute('name'),
-                'surname' => $this->customerUser->getAttribute('surname'),
+                'name' => $this->customerUser->name,
+                'surname' => $this->customerUser->surname,
                 'role_name' => $this->customerUser->roles->first()->name,
                 'document' => $oldDocument,
-                'document_type' => $this->customerUser->getAttribute('document_type'),
-                'city_id' => $this->customerUser->getAttribute('city_id'),
-                'phone' => $this->customerUser->getAttribute('phone'),
-                'address' => $this->customerUser->getAttribute('address'),
+                'document_type' => $this->customerUser->document_type,
+                'city_id' => $this->customerUser->city_id,
+                'phone' => $this->customerUser->phone,
+                'address' => $this->customerUser->address,
+                'permissions' => [],
             ]
         );
-        $response->assertStatus(200);
+        $response->assertOk();
         $this->assertEquals($oldDocument, $this->customerUser->fresh()->document);
     }
 
@@ -72,6 +73,7 @@ class ProfileUpdateTest extends UserTestCase
                     'city_id' => 1,
                     'phone' => '123456789',
                     'address' => 'Calle 123',
+                    'permissions' => []
                 ]
             ],
         ];

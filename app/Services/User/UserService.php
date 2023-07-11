@@ -3,6 +3,7 @@
 namespace App\Services\User;
 
 use App\Models\User;
+use App\Enums\RoleEnum;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Hash;
 
@@ -31,16 +32,6 @@ class UserService
             ->paginate(10);
     }
 
-    public function getUserDataForEdit(User $user): array
-    {
-        $userData = $user->withoutRelations()->toArray();
-        $userData['role_name'] = $user->roles->first()->name;
-        $userData['city_name'] = $user->city->name;
-        $userData['department_id'] = $user->city->department_id;
-
-        return $userData;
-    }
-
     public function registerUser(array $data): User
     {
         /** @var User $user */
@@ -65,6 +56,14 @@ class UserService
     {
         $user->update($data);
         $user->syncRoles($data['role_name']);
+
+        // if the role is admin, the user may have permissions, else the user will not have permissions
+        if ($data['role_name'] == RoleEnum::ADMIN->value) {
+            $user->syncPermissions($data['permissions']);
+        } else {
+            $user->syncPermissions([]);
+        }
+
         $user->save();
     }
 

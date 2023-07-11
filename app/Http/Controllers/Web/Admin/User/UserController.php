@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Web\Admin\User;
 
 use App\Enums\DocumentTypeEnum;
+use App\Enums\RoleEnum;
+use App\Enums\PermissionEnum;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Services\Department\DepartmentService;
@@ -10,7 +12,6 @@ use App\Services\User\UserService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
-use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
@@ -29,13 +30,12 @@ class UserController extends Controller
             return Inertia::render('Profile/Edit');
         }
 
-        $userData = (new UserService())->getUserDataForEdit($user);
-
         return Inertia::render('Admin/Users/Edit', [
-            'user' => $userData,
+            'user' => $user->load(['roles:name', 'permissions:name', 'city:id,name,department_id']),
             'departments' => (new DepartmentService())->getAllDepartments(),
             'document_types' => array_column(DocumentTypeEnum::cases(), 'value'),
-            'roles' => Role::all('id', 'name'),
+            'roles' => RoleEnum::cases(),
+            'permissions' => PermissionEnum::cases(),
         ]);
     }
 }

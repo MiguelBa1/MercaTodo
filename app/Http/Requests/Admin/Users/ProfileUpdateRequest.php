@@ -39,6 +39,7 @@ class ProfileUpdateRequest extends FormRequest
             'phone' => 'required|integer|digits_between:6,12',
             'address' => 'required|string|min:3|max:100',
             'city_id' => 'required|integer',
+            'permissions' => 'array|exists:permissions,name',
         ];
     }
 }

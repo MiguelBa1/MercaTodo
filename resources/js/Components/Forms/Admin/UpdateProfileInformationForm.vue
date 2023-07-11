@@ -10,23 +10,25 @@ import {onMounted, ref} from 'vue';
 
 const $toast = useToast();
 
-const { user, departments, document_types } = usePage().props;
+const {user, departments, document_types, auth} = usePage().props;
 
 const form = useForm({
     name: user.name,
     surname: user.surname,
     email: user.email,
-    role_name: user.role_name,
-    city_id: user.city_id,
+    role_name: user.roles[0].name,
+    city_id: user.city.id,
     phone: user.phone.toString(),
     address: user.address,
     document: user.document.toString(),
     document_type: user.document_type,
+    permissions: user.permissions.map(permission => permission.name) ?? []
 });
 
-const department_id = ref(user.department_id);
+const department_id = ref(user.city.department_id);
 const cities = ref({});
 const roles = ref(usePage().props.roles);
+const permissions = ref(usePage().props.permissions);
 
 const getCities = async () => {
     const response = await fetch(route('api.cities.index', department_id.value));
@@ -104,8 +106,8 @@ onMounted(async () => {
                         required
                         autocomplete="role"
                     >
-                        <option v-for="role in roles" :value="role.name">
-                            {{ role.name.charAt(0).toUpperCase() + role.name.slice(1) }}
+                        <option v-for="role in roles" :value="role">
+                            {{ role }}
                         </option>
                     </select>
 
@@ -230,6 +232,24 @@ onMounted(async () => {
                     <InputError class="mt-2" :message="form.errors.document_type"/>
                 </div>
 
+            </div>
+            <div v-if="auth.roles.includes('Super Admin') && form.role_name === 'Admin'">
+                <InputLabel for="permissions" value="Permissions"/>
+                <div class="grid grid-cols-2">
+                    <div v-for="permission in permissions">
+                        <label class="inline-flex items-center">
+                            <input
+                                type="checkbox"
+                                class="cursor-pointer rounded text-blue-600 border-gray-300"
+                                :value="permission"
+                                v-model="form.permissions"
+                            >
+                            <span class="ml-2">{{ permission }}</span>
+                        </label>
+                    </div>
+
+                    <InputError class="mt-2" :message="form.errors.permissions"/>
+                </div>
             </div>
             <div class="flex items-center gap-4">
                 <PrimaryButton :disabled="form.processing">Save</PrimaryButton>

@@ -24,15 +24,24 @@ const getUsers = async (page = 1) => {
 
 const manageUserStatus = async (id, name) => {
     $toast.clear();
-    const response = await axios.patch(route('api.admin.users.status.update', id));
-    if (response.status === 200) {
-        const updatedUser = usersData.value.data.find(user => user.id === id);
-        if (updatedUser) {
-            updatedUser.status = updatedUser.status === 'Active' ? 'Inactive' : 'Active';
+
+    try {
+        const response = await axios.patch(route('api.admin.users.status.update', id));
+        if (response.status === 200) {
+            const updatedUser = usersData.value.data.find(user => user.id === id);
+            if (updatedUser) {
+                updatedUser.status = updatedUser.status === 'Active' ? 'Inactive' : 'Active';
+            }
+            $toast.success(`${name} status has been updated successfully`);
+        } else {
+            $toast.error(`Something went wrong, please try again later`);
         }
-        $toast.success(`${name} status has been updated successfully`);
-    } else {
-        $toast.error(`Something went wrong, please try again later`);
+    } catch (e) {
+        if (e.response.status === 403) {
+            $toast.error(`You don't have permission to perform this action`);
+        } else {
+            $toast.error(`Something went wrong, please try again later`);
+        }
     }
 }
 

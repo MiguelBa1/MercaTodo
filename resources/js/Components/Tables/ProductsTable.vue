@@ -1,5 +1,5 @@
 <script setup>
-import {Link, router} from '@inertiajs/vue3'
+import {Link, router, usePage} from '@inertiajs/vue3'
 import {TailwindPagination} from 'laravel-vue-pagination';
 import {useToast} from "vue-toast-notification";
 import axios from "axios";
@@ -11,6 +11,8 @@ const {products} = defineProps({
         required: true
     }
 })
+
+const auth = usePage().props.auth;
 
 const $toast = useToast();
 const productsData = ref(products);
@@ -24,15 +26,23 @@ const getProducts = async (page = 1) => {
 
 const manageProductStatus = async (id) => {
     $toast.clear();
-    const response = await axios.patch(route('api.admin.products.status.update', id));
-    if (response.status === 200) {
-        const updatedProduct = productsData.value.data.find(product => product.id === id);
-        if (updatedProduct) {
-            updatedProduct.status = updatedProduct.status === 'Active' ? 'Inactive' : 'Active';
+    try {
+        const response = await axios.patch(route('api.admin.products.status.update', id));
+        if (response.status === 200) {
+            const updatedProduct = productsData.value.data.find(product => product.id === id);
+            if (updatedProduct) {
+                updatedProduct.status = updatedProduct.status === 'Active' ? 'Inactive' : 'Active';
+            }
+            $toast.success(`Product status has been updated successfully`);
+        } else {
+            $toast.error(`Something went wrong, please try again later`);
         }
-        $toast.success(`Product status has been updated successfully`);
-    } else {
-        $toast.error(`Something went wrong, please try again later`);
+    } catch (e) {
+        if (e.response.status === 403) {
+            $toast.error(`You don't have permission to perform this action`);
+        } else {
+            $toast.error(`Something went wrong, please try again later`);
+        }
     }
 }
 
