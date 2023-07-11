@@ -2,7 +2,6 @@
 
 namespace Tests\Feature\Api\Admin\Users;
 
-use App\Models\User;
 use Tests\Feature\Utilities\UserTestCase;
 
 class ProfileUpdateTest extends UserTestCase

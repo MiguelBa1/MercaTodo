@@ -29,12 +29,12 @@ class UserTestCase extends TestCase
             'department_id' => $testDepartment->id,
         ]);
 
-        $adminRole = Role::query()->create(['name' => RoleEnum::ADMIN->value]);
+        $superAdminRole = Role::query()->create(['name' => RoleEnum::SUPER_ADMIN->value]);
         $customerRole = Role::query()->create(['name' => RoleEnum::CUSTOMER->value]);
 
         $this->customerUser = User::factory()->create();
         $this->customerUser->assignRole($customerRole);
         $this->adminUser = User::factory()->create();
-        $this->adminUser->assignRole($adminRole);
+        $this->adminUser->assignRole($superAdminRole);
     }
 }

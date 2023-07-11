@@ -30,7 +30,14 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('login', LoginController::class)->name('api.login');
 
-Route::middleware(['auth:sanctum', 'verified', 'check.user.status', 'role:' . RoleEnum::ADMIN->value])
+Route::middleware(
+    [
+        'auth:sanctum',
+        'verified',
+        'check.user.status',
+        'role:' . RoleEnum::ADMIN->value . "|" . RoleEnum::SUPER_ADMIN->value
+    ]
+)
     ->prefix('admin')
     ->group(function () {
         Route::prefix('users')

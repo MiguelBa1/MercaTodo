@@ -34,7 +34,6 @@ class ProductExportService
      */
     public function checkExportStatus(string $fileName): string
     {
-        /** @var Export $export */
         $export = Export::query()->where('filename', $fileName)->first();
 
         if ($export == null) {

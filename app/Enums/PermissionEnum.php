@@ -13,5 +13,4 @@ enum PermissionEnum: string
     case READ_PRODUCTS = 'Read products';
     case UPDATE_PRODUCTS = 'Update products';
     case DELETE_PRODUCTS = 'Delete products';
-    case CREATE_CATEGORIES = 'Create categories';
 }

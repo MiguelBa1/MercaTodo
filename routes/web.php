@@ -55,7 +55,7 @@ Route::middleware(['auth', 'check.user.status', 'verified'])
             });
     });
 
-Route::middleware(['auth', 'role:' . RoleEnum::ADMIN->value, 'check.user.status', 'verified'])
+Route::middleware(['auth', 'role:' . RoleEnum::ADMIN->value . "|" . RoleEnum::SUPER_ADMIN->value, 'check.user.status', 'verified'])
     ->prefix('admin')
     ->group(function () {
         Route::get('/', [AdminDashboardController::class, 'index'])

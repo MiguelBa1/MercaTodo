@@ -2,7 +2,6 @@
 
 namespace App\Http\Middleware;
 
-use App\Enums\RoleEnum;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 use Tightenco\Ziggy\Ziggy;
@@ -35,7 +34,8 @@ class HandleInertiaRequests extends Middleware
             'auth' => function () use ($request) {
                 return [
                     'user' => $request->user()?->only(['id', 'name', 'surname', 'email']),
-                    'roles' => $request->user()?->roles->pluck('name'),
+                    'roles' => $request->user()?->roles?->pluck('name'),
+                    'permissions' => $request->user()?->getAllPermissions()?->pluck('name') ?? collect(),
                 ];
             },
             'ziggy' => function () use ($request) {

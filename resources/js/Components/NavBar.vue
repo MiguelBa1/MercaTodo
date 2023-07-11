@@ -62,15 +62,17 @@ const {auth} = usePage().props;
                                 </template>
 
                                 <template #content>
-                                    <div v-if="auth.roles.includes('Admin', 'Super Admin')">
+                                    <div v-if="auth.roles.includes('Admin') || auth.roles.includes('Super Admin')">
                                         <DropdownLink :href="route('admin.dashboard')">
                                             Administrator
                                         </DropdownLink>
-                                        <DropdownLink :href="route('admin.view.users')" class="pl-8 flex">
+                                        <DropdownLink
+                                            :href="route('admin.view.users')" class="pl-8 flex">
                                             <div class="border border-indigo-100 mr-3"></div>
                                             Users
                                         </DropdownLink>
-                                        <DropdownLink :href="route('admin.view.products')" class="pl-8 flex">
+                                        <DropdownLink
+                                            :href="route('admin.view.products')" class="pl-8 flex">
                                             <div class="border border-indigo-100 mr-3"></div>
                                             Products
                                         </DropdownLink>
@@ -155,7 +157,7 @@ const {auth} = usePage().props;
                 </div>
 
                 <div class="mt-3 space-y-1">
-                    <template v-if="auth.roles.includes('Admin', 'Super Admin')">
+                    <template v-if="auth.roles.includes('Admin') || auth.roles.includes('Super Admin')">
                         <ResponsiveNavLink :href="route('admin.dashboard')"> Administrator
                         </ResponsiveNavLink>
                         <ResponsiveNavLink :href="route('admin.view.users')"><span
