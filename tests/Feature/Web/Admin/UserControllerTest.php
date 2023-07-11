@@ -47,9 +47,11 @@ class UserControllerTest extends UserTestCase
                         ->where('id', $this->customerUser->id)
                         ->where('name', $this->customerUser->name)
                         ->where('email', $this->customerUser->email)
-                        ->where('role_name', $this->customerUser->roles->first()->name)
                         ->etc()
                 )
+                ->has('roles')
+                ->has('permissions')
+                ->has('departments')
         );
     }
 }

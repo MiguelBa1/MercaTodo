@@ -16,7 +16,11 @@ const deleteProduct = () => {
             window.location.href = route('admin.view.products')
         }, 1000)
     }).catch(error => {
-        $toast.error('Something went wrong!')
+        if (error.response.status === 403) {
+            $toast.error(`You don't have permission to perform this action`)
+        } else {
+            $toast.error(`Something went wrong, please try again later`)
+        }
     })
 };
 

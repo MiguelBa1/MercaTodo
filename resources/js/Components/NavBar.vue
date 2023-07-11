@@ -2,12 +2,15 @@
 import ApplicationLogo from "@/Components/ApplicationLogo.vue";
 import Dropdown from "@/Components/Dropdown.vue";
 import DropdownLink from "@/Components/DropdownLink.vue";
-import {Link} from "@inertiajs/vue3";
+import {Link, usePage} from "@inertiajs/vue3";
 import ResponsiveNavLink from "@/Components/ResponsiveNavLink.vue";
 import {ref} from "vue";
 import CartIcon from "@/Components/Icons/CartIcon.vue";
 
 const showingNavigationDropdown = ref(false);
+
+const {auth} = usePage().props;
+
 </script>
 
 <template>
@@ -23,11 +26,11 @@ const showingNavigationDropdown = ref(false);
                 </div>
 
                 <div class="flex items-center">
-                    <CartIcon />
+                    <CartIcon/>
 
                     <div class="hidden sm:flex sm:items-center sm:ml-6">
                         <!-- Settings Dropdown -->
-                        <div v-if="$page.props.auth.user" class="ml-3 relative">
+                        <div v-if="auth.user" class="ml-3 relative">
                             <Dropdown align="right" width="48">
                                 <template #trigger>
                                         <span class="inline-flex rounded-md">
@@ -35,7 +38,7 @@ const showingNavigationDropdown = ref(false);
                                                 type="button"
                                                 class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150"
                                             >
-                                                {{ $page.props.auth.user.name }}
+                                                {{ auth.user.name }}
 
                                                 <svg class="h-6 w-6 text-black" viewBox="0 0 24 24" fill="none"
                                                      stroke="currentColor" stroke-width="2"
@@ -59,15 +62,17 @@ const showingNavigationDropdown = ref(false);
                                 </template>
 
                                 <template #content>
-                                    <div v-if="$page.props.auth.isAdmin">
-                                        <DropdownLink v-if="$page.props.auth.isAdmin" :href="route('admin.dashboard')">
+                                    <div v-if="auth.roles.includes('Admin') || auth.roles.includes('Super Admin')">
+                                        <DropdownLink :href="route('admin.dashboard')">
                                             Administrator
                                         </DropdownLink>
-                                        <DropdownLink :href="route('admin.view.users')" class="pl-8 flex">
+                                        <DropdownLink
+                                            :href="route('admin.view.users')" class="pl-8 flex">
                                             <div class="border border-indigo-100 mr-3"></div>
                                             Users
                                         </DropdownLink>
-                                        <DropdownLink :href="route('admin.view.products')" class="pl-8 flex">
+                                        <DropdownLink
+                                            :href="route('admin.view.products')" class="pl-8 flex">
                                             <div class="border border-indigo-100 mr-3"></div>
                                             Products
                                         </DropdownLink>
@@ -85,7 +90,7 @@ const showingNavigationDropdown = ref(false);
                             </Dropdown>
                         </div>
 
-                        <div v-else class="">
+                        <div v-else>
                             <Link
                                 :href="route('login')"
                                 class="font-semibold text-gray-400 hover:text-gray-900 focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500"
@@ -143,25 +148,33 @@ const showingNavigationDropdown = ref(false);
             class="sm:hidden"
         >
             <!-- Responsive Settings Options -->
-            <div v-if="$page.props.auth.user" class="pt-4 pb-1 border-t border-gray-200">
+            <div v-if="auth.user" class="pt-4 pb-1 border-t border-gray-200">
                 <div class="px-4">
                     <div class="font-medium text-base text-gray-800">
-                        {{ $page.props.auth.user.name }}
+                        {{ auth.user.name }}
                     </div>
-                    <div class="font-medium text-sm text-gray-500">{{ $page.props.auth.user.email }}</div>
+                    <div class="font-medium text-sm text-gray-500">{{ auth.user.email }}</div>
                 </div>
 
                 <div class="mt-3 space-y-1">
-                    <ResponsiveNavLink v-if="$page.props.auth.isAdmin" :href="route('admin.dashboard')"> Administrator
+                    <template v-if="auth.roles.includes('Admin') || auth.roles.includes('Super Admin')">
+                        <ResponsiveNavLink :href="route('admin.dashboard')"> Administrator
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink :href="route('admin.view.users')"><span
+                            class="border-l-4 pl-2">Users</span>
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink :href="route('admin.view.products')"><span
+                            class="border-l-4 pl-2">Products</span>
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink :href="route('admin.auxiliary.tables.index')"><span
+                            class="border-l-4 pl-2">Auxiliary Tables</span>
+                        </ResponsiveNavLink>
+                    </template>
+                    <ResponsiveNavLink :href="route('profile.edit')" as="button">
+                        Profile
                     </ResponsiveNavLink>
-                    <ResponsiveNavLink v-if="$page.props.auth.isAdmin" :href="route('admin.view.users')"><span
-                        class="border-l-4 pl-2">Users</span>
-                    </ResponsiveNavLink>
-                    <ResponsiveNavLink v-if="$page.props.auth.isAdmin" :href="route('admin.view.products')"><span
-                        class="border-l-4 pl-2">Products</span>
-                    </ResponsiveNavLink>
-                    <ResponsiveNavLink v-if="$page.props.auth.isAdmin" :href="route('admin.auxiliary.tables.index')"><span
-                        class="border-l-4 pl-2">Auxiliary Tables</span>
+                    <ResponsiveNavLink :href="route('order.index')" as="button">
+                        My Orders
                     </ResponsiveNavLink>
                     <ResponsiveNavLink :href="route('logout')" method="post" as="button">
                         Log Out
