@@ -6,6 +6,7 @@ use App\Enums\ReportStatusEnum;
 use App\Models\Order;
 use App\Models\OrderDetail;
 use App\Models\Report;
+use App\Enums\OrderStatusEnum;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Collection;
@@ -63,20 +64,27 @@ class GenerateReport implements ShouldQueue
 
     protected function calculateTotalSales(): float
     {
-        return Order::query()->whereBetween('created_at', [$this->startDate, $this->endDate])
+        return Order::query()
+            ->whereBetween('created_at', [$this->startDate, $this->endDate])
+            ->where('status', OrderStatusEnum::COMPLETED)
             ->sum('total');
     }
 
     protected function calculateTotalOrders(): int
     {
-        return Order::query()->whereBetween('created_at', [$this->startDate, $this->endDate])
+        return Order::query()
+            ->whereBetween('created_at', [$this->startDate, $this->endDate])
+            ->where('status', OrderStatusEnum::COMPLETED)
             ->count();
     }
 
     protected function calculateMostSoldProduct(): object|null
     {
-        return OrderDetail::query()->select('product_name', DB::raw('SUM(quantity) as quantity'))
-            ->whereBetween('created_at', [$this->startDate, $this->endDate])
+        return OrderDetail::query()
+            ->select('product_name', DB::raw('SUM(quantity) as quantity'))
+            ->join('orders', 'order_details.order_id', '=', 'orders.id')
+            ->where('orders.status', OrderStatusEnum::COMPLETED)
+            ->whereBetween('order_details.created_at', [$this->startDate, $this->endDate])
             ->groupBy('product_name')
             ->orderBy('quantity', 'desc')
             ->first();
@@ -84,24 +92,33 @@ class GenerateReport implements ShouldQueue
 
     protected function calculateProductsSoldPerCategory(): Collection|array
     {
-        return OrderDetail::query()->select('category_id', DB::raw('SUM(quantity) as quantity'))
+        return OrderDetail::query()
+            ->select('category_id', DB::raw('SUM(quantity) as quantity'))
             ->join('products', 'order_details.product_id', '=', 'products.id')
+            ->join('orders', 'order_details.order_id', '=', 'orders.id')
+            ->where('orders.status', OrderStatusEnum::COMPLETED)
             ->whereBetween('order_details.created_at', [$this->startDate, $this->endDate])
             ->groupBy('category_id')
             ->get();
     }
+
     protected function calculateSalesByMonth(): Collection|array
     {
-        return Order::query()->select(DB::raw('SUM(total) as sales'), DB::raw('DATE_FORMAT(created_at, "%Y-%m") as month'))
+        return Order::query()
+            ->select(DB::raw('SUM(total) as sales'), DB::raw('DATE_FORMAT(created_at, "%Y-%m") as month'))
             ->whereBetween('created_at', [$this->startDate, $this->endDate])
+            ->where('status', OrderStatusEnum::COMPLETED)
             ->groupBy('month')
             ->get();
     }
 
     protected function calculateTopSellingProducts(): Collection|array
     {
-        return OrderDetail::query()->select('product_name', DB::raw('SUM(quantity) as total'))
-            ->whereBetween('created_at', [$this->startDate, $this->endDate])
+        return OrderDetail::query()
+            ->select('product_name', DB::raw('SUM(quantity) as total'))
+            ->join('orders', 'order_details.order_id', '=', 'orders.id')
+            ->where('orders.status', OrderStatusEnum::COMPLETED)
+            ->whereBetween('order_details.created_at', [$this->startDate, $this->endDate])
             ->groupBy('product_name')
             ->orderBy('total', 'desc')
             ->take(10)
