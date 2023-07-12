@@ -24,12 +24,12 @@ class OrderController extends Controller
     {
         $cartService = new CartService();
 
-        $cartProducts = $cartService->validatedCart($request->user()->id);
+        $cartItems = $cartService->validatedCart($request->user()->id);
 
         /** @var Order $order */
         $order = (new OrderService())->createOrder(
             $request->user(),
-            $cartProducts
+            $cartItems
         );
 
         $redirectUrl = (new PaymentService())->processPayment($order, $request->ip(), $request->userAgent());

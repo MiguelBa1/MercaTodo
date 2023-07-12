@@ -3,32 +3,34 @@
 namespace App\Services\OrderDetail;
 
 use App\Models\Order;
-use App\Models\Product;
 use App\Services\Product\ProductService;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection;
 
 class OrderDetailService
 {
     /**
      * @param Order $order
-     * @param Collection<Product> $cartProducts
+     * @param Collection $cartItems
      * @return void
      */
-    public function createOrderDetails(Order $order, Collection $cartProducts): void
+    public function createOrderDetails(Order $order, Collection $cartItems): void
     {
         $productService = new ProductService();
 
-        $cartProducts->map(function ($product) use ($order, $productService) {
+        foreach ($cartItems as $item) {
+            $product = $item['product'];
+            $quantity = $item['quantity'];
+
             // Deduct stock
-            $productService->updateStock($product->id, $product->quantity, false);
+            $productService->updateStock($product, $quantity, false);
 
             // Create new OrderDetail
-            return $order->orderDetails()->create([
+            $order->orderDetails()->create([
                 'product_id' => $product->id,
                 'product_name' => $product->name,
                 'product_price' => $product->price,
-                'quantity' => $product->quantity,
+                'quantity' => $quantity,
             ]);
-        });
+        }
     }
 }

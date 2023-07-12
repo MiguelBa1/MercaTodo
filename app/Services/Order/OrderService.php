@@ -8,7 +8,7 @@ use App\Models\Product;
 use App\Models\User;
 use App\Services\OrderDetail\OrderDetailService;
 use App\Services\Product\ProductService;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
@@ -16,16 +16,18 @@ class OrderService
 {
     /**
      * @param User $user
-     * @param Collection<Product> $cartProducts
+     * @param Collection $cartItems
      * @return Order|Model
      */
-    public function createOrder(User $user, Collection $cartProducts): Order|Model
+    public function createOrder(User $user, Collection $cartItems): Order|Model
     {
-        return DB::transaction(function () use ($user, $cartProducts) {
+        return DB::transaction(function () use ($user, $cartItems) {
             $total = 0;
 
-            foreach ($cartProducts as $cartProduct) {
-                $total += $cartProduct->price * $cartProduct->quantity;
+            foreach ($cartItems as $item) {
+                $cartProduct = $item['product'];
+                $quantity = $item['quantity'];
+                $total += $cartProduct->price * $quantity;
             }
 
             /** @var Order $order */
@@ -36,7 +38,7 @@ class OrderService
             ]);
 
             $orderDetailService = new OrderDetailService();
-            $orderDetailService->createOrderDetails($order, $cartProducts);
+            $orderDetailService->createOrderDetails($order, $cartItems);
 
             return $order;
         });
@@ -58,7 +60,7 @@ class OrderService
         foreach ($order->orderDetails as $orderDetail) {
             /** @var Product $product */
             $product = Product::query()->find($orderDetail->product_id);
-            $productService->updateStock($product->id, $orderDetail->quantity, true);
+            $productService->updateStock($product, $orderDetail->quantity, true);
 
             $orderDetail->delete();
         }
@@ -82,7 +84,7 @@ class OrderService
         foreach ($order->orderDetails as $orderDetail) {
             /** @var Product $product */
             $product = Product::query()->find($orderDetail->product_id);
-            $productService->updateStock($product->id, $orderDetail->quantity, true);
+            $productService->updateStock($product, $orderDetail->quantity, true);
         }
     }
 }

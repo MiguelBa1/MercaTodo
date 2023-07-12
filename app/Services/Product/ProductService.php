@@ -99,11 +99,8 @@ class ProductService
             ->get();
     }
 
-    public function updateStock(int $product_id, int $quantity, bool $increase = false): void
+    public function updateStock(Product $product, int $quantity, bool $increase = false): void
     {
-        /** @var Product $product */
-        $product = Product::query()->find($product_id);
-
         if ($increase) {
             $product->stock += $quantity;
             if ($product->stock > 0) {

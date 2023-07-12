@@ -15,7 +15,7 @@ class CartController extends Controller
         return Inertia::render(
             'Cart/Index',
             [
-                "cartProducts" => fn () => (new CartService())->getProductsWithDetails($request->user()->id),
+                "cartItems" => fn () => (new CartService())->getProductsWithDetails($request->user()->id),
             ]
         );
     }

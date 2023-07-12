@@ -27,17 +27,10 @@ class CartControllerTest extends ProductTestCase
 
         $response->assertInertia(
             fn (AssertableInertia $page) => $page
-                ->component('Cart/Index', function (AssertableInertia $page) {
-                    $page->has('products', 1, function (AssertableInertia $page) {
-                        $page->where('id', $this->product->id)
-                            ->where('name', $this->product->name)
-                            ->where('price', $this->product->price)
-                            ->where('quantity', 1)
-                            ->where('image', $this->product->image)
-                            ->where('status', $this->product->status)
-                            ->etc();
-                    });
-                })
+                ->component('Cart/Index')
+                ->has('cartItems', 1)
+                ->has('cartItems.0.product', 6)
+                ->has('cartItems.0.quantity')
         );
     }
 }
