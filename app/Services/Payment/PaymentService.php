@@ -131,8 +131,7 @@ class PaymentService
         $productService = new ProductService();
 
         foreach ($order->orderDetails as $orderDetail) {
-            /** @var Product $product */
-            $product = Product::query()->find($orderDetail->product_id);
+            $product = $orderDetail->product;
 
             if (!$productService->verifyProductAvailability($product, $orderDetail->quantity)) {
                 throw ProductUnavailableException::unavailable($product->name);
