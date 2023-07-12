@@ -14,7 +14,7 @@ class UsersSeeder extends Seeder
     public function run(): void
     {
         User::factory(5)->create()->each(function ($user) {
-            $user->assignRole('customer');
+            $user->assignRole(RoleEnum::CUSTOMER->value);
         });
 
         // Create the admin user

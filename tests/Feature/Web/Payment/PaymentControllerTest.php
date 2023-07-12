@@ -32,11 +32,6 @@ class PaymentControllerTest extends ProductTestCase
             'user_id' => $this->customerUser->id,
         ]);
 
-        $this->orderDetail = OrderDetail::factory()->create([
-            'order_id' => $this->pendingOrder->id,
-            'quantity' => 1,
-            'product_id' => $this->product->id,
-        ]);
     }
 
     public function testHandleRedirectWithPendingOrderIsApproved(): void
@@ -259,9 +254,17 @@ class PaymentControllerTest extends ProductTestCase
                 })
         );
 
+        $restoredProductQuantity = 0;
+
+        foreach ($this->pendingOrder->orderDetails as $orderDetail) {
+            if ($orderDetail->product_id === $this->product->id) {
+                $restoredProductQuantity += $orderDetail->quantity;
+            }
+        }
+
         $this->assertDatabaseHas('products', [
             'id' => $this->product->id,
-            'stock' => 2,
+            'stock' => 1 + $restoredProductQuantity,
         ]);
     }
 }
