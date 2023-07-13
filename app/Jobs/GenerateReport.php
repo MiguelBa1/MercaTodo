@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Enums\ReportStatusEnum;
+use App\Mail\ReportGenerated;
 use App\Models\Order;
 use App\Models\OrderDetail;
 use App\Models\Report;
@@ -15,6 +16,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 class GenerateReport implements ShouldQueue
 {
@@ -41,25 +43,19 @@ class GenerateReport implements ShouldQueue
             'user_id' => $this->user->id,
         ]);
 
-        $totalSales = $this->calculateTotalSales();
-        $totalOrders = $this->calculateTotalOrders();
-        $mostSoldProduct = $this->calculateMostSoldProduct();
-        $productsSoldPerCategory = $this->calculateProductsSoldPerCategory();
-        $salesByMonth = $this->calculateSalesByMonth();
-        $topSellingProducts = $this->calculateTopSellingProducts();
-
         $report->data = [
-            'total_sales' => $totalSales,
-            'total_orders' => $totalOrders,
-            'most_sold_product' => $mostSoldProduct,
-            'products_sold_per_category' => $productsSoldPerCategory,
-            'sales_by_month' => $salesByMonth,
-            'top_selling_products' => $topSellingProducts,
+            'total_sales' => $this->calculateTotalSales(),
+            'total_orders' => $this->calculateTotalOrders(),
+            'most_sold_product' => $this->calculateMostSoldProduct(),
+            'products_sold_per_category' => $this->calculateProductsSoldPerCategory(),
+            'sales_by_month' => $this->calculateSalesByMonth(),
+            'top_selling_products' => $this->calculateTopSellingProducts(),
         ];
 
         $report->status = ReportStatusEnum::COMPLETED;
         $report->save();
 
+        Mail::to($this->user->email)->send(new ReportGenerated($report));
     }
 
     protected function calculateTotalSales(): float
