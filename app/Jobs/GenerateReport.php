@@ -2,19 +2,19 @@
 
 namespace App\Jobs;
 
+use App\Enums\OrderStatusEnum;
 use App\Enums\ReportStatusEnum;
 use App\Mail\ReportGenerated;
 use App\Models\Order;
 use App\Models\OrderDetail;
 use App\Models\Report;
-use App\Enums\OrderStatusEnum;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Support\Collection;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 
@@ -89,12 +89,13 @@ class GenerateReport implements ShouldQueue
     protected function calculateProductsSoldPerCategory(): Collection|array
     {
         return OrderDetail::query()
-            ->select('category_id', DB::raw('SUM(quantity) as quantity'))
+            ->select('categories.name as category_name', DB::raw('SUM(quantity) as quantity'))
             ->join('products', 'order_details.product_id', '=', 'products.id')
+            ->join('categories', 'products.category_id', '=', 'categories.id')
             ->join('orders', 'order_details.order_id', '=', 'orders.id')
             ->where('orders.status', OrderStatusEnum::COMPLETED)
             ->whereBetween('order_details.created_at', [$this->startDate, $this->endDate])
-            ->groupBy('category_id')
+            ->groupBy('category_name')
             ->get();
     }
 
@@ -105,6 +106,7 @@ class GenerateReport implements ShouldQueue
             ->whereBetween('created_at', [$this->startDate, $this->endDate])
             ->where('status', OrderStatusEnum::COMPLETED)
             ->groupBy('month')
+            ->orderBy('month', 'asc')
             ->get();
     }
 

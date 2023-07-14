@@ -89,7 +89,7 @@ Route::middleware(
             ->group(function () {
                 Route::get('/', [AdminReportController::class, 'index'])
                     ->name('admin.view.reports');
-                Route::get('{reports}', [AdminReportController::class, 'show'])
+                Route::get('{report}', [AdminReportController::class, 'show'])
                     ->name('admin.view.report');
             });
 
