@@ -41,6 +41,8 @@ class GenerateReport implements ShouldQueue
         $report = Report::query()->create([
             'report_type' => 'sales',
             'user_id' => $this->user->id,
+            'start_date' => $this->startDate,
+            'end_date' => $this->endDate,
         ]);
 
         $report->data = [

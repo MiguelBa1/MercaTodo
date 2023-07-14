@@ -16,6 +16,8 @@ return new class () extends Migration {
             $table->string('report_type');
             $table->json('data')->nullable();
             $table->enum('status', array_column(ReportStatusEnum::cases(), 'value'))->default(ReportStatusEnum::PENDING->value);
+            $table->dateTime('start_date')->nullable();
+            $table->dateTime('end_date')->nullable();
             $table->foreignId('user_id')->nullable()->constrained()->onDelete('set null');
             $table->timestamps();
         });

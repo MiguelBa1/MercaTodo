@@ -15,6 +15,8 @@ use Illuminate\Support\Carbon;
  * @property string $report_type
  * @property array|null $data
  * @property ReportStatusEnum $status
+ * @property Carbon|null $start_date
+ * @property Carbon|null $end_date
  * @property int|null $user_id
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
@@ -29,11 +31,18 @@ class Report extends Model
         'data',
         'status',
         'user_id',
+        'start_date',
+        'end_date',
     ];
 
     protected $casts = [
         'data' => 'array',
         'status' => ReportStatusEnum::class,
+    ];
+
+    protected $dates = [
+        'start_date',
+        'end_date',
     ];
 
     public function user(): BelongsTo
