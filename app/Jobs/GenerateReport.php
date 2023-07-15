@@ -76,9 +76,9 @@ class GenerateReport implements ShouldQueue
             ->count();
     }
 
-    protected function calculateMostSoldProduct(): object|null
+    protected function calculateMostSoldProduct(): object|array
     {
-        return OrderDetail::query()
+        $result = OrderDetail::query()
             ->select('product_name', DB::raw('SUM(quantity) as quantity'))
             ->join('orders', 'order_details.order_id', '=', 'orders.id')
             ->where('orders.status', OrderStatusEnum::COMPLETED)
@@ -86,6 +86,7 @@ class GenerateReport implements ShouldQueue
             ->groupBy('product_name')
             ->orderBy('quantity', 'desc')
             ->first();
+        return $result ? $result : (object) [];
     }
 
     protected function calculateProductsSoldPerCategory(): Collection|array

@@ -19,7 +19,7 @@ class ReportController extends Controller
         GenerateReport::dispatch(Auth::user(), $startDate, $endDate);
 
         return response()->json([
-            'message' => 'Report is being generated',
+            'message' => __('messages.being_generated', ['attribute' => 'Report']),
         ]);
     }
 }

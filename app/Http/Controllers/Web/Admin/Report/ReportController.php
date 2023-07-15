@@ -2,16 +2,25 @@
 
 namespace App\Http\Controllers\Web\Admin\Report;
 
+use App\Enums\ReportStatusEnum;
 use App\Http\Controllers\Controller;
+use App\Models\Report;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
-use App\Models\Report;
 
 class ReportController extends Controller
 {
-    public function index(): Response
+    public function index(Request $request): Response
     {
-        return Inertia::render('Admin/Report/Index');
+        return Inertia::render('Admin/Report/Index', [
+            'lastReport' => Report::query()
+                ->select('id', 'status')
+                ->where('status', ReportStatusEnum::COMPLETED->value)
+                ->where('user_id', $request->user()->id)
+                ->latest('id')
+                ->first(),
+        ]);
     }
 
     public function show(Report $report): Response

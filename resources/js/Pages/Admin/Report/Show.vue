@@ -32,7 +32,7 @@ let {
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
             <div class="bg-white p-6 rounded shadow text-center">
                 <h2 class="font-semibold text-lg mb-4">Total Sales</h2>
-                <p class="text-4xl">{{ formatCurrency(total_sales) }}$</p>
+                <p class="text-4xl">{{ formatCurrency(total_sales) }}</p>
             </div>
             <div class="bg-white p-6 rounded shadow text-center">
                 <h2 class="font-semibold text-lg mb-4">Total Orders</h2>

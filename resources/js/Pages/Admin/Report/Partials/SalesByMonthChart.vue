@@ -1,6 +1,7 @@
 <script setup>
 import * as d3 from "d3";
 import {onMounted, onUnmounted} from "vue";
+import {formatCurrency} from "@/Utils/currency";
 
 const { sales_by_month } = defineProps({
     sales_by_month: {
@@ -79,7 +80,7 @@ function generateSalesByMonthChart() {
             tooltip.style("left", event.pageX + "px")
                 .style("top", event.pageY + "px")
                 .classed("show", true)
-                .html(`<span>${d.sales}</span>`);
+                .html(`<span>${formatCurrency(d.sales)}</span>`);
         })
         .on("mouseout", function () {
             d3.select(this)

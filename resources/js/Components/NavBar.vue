@@ -80,6 +80,10 @@ const {auth} = usePage().props;
                                             <div class="border border-indigo-100 mr-3"></div>
                                             Auxiliary Tables
                                         </DropdownLink>
+                                        <DropdownLink :href="route('admin.view.reports')" class="pl-8 flex">
+                                            <div class="border border-indigo-100 mr-3"></div>
+                                            Reports
+                                        </DropdownLink>
                                     </div>
                                     <DropdownLink :href="route('profile.edit')"> Profile</DropdownLink>
                                     <DropdownLink :href="route('order.index')"> My orders</DropdownLink>
@@ -168,6 +172,9 @@ const {auth} = usePage().props;
                         </ResponsiveNavLink>
                         <ResponsiveNavLink :href="route('admin.auxiliary.tables.index')"><span
                             class="border-l-4 pl-2">Auxiliary Tables</span>
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink :href="route('admin.view.reports')"><span
+                            class="border-l-4 pl-2">Reports</span>
                         </ResponsiveNavLink>
                     </template>
                     <ResponsiveNavLink :href="route('profile.edit')" as="button">
