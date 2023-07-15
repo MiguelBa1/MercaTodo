@@ -26,7 +26,7 @@ class ReportController extends Controller
     public function show(Report $report): Response
     {
         return Inertia::render('Admin/Report/Show', [
-            'report' => $report,
+            'report' => $report->only('id', 'data', 'start_date', 'end_date'),
         ]);
     }
 }

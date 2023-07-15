@@ -13,6 +13,9 @@ defineOptions({
 
 const {report} = usePage().props;
 
+let start_date = new Date(report.start_date).toLocaleDateString('en-US', {year: 'numeric', month: 'long', day: 'numeric'});
+let end_date = new Date(report.end_date).toLocaleDateString('en-US', {year: 'numeric', month: 'long', day: 'numeric'});
+
 let {
     total_sales,
     total_orders,
@@ -29,13 +32,17 @@ let {
         <title>Reports</title>
     </Head>
     <div class="p-6 lg:p-12 max-w-7xl mx-auto grid gap-3">
+        <div class="mb-6 text-center">
+            <h1 class="text-3xl font-bold">Sales Report</h1>
+            <p class="text-xl">From {{ start_date }} to {{ end_date }}</p>
+        </div>
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
             <div class="bg-white p-6 rounded shadow text-center">
                 <h2 class="font-semibold text-lg mb-4">Total Sales</h2>
                 <p class="text-4xl">{{ formatCurrency(total_sales) }}</p>
             </div>
             <div class="bg-white p-6 rounded shadow text-center">
-                <h2 class="font-semibold text-lg mb-4">Total Orders</h2>
+                <h2 class="font-semibold text-lg mb-4">Total Orders Completed</h2>
                 <p class="text-4xl">{{ total_orders }}</p>
             </div>
             <div class="bg-white p-6 rounded shadow text-center">
