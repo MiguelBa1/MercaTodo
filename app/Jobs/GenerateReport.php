@@ -4,10 +4,12 @@ namespace App\Jobs;
 
 use App\Enums\OrderStatusEnum;
 use App\Enums\ReportStatusEnum;
+use App\Mail\ReportFailed;
 use App\Mail\ReportGenerated;
 use App\Models\Order;
 use App\Models\OrderDetail;
 use App\Models\Report;
+use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -16,6 +18,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
 class GenerateReport implements ShouldQueue
@@ -58,6 +61,16 @@ class GenerateReport implements ShouldQueue
         $report->save();
 
         Mail::to($this->user->email)->send(new ReportGenerated($report));
+    }
+
+    public function failed(Exception $exception): void
+    {
+        Log::error('Report generation failed', [
+            'user_id' => $this->user->id,
+            'exception' => $exception->getMessage(),
+        ]);
+
+        Mail::to($this->user->email)->send(new ReportFailed($this->user));
     }
 
     protected function calculateTotalSales(): float
