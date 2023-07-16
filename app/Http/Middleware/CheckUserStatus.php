@@ -18,7 +18,7 @@ class CheckUserStatus
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (!$request->user()->status) {
+        if (!$request->user()->getRawOriginal('status')) {
             Auth::logout();
 
             $request->session()->invalidate();
