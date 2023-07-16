@@ -4,7 +4,6 @@ namespace Tests\Feature\Web\Payment;
 
 use App\Enums\OrderStatusEnum;
 use App\Models\Order;
-use App\Models\OrderDetail;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
 use Inertia\Testing\AssertableInertia;
@@ -16,7 +15,8 @@ class PaymentControllerTest extends ProductTestCase
 
     protected Order $pendingOrder;
     protected Order $completedOrder;
-    protected OrderDetail $orderDetail;
+
+    protected Order $rejectedOrder;
 
     public function setUp(): void
     {
@@ -32,6 +32,11 @@ class PaymentControllerTest extends ProductTestCase
             'user_id' => $this->customerUser->id,
         ]);
 
+        $this->rejectedOrder = Order::factory()->create([
+            'status' => OrderStatusEnum::REJECTED,
+            'user_id' => $this->customerUser->id,
+            "process_url" => "https://test.placetopay.com/",
+        ]);
     }
 
     public function testHandleRedirectWithPendingOrderIsApproved(): void
@@ -133,6 +138,15 @@ class PaymentControllerTest extends ProductTestCase
         ]);
     }
 
+    public function testHandleRedirectWithPendingOrderFailsRequest(): void
+    {
+        Http::fake([config('placetopay.url') . '/*' => Http::response([], 500)]);
+
+        $response = $this->actingAs($this->customerUser)->get(route('payment.result', $this->pendingOrder->id));
+
+        $response->assertServiceUnavailable();
+    }
+
     public function testHandleRedirectWithNonPendingOrder(): void
     {
         $response = $this->actingAs($this->customerUser)->get(route('payment.result', $this->completedOrder->id));
@@ -210,12 +224,17 @@ class PaymentControllerTest extends ProductTestCase
         Http::fake([
             config('placetopay.url') . '/*' => Http::response($mockResponse)]);
 
+        // Restore stock manually to avoid the exception
+        foreach ($this->rejectedOrder->orderDetails as $orderDetail) {
+            $this->product->stock += $orderDetail->quantity;
+            $this->product->save();
+        }
 
-        $response = $this->actingAs($this->customerUser)->get(route('payment.retry', $this->pendingOrder->id));
+        $response = $this->actingAs($this->customerUser)->get(route('payment.retry', $this->rejectedOrder->id));
 
         $response->assertCreated();
         $response->assertJson([
-            'redirect_url' => $this->pendingOrder->process_url
+            'redirect_url' => $this->rejectedOrder->process_url
         ]);
     }
 

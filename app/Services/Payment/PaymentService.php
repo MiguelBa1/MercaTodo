@@ -86,18 +86,17 @@ class PaymentService
         );
 
         if ($response->ok()) {
-            $this->updateOrderStatus($order, $response->json()['status']['status']);
-        } elseif ($response->failed()) {
-            $statusCode = $response->json()['status']['reason'] ?? $response->status();
-            $errorMessage = $response->json()['status']['message'] ?? 'Unknown error';
+            $status = $response->json()['status']['status'];
+            $this->updateOrderStatus($order, $status);
 
-            Log::error('Failed to handle payment response with status code ' . $statusCode . ': ' . $errorMessage);
+            if ($status === TransactionStatusEnum::FAILED || $status === TransactionStatusEnum::REJECTED) {
+                $statusCode = $response->json()['status']['reason'] ?? $response->status();
+                $errorMessage = $response->json()['status']['message'] ?? 'Unknown error';
 
-            if ($statusCode == 401) {
-                throw ProcessPaymentException::invalidRequestError();
+                Log::error('Failed to handle payment response with status code ' . $statusCode . ': ' . $errorMessage);
+
+                throw ProcessPaymentException::sessionError();
             }
-
-            throw ProcessPaymentException::sessionError();
         } else {
             Log::error('Unexpected response status when handling payment response: ' . $response->status());
 
