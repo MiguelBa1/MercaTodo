@@ -8,33 +8,43 @@ use App\Models\Product;
 use App\Models\User;
 use App\Services\OrderDetail\OrderDetailService;
 use App\Services\Product\ProductService;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class OrderService
 {
-    public function createOrder(User $user, array $cartProducts): Order|Model
+    /**
+     * @param User $user
+     * @param Collection $cartItems
+     * @return Order|Model
+     */
+    public function createOrder(User $user, Collection $cartItems): Order|Model
     {
-        $total = 0;
+        return DB::transaction(function () use ($user, $cartItems) {
+            $total = 0;
 
-        foreach ($cartProducts as $cartProduct) {
-            $total += $cartProduct['price'] * $cartProduct['quantity'];
-        }
+            foreach ($cartItems as $item) {
+                $cartProduct = $item['product'];
+                $quantity = $item['quantity'];
+                $total += $cartProduct->price * $quantity;
+            }
 
-        /** @var Order $order */
-        $order = $user->orders()->create([
-            'reference' => crc32(uniqid()),
-            'user_id' => $user->getAttribute('id'),
-            'total' => $total
-        ]);
+            /** @var Order $order */
+            $order = $user->orders()->create([
+                'reference' => crc32(uniqid()),
+                'user_id' => $user->id,
+                'total' => $total
+            ]);
 
-        $orderDetailService = new OrderDetailService();
-        $orderDetailService->createOrderDetails($order, $cartProducts);
+            $orderDetailService = new OrderDetailService();
+            $orderDetailService->createOrderDetails($order, $cartItems);
 
-        return $order;
+            return $order;
+        });
     }
 
-    public function getOrders(int $user_id): collection
+    public function getOrders(int $user_id): Collection
     {
         return Order::query()
             ->with('orderDetails:id,order_id,product_name,product_price,quantity')
@@ -50,7 +60,7 @@ class OrderService
         foreach ($order->orderDetails as $orderDetail) {
             /** @var Product $product */
             $product = Product::query()->find($orderDetail->product_id);
-            $productService->updateStock($product->id, $orderDetail->quantity, true);
+            $productService->updateStock($product, $orderDetail->quantity, true);
 
             $orderDetail->delete();
         }
@@ -74,7 +84,7 @@ class OrderService
         foreach ($order->orderDetails as $orderDetail) {
             /** @var Product $product */
             $product = Product::query()->find($orderDetail->product_id);
-            $productService->updateStock($product->id, $orderDetail->quantity, true);
+            $productService->updateStock($product, $orderDetail->quantity, true);
         }
     }
 }

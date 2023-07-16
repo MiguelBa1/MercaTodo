@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Auth;
+namespace Tests\Feature\Web\Auth;
 
 use App\Models\City;
 use App\Models\Department;

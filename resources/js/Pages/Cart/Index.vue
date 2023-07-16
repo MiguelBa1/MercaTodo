@@ -1,25 +1,26 @@
 <script setup>
 import MainLayout from "@/Layouts/MainLayout.vue";
-import {Head, Link} from '@inertiajs/vue3';
+import {Head, Link, router, usePage} from '@inertiajs/vue3';
 import {useCartStore} from "@/store/cart";
 import {computed, ref} from "vue";
 import ProductCard from "@/Pages/Cart/Partials/ProductCard.vue";
 import LoadingSpinner from "@/Components/LoadingSpinner.vue";
 import {useToast} from "vue-toast-notification";
-import {usePage, router} from "@inertiajs/vue3";
 import axios from "axios";
 
 
 const store = useCartStore();
 const $toast = useToast();
 
-const cartProducts = ref(usePage().props.cartProducts);
+const cartItems = ref(usePage().props.cartItems);
 
 const total = computed(() => {
     let total = 0;
-    for (const [key, value] of Object.entries(cartProducts.value)) {
-        total += value.price * value.quantity;
-    }
+
+    cartItems.value.forEach(item => {
+        total += item.product.price * item.quantity;
+    });
+
     return total;
 });
 
@@ -47,7 +48,7 @@ const fetchProducts = async () => {
         {
             replace: true,
             preserveScroll: true,
-            only: ['cartProducts']
+            only: ['cartItems']
         }
     )
 };
@@ -67,8 +68,8 @@ const fetchProducts = async () => {
             <div v-if="store.cartItemsCount > 0" class="flex flex-col lg:flex-row items-center lg:items-start gap-6">
                 <div
                     class="w-full grid grid-cols-1 gap-2">
-                    <ProductCard v-for="product in cartProducts" :key="product.id" :product="product"
-                                 :quantity="product.quantity" :fetch-products="fetchProducts"
+                    <ProductCard v-for="item in cartItems" :key="item.product.id" :product="item.product"
+                                 :quantity="item.quantity" :fetch-products="fetchProducts"
                     />
                 </div>
 

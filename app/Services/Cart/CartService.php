@@ -5,6 +5,7 @@ namespace App\Services\Cart;
 use App\Exceptions\ProductUnavailableException;
 use App\Models\Product;
 use App\Services\Product\ProductService;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use App\Exceptions\CartValidationException;
 
@@ -34,7 +35,12 @@ class CartService
         return Cache::get($key, []);
     }
 
-    public function getProductsWithDetails(int $userId): array
+    public function clear(int $userId): void
+    {
+        Cache::forget("user:$userId:cart");
+    }
+
+    public function getProductsWithDetails(int $userId): Collection
     {
         $cartData = $this->getCart($userId);
         $productIds = array_keys($cartData);
@@ -43,46 +49,37 @@ class CartService
             ->whereIn('id', $productIds)
             ->get(['id', 'name', 'image', 'price', 'status', 'stock']);
 
-        $productsDetails = [];
-
-        foreach ($products as $product) {
-            $productId = $product['id'];
-
-            if (isset($cartData[$productId])) {
-                $product['quantity'] = $cartData[$productId];
-            }
-
-            $productsDetails[$productId] = $product;
-        }
-
-        return $productsDetails;
-    }
-
-    public function clear(int $userId): void
-    {
-        Cache::forget("user:$userId:cart");
+        return $products->map(function ($product) use ($cartData) {
+            return [
+                'product' => $product,
+                'quantity' => $cartData[$product->id]
+            ];
+        });
     }
 
     /**
      * @throws CartValidationException
      * @throws ProductUnavailableException
      */
-    public function validatedCart(int $userId): array
+    public function validatedCart(int $userId): Collection
     {
-        $cartData = $this->getProductsWithDetails($userId);
+        $cartItems = $this->getProductsWithDetails($userId);
 
-        if (empty($cartData)) {
+        if ($cartItems->isEmpty()) {
             throw CartValidationException::empty();
         }
 
         $productService = new ProductService();
 
-        foreach ($cartData as $cartProduct) {
-            if (!$productService->verifyProductAvailability($cartProduct, $cartProduct['quantity'])) {
-                throw ProductUnavailableException::unavailable($cartProduct['name']);
+        foreach ($cartItems as $item) {
+            $cartProduct = $item['product'];
+            $quantity = $item['quantity'];
+
+            if (!$productService->verifyProductAvailability($cartProduct, $quantity)) {
+                throw ProductUnavailableException::unavailable($cartProduct->name);
             }
         }
 
-        return $cartData;
+        return $cartItems;
     }
 }

@@ -5,30 +5,32 @@ namespace App\Services\OrderDetail;
 use App\Models\Order;
 use App\Services\Product\ProductService;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
 
 class OrderDetailService
 {
-    public function createOrderDetails(Order $order, array $productData): Collection
+    /**
+     * @param Order $order
+     * @param Collection $cartItems
+     * @return void
+     */
+    public function createOrderDetails(Order $order, Collection $cartItems): void
     {
-        $orderDetails = collect();
         $productService = new ProductService();
 
-        DB::transaction(function () use ($productService, $order, $productData, $orderDetails) {
-            foreach ($productData as $product) {
-                $orderDetail = $order->orderDetails()->create([
-                    'product_id' => $product['id'],
-                    'product_name' => $product['name'],
-                    'product_price' => $product['price'],
-                    'quantity' => $product['quantity'],
-                ]);
+        foreach ($cartItems as $item) {
+            $product = $item['product'];
+            $quantity = $item['quantity'];
 
-                $productService->updateStock($product['id'], $product['quantity'], false);
+            // Deduct stock
+            $productService->updateStock($product, $quantity, false);
 
-                $orderDetails->push($orderDetail);
-            }
-        });
-
-        return $orderDetails;
+            // Create new OrderDetail
+            $order->orderDetails()->create([
+                'product_id' => $product->id,
+                'product_name' => $product->name,
+                'product_price' => $product->price,
+                'quantity' => $quantity,
+            ]);
+        }
     }
 }

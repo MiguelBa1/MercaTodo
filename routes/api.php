@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\Admin\Product\ProductStatusController as AdminProdu
 use App\Http\Controllers\Api\Admin\User\PasswordController as AdminPasswordController;
 use App\Http\Controllers\Api\Admin\User\ProfileController as AdminProfileController;
 use App\Http\Controllers\Api\Admin\User\UserStatusController as AdminUserStatusController;
+use App\Http\Controllers\Api\Admin\Report\ReportController as AdminReportController;
 use App\Http\Controllers\Api\Auth\LoginController;
 use App\Http\Controllers\Api\Cart\CartController;
 use App\Http\Controllers\Api\City\CityController;
@@ -110,6 +111,12 @@ Route::middleware(
                     ->name('api.admin.categories.store');
                 Route::patch('{category}', [AdminCategoryController::class, 'update'])
                     ->name('api.admin.categories.update');
+            });
+
+        Route::prefix('report')
+            ->group(function () {
+                Route::post('/', [AdminReportController::class, 'generateReport'])
+                    ->name('api.admin.report.generate');
             });
     });
 

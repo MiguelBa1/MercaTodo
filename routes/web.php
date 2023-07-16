@@ -1,11 +1,12 @@
 <?php
 
-use App\Enums\RoleEnum;
 use App\Enums\PermissionEnum;
+use App\Enums\RoleEnum;
 use App\Http\Controllers\Web\Admin\Auxiliary\AuxiliaryTablesController as AdminAuxiliaryTablesController;
 use App\Http\Controllers\Web\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Web\Admin\Product\ProductController as AdminProductController;
 use App\Http\Controllers\Web\Admin\User\UserController as AdminUserController;
+use App\Http\Controllers\Web\Admin\Report\ReportController as AdminReportController;
 use App\Http\Controllers\Web\Cart\CartController;
 use App\Http\Controllers\Web\Home\HomeController;
 use App\Http\Controllers\Web\Order\OrderController;
@@ -55,7 +56,9 @@ Route::middleware(['auth', 'check.user.status', 'verified'])
             });
     });
 
-Route::middleware(['auth', 'role:' . RoleEnum::ADMIN->value . "|" . RoleEnum::SUPER_ADMIN->value, 'check.user.status', 'verified'])
+Route::middleware(
+    ['auth', 'role:' . RoleEnum::ADMIN->value . "|" . RoleEnum::SUPER_ADMIN->value, 'check.user.status', 'verified']
+)
     ->prefix('admin')
     ->group(function () {
         Route::get('/', [AdminDashboardController::class, 'index'])
@@ -80,6 +83,14 @@ Route::middleware(['auth', 'role:' . RoleEnum::ADMIN->value . "|" . RoleEnum::SU
                 Route::get('{product}/edit', [AdminProductController::class, 'edit'])
                     ->middleware('permission:' . PermissionEnum::UPDATE_PRODUCTS->value)
                     ->name('admin.products.edit');
+            });
+
+        Route::prefix('reports')
+            ->group(function () {
+                Route::get('/', [AdminReportController::class, 'index'])
+                    ->name('admin.view.reports');
+                Route::get('{report}', [AdminReportController::class, 'show'])
+                    ->name('admin.view.report');
             });
 
         Route::get('/auxiliary-tables', [AdminAuxiliaryTablesController::class, 'index'])

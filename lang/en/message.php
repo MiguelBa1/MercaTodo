@@ -6,4 +6,5 @@ return [
     'deleted' => 'The :attribute was deleted successfully',
     'retrieved' => 'The :attribute were retrieved successfully',
     'updated_status' => 'The status of :attribute was updated successfully',
+    'being_generated' => 'The :attribute is being generated',
 ];

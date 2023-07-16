@@ -7,7 +7,6 @@ use App\Enums\TransactionStatusEnum;
 use App\Exceptions\ProcessPaymentException;
 use App\Exceptions\ProductUnavailableException;
 use App\Models\Order;
-use App\Models\Product;
 use App\Services\Order\OrderService;
 use App\Services\Payment\Entities\AuthEntity;
 use App\Services\Payment\Entities\BuyerEntity;
@@ -131,14 +130,13 @@ class PaymentService
         $productService = new ProductService();
 
         foreach ($order->orderDetails as $orderDetail) {
-            /** @var Product $product */
-            $product = Product::query()->find($orderDetail->product_id);
+            $product = $orderDetail->product;
 
             if (!$productService->verifyProductAvailability($product, $orderDetail->quantity)) {
                 throw ProductUnavailableException::unavailable($product->name);
             }
 
-            $productService->updateStock($product->id, $orderDetail->quantity);
+            $productService->updateStock($product, $orderDetail->quantity);
         }
 
         $processUrl = $this->processPayment($order, $ipAddress, $userAgent);
