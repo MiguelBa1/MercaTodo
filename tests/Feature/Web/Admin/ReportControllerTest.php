@@ -35,7 +35,7 @@ class ReportControllerTest extends UserTestCase
     {
         $response = $this
             ->actingAs($this->adminUser)
-            ->get(route('admin.view.reports'));
+            ->get(route('admin.reports.index'));
 
         /** @var Report $lastReport */
         $lastReport = Report::all()->last();
@@ -57,7 +57,7 @@ class ReportControllerTest extends UserTestCase
     {
         $response = $this
             ->actingAs($this->adminUser)
-            ->get(route('admin.view.report', $this->report->id));
+            ->get(route('admin.report.show', $this->report->id));
 
         $response->assertOk();
         $response->assertInertia(
@@ -85,7 +85,7 @@ class ReportControllerTest extends UserTestCase
 
         $response = $this
             ->actingAs($this->adminUser)
-            ->get(route('admin.view.report', $report->id));
+            ->get(route('admin.report.show', $report->id));
 
         $response->assertNotFound();
     }

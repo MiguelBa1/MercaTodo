@@ -26,7 +26,7 @@ class ProductShowTest extends UserTestCase
         $product = Product::factory()->create();
 
 
-        $response = $this->get(route('api.admin.products.show', $product->id));
+        $response = $this->get(route('api.admin.product.show', $product->id));
 
         $response->assertOk();
 

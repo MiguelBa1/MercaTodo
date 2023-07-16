@@ -82,7 +82,7 @@ Route::middleware(
                     ->name('api.admin.products.index');
                 Route::get('{product}', [AdminProductController::class, 'show'])
                     ->middleware('permission:' . PermissionEnum::READ_PRODUCTS->value)
-                    ->name('api.admin.products.show');
+                    ->name('api.admin.product.show');
                 Route::post('{product}', [AdminProductController::class, 'update'])
                     ->middleware('permission:' . PermissionEnum::UPDATE_PRODUCTS->value)
                     ->name('api.admin.products.update');

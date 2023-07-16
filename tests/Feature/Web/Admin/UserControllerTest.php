@@ -11,7 +11,7 @@ class UserControllerTest extends UserTestCase
     {
         $response = $this
             ->actingAs($this->adminUser)
-            ->get(route('admin.view.users'));
+            ->get(route('admin.users.index'));
 
         $response->assertOk();
         $response->assertInertia(
@@ -22,12 +22,12 @@ class UserControllerTest extends UserTestCase
                     fn (AssertableInertia $page) => $page
                         ->where('current_page', 1)
                         ->where('data', fn ($users) => $users->count() === 1)
-                        ->where('first_page_url', route('admin.view.users', ['page' => 1]))
+                        ->where('first_page_url', route('admin.users.index', ['page' => 1]))
                         ->where('from', 1)
                         ->where('last_page', 1)
-                        ->where('last_page_url', route('admin.view.users', ['page' => 1]))
+                        ->where('last_page_url', route('admin.users.index', ['page' => 1]))
                         ->where('next_page_url', null)
-                        ->where('path', route('admin.view.users'))
+                        ->where('path', route('admin.users.index'))
                         ->where('per_page', 10)
                         ->where('prev_page_url', null)
                         ->etc()
@@ -37,7 +37,7 @@ class UserControllerTest extends UserTestCase
 
     public function testEditRendersCorrectView(): void
     {
-        $response = $this->actingAs($this->adminUser)->get(route('admin.edit.user', $this->customerUser->id));
+        $response = $this->actingAs($this->adminUser)->get(route('admin.user.edit', $this->customerUser->id));
         $response->assertOk();
         $response->assertInertia(
             fn (AssertableInertia $page) => $page

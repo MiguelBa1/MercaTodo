@@ -16,7 +16,7 @@ const $toast = useToast();
 const usersData = ref(users);
 
 const getUsers = async (page = 1) => {
-    router.visit(route('admin.view.users', {page}), {
+    router.visit(route('admin.users.index', {page}), {
         replace: true,
         preserveScroll: true
     });
@@ -78,7 +78,7 @@ const manageUserStatus = async (id, name) => {
                     <td class="border px-4 py-2 text-center">{{ user.roles[0].name }}</td>
                     <td class="border px-4 py-2">
                         <div class="grid grid-rows-2 gap-1">
-                            <Link :href="route('admin.edit.user', user.id)" title="Edit user"
+                            <Link :href="route('admin.user.edit', user.id)" title="Edit user"
                                   class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-2 rounded text-center"
                             >
                                 Edit
