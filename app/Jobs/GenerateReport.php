@@ -15,7 +15,6 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -29,9 +28,7 @@ class GenerateReport implements ShouldQueue
     use SerializesModels;
 
     public function __construct(
-        protected $user,
-        protected Carbon $startDate,
-        protected Carbon $endDate,
+        protected Report $report,
     ) {
     }
 
@@ -40,15 +37,7 @@ class GenerateReport implements ShouldQueue
      */
     public function handle(): void
     {
-        /** @var Report $report */
-        $report = Report::query()->create([
-            'report_type' => 'sales',
-            'user_id' => $this->user->id,
-            'start_date' => $this->startDate,
-            'end_date' => $this->endDate,
-        ]);
-
-        $report->data = [
+        $this->report->data = [
             'total_sales' => $this->calculateTotalSales(),
             'total_orders' => $this->calculateTotalOrders(),
             'most_sold_product' => $this->calculateMostSoldProduct(),
@@ -57,26 +46,29 @@ class GenerateReport implements ShouldQueue
             'top_selling_products' => $this->calculateTopSellingProducts(),
         ];
 
-        $report->status = ReportStatusEnum::COMPLETED;
-        $report->save();
+        $this->report->status = ReportStatusEnum::COMPLETED;
+        $this->report->save();
 
-        Mail::to($this->user->email)->send(new ReportGenerated($report));
+        Mail::to($this->report->user->email)->send(new ReportGenerated($this->report));
     }
 
     public function failed(Exception $exception): void
     {
+        $this->report->status = ReportStatusEnum::FAILED;
+        $this->report->save();
+
         Log::error('Report generation failed', [
-            'user_id' => $this->user->id,
+            'user_id' => $this->report->user->id,
             'exception' => $exception->getMessage(),
         ]);
 
-        Mail::to($this->user->email)->send(new ReportFailed($this->user));
+        Mail::to($this->report->user->email)->send(new ReportFailed($this->report->user));
     }
 
     protected function calculateTotalSales(): float
     {
         return Order::query()
-            ->whereBetween('created_at', [$this->startDate, $this->endDate])
+            ->whereBetween('created_at', [$this->report->start_date, $this->report->end_date])
             ->where('status', OrderStatusEnum::COMPLETED)
             ->sum('total');
     }
@@ -84,7 +76,7 @@ class GenerateReport implements ShouldQueue
     protected function calculateTotalOrders(): int
     {
         return Order::query()
-            ->whereBetween('created_at', [$this->startDate, $this->endDate])
+            ->whereBetween('created_at', [$this->report->start_date, $this->report->end_date])
             ->where('status', OrderStatusEnum::COMPLETED)
             ->count();
     }
@@ -95,11 +87,11 @@ class GenerateReport implements ShouldQueue
             ->select('product_name', DB::raw('SUM(quantity) as quantity'))
             ->join('orders', 'order_details.order_id', '=', 'orders.id')
             ->where('orders.status', OrderStatusEnum::COMPLETED)
-            ->whereBetween('order_details.created_at', [$this->startDate, $this->endDate])
+            ->whereBetween('order_details.created_at', [$this->report->start_date, $this->report->end_date])
             ->groupBy('product_name')
             ->orderBy('quantity', 'desc')
             ->first();
-        return $result ? $result : (object) [];
+        return $result ?: (object) [];
     }
 
     protected function calculateProductsSoldPerCategory(): Collection|array
@@ -110,7 +102,7 @@ class GenerateReport implements ShouldQueue
             ->join('categories', 'products.category_id', '=', 'categories.id')
             ->join('orders', 'order_details.order_id', '=', 'orders.id')
             ->where('orders.status', OrderStatusEnum::COMPLETED)
-            ->whereBetween('order_details.created_at', [$this->startDate, $this->endDate])
+            ->whereBetween('order_details.created_at', [$this->report->start_date, $this->report->end_date])
             ->groupBy('category_name')
             ->get();
     }
@@ -119,7 +111,7 @@ class GenerateReport implements ShouldQueue
     {
         return Order::query()
             ->select(DB::raw('SUM(total) as sales'), DB::raw('DATE_FORMAT(created_at, "%Y-%m") as month'))
-            ->whereBetween('created_at', [$this->startDate, $this->endDate])
+            ->whereBetween('created_at', [$this->report->start_date, $this->report->end_date])
             ->where('status', OrderStatusEnum::COMPLETED)
             ->groupBy('month')
             ->orderBy('month', 'asc')
@@ -132,7 +124,7 @@ class GenerateReport implements ShouldQueue
             ->select('product_name', DB::raw('SUM(quantity) as total'))
             ->join('orders', 'order_details.order_id', '=', 'orders.id')
             ->where('orders.status', OrderStatusEnum::COMPLETED)
-            ->whereBetween('order_details.created_at', [$this->startDate, $this->endDate])
+            ->whereBetween('order_details.created_at', [$this->report->start_date, $this->report->end_date])
             ->groupBy('product_name')
             ->orderBy('total', 'desc')
             ->take(10)
