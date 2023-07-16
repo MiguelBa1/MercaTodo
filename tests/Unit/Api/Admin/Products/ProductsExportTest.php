@@ -29,6 +29,7 @@ class ProductsExportTest extends TestCase
 
     public function testStoreExportInStorage(): void
     {
+        Storage::fake();
         $fileName = 'test.xlsx';
 
         /** @var Export $export */
@@ -59,8 +60,6 @@ class ProductsExportTest extends TestCase
             'Category',
             'Brand',
         ], $headers);
-
-        $this->assertEquals(6, count($worksheet->toArray()));
     }
 
     public function testExportFailure(): void

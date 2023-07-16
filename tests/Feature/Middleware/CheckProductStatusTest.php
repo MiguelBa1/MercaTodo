@@ -3,9 +3,7 @@
 namespace Tests\Feature\Middleware;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\Feature\Utilities\ProductTestCase;
-use Tests\TestCase;
 
 class CheckProductStatusTest extends ProductTestCase
 {
