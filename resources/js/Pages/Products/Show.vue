@@ -1,13 +1,12 @@
 <script setup>
 import MainLayout from "@/Layouts/MainLayout.vue";
-import {Head} from '@inertiajs/vue3';
+import {Head, usePage} from '@inertiajs/vue3';
 import ProductCard from "@/Components/ProductCard.vue";
 import 'vue3-carousel/dist/carousel.css'
-import { Carousel, Slide, Navigation, Pagination } from 'vue3-carousel'
+import {Carousel, Navigation, Pagination, Slide} from 'vue3-carousel'
 import {useCartStore} from "@/store/cart";
 import {ref} from "vue";
 import {useToast} from "vue-toast-notification";
-import {usePage} from "@inertiajs/vue3";
 import {getProductImage} from "@/Utils/getProductImage";
 
 const toast = useToast();
@@ -47,17 +46,40 @@ const breakpoints = {
 const store = useCartStore();
 
 const addToCart = async () => {
-    if (!page.props.auth.user){
+    if (!page.props.auth.user) {
         toast.error('You need to login first');
         return;
     }
+    try {
+        const response = await store.addToCart(product.id, quantity.value);
+        if (response.status === 200) {
+            toast.success('Product added to cart');
+            await store.syncCart();
+        }
+    } catch (e) {
+        if (e.response.status === 422) {
+            toast.error(e.response.data.errors.quantity[0]);
+        } else if (e.response.status === 403) {
+            toast.error(e.response.data.message);
+        } else {
+            toast.error('Something went wrong');
+        }
+    }
+}
 
-    const response = await store.addToCart(product.id, quantity.value);
-    if (response.status === 200) {
-        toast.success('Product added to cart');
-        await store.syncCart();
+const increaseQuantity = () => {
+    if (quantity.value < product.stock) {
+        quantity.value++;
     } else {
-        toast.error('Something went wrong');
+        toast.error('No more stock available');
+    }
+}
+
+const decreaseQuantity = () => {
+    if (quantity.value > 1) {
+        quantity.value--;
+    } else {
+        toast.error('Quantity cannot be less than 1');
     }
 }
 
@@ -84,13 +106,15 @@ const addToCart = async () => {
                         <div class="flex justify-between">
                             <div>
                                 <button class="bg-gray-200 text-gray-600 rounded-md px-4 py-2"
-                                        @click="quantity = quantity - 1"
-                                        :disabled="quantity <= 1">-
+                                        @click="decreaseQuantity"
+                                >
+                                    -
                                 </button>
                                 <span class="px-4 py-2">{{ quantity }}</span>
                                 <button class="bg-gray-200 text-gray-600 rounded-md px-4 py-2"
-                                        @click="quantity = quantity + 1"
-                                        :disabled="quantity >= product.stock">+
+                                        @click="increaseQuantity"
+                                >
+                                    +
                                 </button>
                             </div>
                             <div>
@@ -112,7 +136,7 @@ const addToCart = async () => {
                 <h2 class="text-2xl font-bold">Related Products</h2>
                 <Carousel :breakpoints="breakpoints" :wrap-around="true" class="mt-8">
                     <Slide v-for="relatedProduct in relatedProducts" :key="relatedProduct.id">
-                        <ProductCard :product="relatedProduct" class="h-full" />
+                        <ProductCard :product="relatedProduct" class="h-full"/>
                     </Slide>
                     <template #addons>
                         <Navigation/>

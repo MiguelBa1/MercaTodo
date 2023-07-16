@@ -39,7 +39,6 @@ class ReportControllerTest extends UserTestCase
 
         /** @var Report $lastReport */
         $lastReport = Report::all()->last();
-        dump($lastReport->toArray());
 
         $response->assertOk();
         $response->assertInertia(
