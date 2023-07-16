@@ -13,7 +13,7 @@ const deleteProduct = () => {
     }).then(response => {
         $toast.success('Product deleted successfully!')
         setTimeout(() => {
-            window.location.href = route('admin.view.products')
+            window.location.href = route('admin.products.index')
         }, 1000)
     }).catch(error => {
         if (error.response.status === 403) {

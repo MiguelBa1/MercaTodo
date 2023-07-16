@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import {defineProps} from 'vue';
 import OrderDetailItem from "./OrderDetailItem.vue";
 import {Order} from "@/types";
 import axios from "axios";

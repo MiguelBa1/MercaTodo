@@ -7,7 +7,7 @@ Your sales report for the period from {{ $report->startDate }} to {{ $report->en
 
 You can view the report by clicking on the button below.
 
-@component('mail::button', ['url' => url(route('admin.view.report', $report->id))])
+@component('mail::button', ['url' => url(route('admin.report.show', $report->id))])
     View Report
 @endcomponent
 

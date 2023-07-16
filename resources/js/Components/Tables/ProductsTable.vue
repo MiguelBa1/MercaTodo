@@ -18,7 +18,7 @@ const $toast = useToast();
 const productsData = ref(products);
 
 const getProducts = async (page = 1) => {
-    router.visit(route('admin.view.products', {page}), {
+    router.visit(route('admin.products.index', {page}), {
         replace: true,
         preserveScroll: true
     });

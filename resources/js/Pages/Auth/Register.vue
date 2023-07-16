@@ -44,7 +44,7 @@ const submit = () => {
         </Head>
 
         <form @submit.prevent="submit">
-            <div class="sm:grid sm:grid-cols-2 gap-4">
+            <div class="sm:grid sm:grid-cols-2 gap-2">
                 <div>
                     <InputLabel for="name" value="Name"/>
 

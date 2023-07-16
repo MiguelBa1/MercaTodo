@@ -11,7 +11,7 @@ class ProductControllerTest extends ProductTestCase
     {
         $response = $this
             ->actingAs($this->adminUser)
-            ->get(route('admin.view.products'));
+            ->get(route('admin.products.index'));
 
         $response->assertOk();
         $response->assertInertia(

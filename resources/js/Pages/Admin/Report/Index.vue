@@ -59,7 +59,7 @@ const submit = async () => {
             <!-- Button to redirect to the last report -->
             <div class="flex flex-col sm:flex-row justify-between">
                 <h1 class="text-xl font-bold">Generate Reports</h1>
-                <Link v-if="lastReport"  :href="route('admin.view.report', lastReport.id)">
+                <Link v-if="lastReport"  :href="route('admin.report.show', lastReport.id)">
                     <PrimaryButton>View Last Report</PrimaryButton>
                 </Link>
             </div>

@@ -1,6 +1,6 @@
 <template>
     <Link class="grid bg-white rounded-lg shadow-lg p-4 hover:scale-105 duration-75"
-          :href="route('products.show', product.id)">
+          :href="route('product.show', product.id)">
         <div class="w-full max-w-xs max-h-xs">
             <img :src="getProductImage(product.image)" :alt="product.name"
                  class="w-full h-full object-cover">

@@ -62,21 +62,21 @@ Route::middleware(
     ->prefix('admin')
     ->group(function () {
         Route::get('/', [AdminDashboardController::class, 'index'])
-            ->name('admin.dashboard');
+            ->name('admin.dashboard.index');
         Route::prefix('users')
             ->group(function () {
                 Route::get('/', [AdminUserController::class, 'index'])
                     ->middleware('permission:' . PermissionEnum::READ_USERS->value)
-                    ->name('admin.view.users');
+                    ->name('admin.users.index');
                 Route::get('edit/{user}', [AdminUserController::class, 'edit'])
                     ->middleware('permission:' . PermissionEnum::UPDATE_USERS->value)
-                    ->name('admin.edit.user');
+                    ->name('admin.user.edit');
             });
         Route::prefix('products')
             ->group(function () {
                 Route::get('/', [AdminProductController::class, 'index'])
                     ->middleware('permission:' . PermissionEnum::READ_PRODUCTS->value)
-                    ->name('admin.view.products');
+                    ->name('admin.products.index');
                 Route::get('create', [AdminProductController::class, 'create'])
                     ->middleware('permission:' . PermissionEnum::CREATE_PRODUCTS->value)
                     ->name('admin.products.create');
@@ -88,9 +88,9 @@ Route::middleware(
         Route::prefix('reports')
             ->group(function () {
                 Route::get('/', [AdminReportController::class, 'index'])
-                    ->name('admin.view.reports');
+                    ->name('admin.reports.index');
                 Route::get('{report}', [AdminReportController::class, 'show'])
-                    ->name('admin.view.report');
+                    ->name('admin.report.show');
             });
 
         Route::get('/auxiliary-tables', [AdminAuxiliaryTablesController::class, 'index'])
@@ -99,6 +99,6 @@ Route::middleware(
 
 Route::get('/products/{product}', [ProductController::class, 'show'])
     ->middleware('check.product.status')
-    ->name('products.show');
+    ->name('product.show');
 
 require __DIR__ . '/auth.php';
