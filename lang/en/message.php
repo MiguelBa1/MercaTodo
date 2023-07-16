@@ -7,4 +7,5 @@ return [
     'retrieved' => 'The :attribute were retrieved successfully',
     'updated_status' => 'The status of :attribute was updated successfully',
     'being_generated' => 'The :attribute is being generated',
+    'not_found' => 'The :attribute was not found',
 ];
