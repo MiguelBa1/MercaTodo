@@ -25,6 +25,10 @@ class ReportController extends Controller
 
     public function show(Report $report): Response
     {
+        if ($report->status === ReportStatusEnum::PENDING) {
+            abort(404);
+        }
+
         return Inertia::render('Admin/Report/Show', [
             'report' => $report->only('id', 'data', 'start_date', 'end_date'),
         ]);

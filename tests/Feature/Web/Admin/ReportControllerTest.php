@@ -73,4 +73,21 @@ class ReportControllerTest extends UserTestCase
                 )
         );
     }
+
+    public function testShowReturns404WhenReportIsPending(): void
+    {
+        $report = Report::query()->create([
+            'user_id' => $this->adminUser->id,
+            'status' => ReportStatusEnum::PENDING->value,
+            'report_type' => 'sales',
+            'start_date' => Carbon::now()->subYear(),
+            'end_date' => Carbon::now(),
+        ]);
+
+        $response = $this
+            ->actingAs($this->adminUser)
+            ->get(route('admin.view.report', $report->id));
+
+        $response->assertNotFound();
+    }
 }
