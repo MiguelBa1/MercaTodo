@@ -13,7 +13,7 @@ class UsersSeeder extends Seeder
      */
     public function run(): void
     {
-        User::factory(5)->create()->each(function ($user) {
+        User::factory(config('user.seed.users'))->create()->each(function ($user) {
             $user->assignRole(RoleEnum::CUSTOMER->value);
         });
 
