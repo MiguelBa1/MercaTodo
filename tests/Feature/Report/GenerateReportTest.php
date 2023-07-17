@@ -59,7 +59,7 @@ class GenerateReportTest extends UserTestCase
 
         GenerateReport::dispatch($this->report);
 
-        Mail::assertSent(ReportGenerated::class);
+        Mail::assertQueued(ReportGenerated::class);
     }
 
     public function testReportIsGeneratedWithCorrectData(): void
