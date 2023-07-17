@@ -76,7 +76,9 @@ class ProductService
 
     public function deleteProduct(Product $product): void
     {
-        (new ProductImageService())->deleteImage($product->image);
+        if ($product->image !== null) {
+            (new ProductImageService())->deleteImage($product->image);
+        }
         $product->delete();
     }
 

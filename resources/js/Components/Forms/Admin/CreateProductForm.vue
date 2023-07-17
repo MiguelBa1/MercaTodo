@@ -31,7 +31,6 @@ const form = useForm(
         price: '',
         image: null,
         stock: '',
-        status: '',
         brand_id: '',
         category_id: '',
     }
