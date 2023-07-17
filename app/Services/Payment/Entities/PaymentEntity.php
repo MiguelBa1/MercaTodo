@@ -30,14 +30,12 @@ class PaymentEntity implements Arrayable
     private function getItems(): array
     {
         $items = [];
-        $orderDetails = $this->order->orderDetails;
+        $orderDetails = $this->order->orderDetails->load('product');
 
         foreach ($orderDetails as $orderDetail) {
-            $product = $orderDetail->product->toArray();
-
             $items[] = [
-                'sku' => $product['sku'],
-                'name' => $product['name'],
+                'sku' => $orderDetail->product->sku,
+                'name' => $orderDetail->product->name,
                 'qty' => $orderDetail->quantity,
                 'price' => $orderDetail->product_price,
             ];

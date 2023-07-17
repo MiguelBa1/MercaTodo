@@ -4,9 +4,20 @@ import InputLabel from "@/Components/InputLabel.vue";
 import InputError from "@/Components/InputError.vue";
 import {useToast} from "vue-toast-notification";
 import {useForm} from "@inertiajs/vue3";
-import {onMounted, ref} from "vue";
+import {ref} from "vue";
 import axios from "axios";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
+
+const {brands, categories} = defineProps({
+    brands: {
+        type: Array,
+        required: true
+    },
+    categories: {
+        type: Array,
+        required: true
+    }
+});
 
 const $toast = useToast()
 
@@ -20,7 +31,6 @@ const form = useForm(
         price: '',
         image: null,
         stock: '',
-        status: '',
         brand_id: '',
         category_id: '',
     }
@@ -38,7 +48,7 @@ const createProduct = () => {
     $toast.info('Creating product...');
     form.clearErrors()
 
-    axios.postForm(route('admin.api.products.store'), form.data(), {
+    axios.postForm(route('api.admin.products.store'), form.data(), {
         headers: {
             'Content-Type': 'multipart/form-data'
         }
@@ -50,24 +60,6 @@ const createProduct = () => {
     })
 
 }
-
-const brands = ref([])
-const categories = ref([])
-
-const fetchBrands = async () => {
-    const response = await axios.get(route('api.brands.index'))
-    brands.value = response.data.brands
-}
-
-const fetchCategories = async () => {
-    const response = await axios.get(route('api.categories.index'))
-    categories.value = response.data.categories
-}
-
-onMounted(() => {
-    fetchBrands();
-    fetchCategories();
-})
 
 </script>
 
@@ -83,7 +75,7 @@ onMounted(() => {
 
                 <TextInput
                     id="sku"
-                    type="text"
+                    type="number"
                     class="mt-1 block w-full"
                     v-model="form.sku"
                     required

@@ -1,8 +1,8 @@
 <script setup>
 import MainLayout from "@/Layouts/MainLayout.vue";
-import {Head, Link} from '@inertiajs/vue3';
+import {Head, Link, router, usePage} from '@inertiajs/vue3';
 import {useCartStore} from "@/store/cart";
-import {computed, onMounted, ref} from "vue";
+import {computed, ref} from "vue";
 import ProductCard from "@/Pages/Cart/Partials/ProductCard.vue";
 import LoadingSpinner from "@/Components/LoadingSpinner.vue";
 import {useToast} from "vue-toast-notification";
@@ -12,27 +12,29 @@ import axios from "axios";
 const store = useCartStore();
 const $toast = useToast();
 
-const cartProducts = ref({});
+const cartItems = ref(usePage().props.cartItems);
 
 const total = computed(() => {
     let total = 0;
-    for (const [key, value] of Object.entries(cartProducts.value)) {
-        total += value.price * value.quantity;
-    }
+
+    cartItems.value.forEach(item => {
+        total += item.product.price * item.quantity;
+    });
+
     return total;
 });
 
-const isLoading = ref(true);
+const isLoading = ref(false);
 
 const checkout = async () => {
     isLoading.value = true;
     try {
         const response = await axios.post(route('api.order.store'));
         if (response.status === 201) {
-            window.location.href = response.data.redirect_url;
+            location.href = response.data.redirect_url;
         }
     } catch (e) {
-        if (e.response.status === 400) {
+        if (e.response.status === 503) {
             $toast.error(e.response.data.message);
         } else {
             $toast.error('Something went wrong. Please try again later.');
@@ -42,19 +44,15 @@ const checkout = async () => {
 };
 
 const fetchProducts = async () => {
-    try {
-        const response = await axios.get(route('api.cart.products.index'), {
-        });
-        cartProducts.value = response.data;
-    } catch (e) {
-        $toast.error('Something went wrong getting your cart products. Please try again later.');
-    }
+    router.visit(route('cart.index'),
+        {
+            replace: true,
+            preserveScroll: true,
+            only: ['cartItems']
+        }
+    )
 };
 
-onMounted(async () => {
-    await fetchProducts();
-    isLoading.value = false;
-});
 </script>
 
 <template>
@@ -70,8 +68,8 @@ onMounted(async () => {
             <div v-if="store.cartItemsCount > 0" class="flex flex-col lg:flex-row items-center lg:items-start gap-6">
                 <div
                     class="w-full grid grid-cols-1 gap-2">
-                    <ProductCard v-for="product in cartProducts" :key="product.id" :product="product"
-                                 :quantity="product.quantity" :fetch-products="fetchProducts"
+                    <ProductCard v-for="item in cartItems" :key="item.product.id" :product="item.product"
+                                 :quantity="item.quantity" :fetch-products="fetchProducts"
                     />
                 </div>
 

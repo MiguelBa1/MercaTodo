@@ -16,7 +16,7 @@ const editingCategory = ref({});
 const creatingCategory = ref({});
 
 const getCategories = async (page = 1) => {
-    const response = await fetch(route('admin.api.categories.index', {page: page}));
+    const response = await fetch(route('api.admin.categories.index', {page: page}));
     categoriesData.value = await response.json();
     pageNumber.value = page;
     isLoading.value = false;
@@ -25,7 +25,7 @@ const getCategories = async (page = 1) => {
 const createCategory = async () => {
     $toast.clear();
     try {
-        await axios.post(route('admin.api.categories.store'), creatingCategory.value);
+        await axios.post(route('api.admin.categories.store'), creatingCategory.value);
         await getCategories(pageNumber.value);
         $toast.success(`Category has been created successfully`);
     } catch (e) {
@@ -40,7 +40,7 @@ const createCategory = async () => {
 const editCategory = async () => {
     $toast.clear();
     try {
-        await axios.patch(route('admin.api.categories.update', {category: editingCategory.value.id}), editingCategory.value);
+        await axios.patch(route('api.admin.categories.update', {category: editingCategory.value.id}), editingCategory.value);
         await getCategories(pageNumber.value);
         $toast.success(`Category has been updated successfully`);
     } catch (e) {

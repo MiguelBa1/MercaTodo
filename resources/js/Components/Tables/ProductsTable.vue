@@ -1,46 +1,56 @@
 <script setup>
-import {Link} from '@inertiajs/vue3'
+import {Link, router, usePage} from '@inertiajs/vue3'
 import {TailwindPagination} from 'laravel-vue-pagination';
 import {useToast} from "vue-toast-notification";
 import axios from "axios";
-import {onMounted, ref} from 'vue';
-import LoadingSpinner from "@/Components/LoadingSpinner.vue";
+import {ref} from 'vue';
+
+const {products} = defineProps({
+    products: {
+        type: Object,
+        required: true
+    }
+})
+
+const auth = usePage().props.auth;
 
 const $toast = useToast();
-const productsData = ref({});
-const pageNumber = ref(1);
-const isLoading = ref(true);
+const productsData = ref(products);
 
 const getProducts = async (page = 1) => {
-    const response = await fetch(route('admin.api.products.index', {page: page}));
-    productsData.value = await response.json();
-    pageNumber.value = page;
+    router.visit(route('admin.products.index', {page}), {
+        replace: true,
+        preserveScroll: true
+    });
 }
 
 const manageProductStatus = async (id) => {
     $toast.clear();
-    const response = await axios.patch(route('admin.api.products.status.update', id));
-    if (response.status === 200) {
-        await getProducts(pageNumber.value);
-        $toast.success(`Product status has been updated successfully`);
-    } else {
-        $toast.error(`Something went wrong, please try again later`);
+    try {
+        const response = await axios.patch(route('api.admin.products.status.update', id));
+        if (response.status === 200) {
+            const updatedProduct = productsData.value.data.find(product => product.id === id);
+            if (updatedProduct) {
+                updatedProduct.status = updatedProduct.status === 'Active' ? 'Inactive' : 'Active';
+            }
+            $toast.success(`Product status has been updated successfully`);
+        } else {
+            $toast.error(`Something went wrong, please try again later`);
+        }
+    } catch (e) {
+        if (e.response.status === 403) {
+            $toast.error(`You don't have permission to perform this action`);
+        } else {
+            $toast.error(`Something went wrong, please try again later`);
+        }
     }
 }
 
-onMounted(async () => {
-    await getProducts();
-    isLoading.value = false;
-})
 </script>
 
 <template>
-    <div v-if="isLoading">
-        <LoadingSpinner/>
-    </div>
-    <div v-else class="p-4 sm:p-6 shadow sm:rounded-lg">
+    <div class="p-4 sm:p-6 shadow sm:rounded-lg">
         <div class="overflow-auto">
-            <!-- Table of products from props -->
             <table class="table-auto mx-auto w-full border">
                 <thead>
                 <tr>
@@ -60,13 +70,13 @@ onMounted(async () => {
                     <td class="border px-4 py-2">{{ product.name }}</td>
                     <td class="border px-4 py-2 text-center">{{ product.price }} $</td>
                     <td class="border px-4 py-2 text-center">{{ product.stock }}</td>
-                    <td class="border px-4 py-2">{{ product.category_name }}</td>
-                    <td class="border px-4 py-2">{{ product.brand_name }}</td>
+                    <td class="border px-4 py-2">{{ product.category.name }}</td>
+                    <td class="border px-4 py-2">{{ product.brand.name }}</td>
                     <td class="border px-4 py-2 text-center">{{ product.status }}</td>
                     <td class="border px-4 py-2">
                         <div class="grid grid-rows-2 xl:grid-cols-2 xl:grid-rows-1 gap-1">
                             <Link :href="route('admin.products.edit', product.id)" title="Edit Product"
-                                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-2 rounded text-center"
+                                  class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-2 rounded text-center"
                             >
                                 Edit
                             </Link>
@@ -90,7 +100,6 @@ onMounted(async () => {
                 </tbody>
             </table>
         </div>
-        <!-- Pagination -->
         <div class="flex justify-center mt-3">
             <TailwindPagination :data="productsData" @pagination-change-page="getProducts" :limit="1"
                                 :keepLength="true"/>

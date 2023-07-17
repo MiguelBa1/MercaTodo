@@ -26,7 +26,7 @@ const form = useForm({
 const department_id = ref('');
 const cities = ref({});
 const getCities = async () => {
-    const response = await fetch(route('api.list.cities', department_id.value));
+    const response = await fetch(route('api.cities.index', department_id.value));
     cities.value = await response.json();
 };
 
@@ -44,7 +44,7 @@ const submit = () => {
         </Head>
 
         <form @submit.prevent="submit">
-            <div class="sm:grid sm:grid-cols-2 gap-4">
+            <div class="sm:grid sm:grid-cols-2 gap-2">
                 <div>
                     <InputLabel for="name" value="Name"/>
 

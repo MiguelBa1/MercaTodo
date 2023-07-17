@@ -14,7 +14,7 @@ import Card from "@/Pages/Admin/Dashboard/AdminOptionCard.vue";</script>
         <div
             class="max-w-7xl grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-6 mx-2 sm:mx-4 md:mx-10 lg:mx-14 xl:mx-auto">
             <Card title="Manage Users" sub-title="View and manage users in the system."
-                  :href="route('admin.view.users')">
+                  :href="route('admin.users.index')">
                 <svg class="h-8 w-8 text-black" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                      stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
@@ -24,7 +24,7 @@ import Card from "@/Pages/Admin/Dashboard/AdminOptionCard.vue";</script>
                 </svg>
             </Card>
 
-            <Card title="Manage Products" sub-title="View and manage the products" :href="route('admin.view.products')">
+            <Card title="Manage Products" sub-title="View and manage the products" :href="route('admin.products.index')">
                 <svg class="h-8 w-8 text-black" width="24" height="24" viewBox="0 0 24 24" stroke-width="2"
                      stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                     <path stroke="none" d="M0 0h24v24H0z"/>

@@ -2,25 +2,24 @@
 
 namespace App\Exceptions;
 
-use App\Models\Product;
 use Exception;
 use Illuminate\Http\JsonResponse;
 
 class ProductUnavailableException extends Exception
 {
-    protected Product $product;
-
-    public function __construct(Product $product, $message = '', $code = 0, Exception $previous = null)
-    {
-        $this->product = $product;
-
-        parent::__construct($message, $code, $previous);
-    }
+    protected $code = 422;
 
     public function render(): JsonResponse
     {
         return response()->json([
-            'message' => $this->getMessage(),
-        ], 400);
+            'message' => $this->getMessage()
+        ], $this->getCode());
+    }
+
+    public static function unavailable(string $product_name): self
+    {
+        return new self(__('validation.custom.product.unavailable', [
+            'product_name' => $product_name
+        ]));
     }
 }

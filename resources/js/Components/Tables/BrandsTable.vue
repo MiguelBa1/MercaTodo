@@ -16,7 +16,7 @@ const editingBrand = ref({});
 const creatingBrand = ref({});
 
 const getBrands = async (page = 1) => {
-    const response = await fetch(route('admin.api.brands.index', {page: page}));
+    const response = await fetch(route('api.admin.brands.index', {page: page}));
     brandsData.value = await response.json();
     pageNumber.value = page;
 }
@@ -24,7 +24,7 @@ const getBrands = async (page = 1) => {
 const createBrand = async () => {
     $toast.clear();
     try {
-        await axios.post(route('admin.api.brands.store'), creatingBrand.value);
+        await axios.post(route('api.admin.brands.store'), creatingBrand.value);
         await getBrands(pageNumber.value);
         $toast.success(`Brand has been created successfully`);
     } catch (e) {
@@ -39,7 +39,7 @@ const createBrand = async () => {
 const editBrand = async () => {
     $toast.clear();
     try {
-        await axios.patch(route('admin.api.brands.update', {brand: editingBrand.value.id}), editingBrand.value);
+        await axios.patch(route('api.admin.brands.update', {brand: editingBrand.value.id}), editingBrand.value);
         await getBrands(pageNumber.value);
         $toast.success(`Brand has been updated successfully`);
     } catch (e) {

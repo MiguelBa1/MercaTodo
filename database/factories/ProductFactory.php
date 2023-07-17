@@ -27,7 +27,7 @@ class ProductFactory extends Factory
         Storage::disk('public')->put("images/{$imageName}", $image);
 
         return [
-            'sku' => fake()->ean8(),
+            'sku' => fake()->unique()->ean8(),
             'name' => fake()->sentence(2),
             'description' => fake()->text(),
             'price' => $this->faker->numberBetween(0, 1000),

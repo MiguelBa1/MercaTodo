@@ -1,46 +1,55 @@
 <script setup>
-import {Link} from '@inertiajs/vue3'
+import {Link, router} from '@inertiajs/vue3'
 import {TailwindPagination} from 'laravel-vue-pagination';
 import {useToast} from "vue-toast-notification";
 import axios from "axios";
-import {onMounted, ref} from 'vue';
-import LoadingSpinner from "@/Components/LoadingSpinner.vue";
+import {ref} from 'vue';
+
+const {users} = defineProps({
+    users: {
+        type: Object,
+        required: true
+    }
+})
 
 const $toast = useToast();
-const usersData = ref({});
-const pageNumber = ref(1);
-const isLoading = ref(true);
+const usersData = ref(users);
 
 const getUsers = async (page = 1) => {
-    const response = await fetch(route('admin.api.users.index', {page: page}));
-    usersData.value = await response.json();
-    pageNumber.value = page;
+    router.visit(route('admin.users.index', {page}), {
+        replace: true,
+        preserveScroll: true
+    });
 }
 
 const manageUserStatus = async (id, name) => {
     $toast.clear();
-    const response = await axios.patch(route('admin.api.users.status.update', id));
-    if (response.status === 200) {
-        await getUsers(pageNumber.value);
-        $toast.success(`${name} status has been updated successfully`);
-    } else {
-        $toast.error(`Something went wrong, please try again later`);
+
+    try {
+        const response = await axios.patch(route('api.admin.users.status.update', id));
+        if (response.status === 200) {
+            const updatedUser = usersData.value.data.find(user => user.id === id);
+            if (updatedUser) {
+                updatedUser.status = updatedUser.status === 'Active' ? 'Inactive' : 'Active';
+            }
+            $toast.success(`${name} status has been updated successfully`);
+        } else {
+            $toast.error(`Something went wrong, please try again later`);
+        }
+    } catch (e) {
+        if (e.response.status === 403) {
+            $toast.error(`You don't have permission to perform this action`);
+        } else {
+            $toast.error(`Something went wrong, please try again later`);
+        }
     }
 }
 
-onMounted(async () => {
-    await getUsers();
-    isLoading.value = false;
-})
 </script>
 
 <template>
-    <div v-if="isLoading">
-        <LoadingSpinner/>
-    </div>
-    <div v-else class="p-4 sm:p-6 shadow sm:rounded-lg">
+    <div class="p-4 sm:p-6 shadow sm:rounded-lg">
         <div class="overflow-auto">
-            <!-- Table of users from props -->
             <table class="table-auto mx-auto w-full border">
                 <thead>
                 <tr>
@@ -52,7 +61,7 @@ onMounted(async () => {
                     <th class="px-4 py-2 border">City</th>
                     <th class="px-4 py-2 border">Address</th>
                     <th class="px-4 py-2 border">Status</th>
-                    <th class="px-4 py-2 border">Role</th>
+                    <th class="px-4 py-2 border">Roles</th>
                     <th class="px-4 py-2 border">Actions</th>
                 </tr>
                 </thead>
@@ -63,13 +72,13 @@ onMounted(async () => {
                     <td class="border px-4 py-2">{{ user.email }}</td>
                     <td class="border px-4 py-2">{{ user.document }}</td>
                     <td class="border px-4 py-2">{{ user.document_type }}</td>
-                    <td class="border px-4 py-2">{{ user.city_name }}</td>
+                    <td class="border px-4 py-2">{{ user.city.name }}</td>
                     <td class="border px-4 py-2">{{ user.address }}</td>
                     <td class="border px-4 py-2 text-center">{{ user.status }}</td>
-                    <td class="border px-4 py-2 text-center">{{ user.role_name }}</td>
+                    <td class="border px-4 py-2 text-center">{{ user.roles[0].name }}</td>
                     <td class="border px-4 py-2">
                         <div class="grid grid-rows-2 gap-1">
-                            <Link :href="route('admin.edit.user', user.id)" title="Edit user"
+                            <Link :href="route('admin.user.edit', user.id)" title="Edit user"
                                   class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-2 rounded text-center"
                             >
                                 Edit

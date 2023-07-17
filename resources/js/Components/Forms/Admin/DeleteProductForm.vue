@@ -8,15 +8,19 @@ const { product } = defineProps({
     product: Object
 })
 const deleteProduct = () => {
-    axios(route('admin.api.products.destroy', product.id), {
+    axios(route('api.admin.products.destroy', product.id), {
         method: 'DELETE'
     }).then(response => {
         $toast.success('Product deleted successfully!')
         setTimeout(() => {
-            window.location.href = route('admin.view.products')
+            window.location.href = route('admin.products.index')
         }, 1000)
     }).catch(error => {
-        $toast.error('Something went wrong!')
+        if (error.response.status === 403) {
+            $toast.error(`You don't have permission to perform this action`)
+        } else {
+            $toast.error(`Something went wrong, please try again later`)
+        }
     })
 };
 

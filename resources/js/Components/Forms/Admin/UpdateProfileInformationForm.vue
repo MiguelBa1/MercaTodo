@@ -6,42 +6,42 @@ import TextInput from '@/Components/TextInput.vue';
 import {useForm, usePage} from '@inertiajs/vue3';
 import axios from "axios";
 import {useToast} from "vue-toast-notification";
-import {ref} from 'vue';
+import {onMounted, ref} from 'vue';
 
 const $toast = useToast();
 
-const { user, departments, document_types } = usePage().props;
+const {user, departments, document_types, auth} = usePage().props;
 
 const form = useForm({
     name: user.name,
     surname: user.surname,
     email: user.email,
-    role_name: user.role_name,
-    city_id: user.city_id,
+    role_name: user.roles[0].name,
+    city_id: user.city.id,
     phone: user.phone.toString(),
     address: user.address,
     document: user.document.toString(),
     document_type: user.document_type,
+    permissions: user.permissions.map(permission => permission.name) ?? []
 });
 
-const department_id = ref(user.department_id);
+const department_id = ref(user.city.department_id);
 const cities = ref({});
 const roles = ref(usePage().props.roles);
+const permissions = ref(usePage().props.permissions);
 
 const getCities = async () => {
-    const response = await fetch(route('api.list.cities', department_id.value));
+    const response = await fetch(route('api.cities.index', department_id.value));
     cities.value = await response.json();
 };
-
-getCities();
 
 const updateProfileInformation = () => {
     $toast.info('Updating profile information...');
     form.clearErrors();
 
-    axios.patch(route('admin.api.users.profile.update', user.id), form.data())
+    axios.patch(route('api.admin.users.profile.update', user.id), form.data())
         .then(response => {
-            $toast.success(response.data.message);
+            $toast.success('Profile information updated successfully.');
         })
         .catch(error => {
             form.setError(error.response.data.errors);
@@ -49,6 +49,9 @@ const updateProfileInformation = () => {
         });
 };
 
+onMounted(async () => {
+    await getCities();
+});
 </script>
 
 <template>
@@ -82,7 +85,7 @@ const updateProfileInformation = () => {
                     <InputLabel for="surname" value="Surname"/>
 
                     <TextInput
-                        id="name"
+                        id="surname"
                         type="text"
                         class="mt-1 block w-full"
                         v-model="form.surname"
@@ -103,8 +106,8 @@ const updateProfileInformation = () => {
                         required
                         autocomplete="role"
                     >
-                        <option v-for="role in roles" :value="role.name">
-                            {{ role.name.charAt(0).toUpperCase() + role.name.slice(1) }}
+                        <option v-for="role in roles" :value="role">
+                            {{ role }}
                         </option>
                     </select>
 
@@ -229,6 +232,24 @@ const updateProfileInformation = () => {
                     <InputError class="mt-2" :message="form.errors.document_type"/>
                 </div>
 
+            </div>
+            <div v-if="auth.roles.includes('Super Admin') && form.role_name === 'Admin'">
+                <InputLabel for="permissions" value="Permissions"/>
+                <div class="grid grid-cols-2">
+                    <div v-for="permission in permissions">
+                        <label class="inline-flex items-center">
+                            <input
+                                type="checkbox"
+                                class="cursor-pointer rounded text-blue-600 border-gray-300"
+                                :value="permission"
+                                v-model="form.permissions"
+                            >
+                            <span class="ml-2">{{ permission }}</span>
+                        </label>
+                    </div>
+
+                    <InputError class="mt-2" :message="form.errors.permissions"/>
+                </div>
             </div>
             <div class="flex items-center gap-4">
                 <PrimaryButton :disabled="form.processing">Save</PrimaryButton>
