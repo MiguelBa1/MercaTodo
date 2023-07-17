@@ -1,0 +1,3 @@
+import{_ as e}from"./ApplicationLogo-4d97a218.js";import{a as s,c as o,e as t}from"./app-af608028.js";const c={},n={class:"flex justify-center items-center"},r=t("svg",{class:"animate-spin -ml-1 mr-3 h-5 w-5 text-gray-900",xmlns:"http://www.w3.org/2000/svg",fill:"none",viewBox:"0 0 24 24"},[t("circle",{class:"opacity-25",cx:"12",cy:"12",r:"10",stroke:"currentColor","stroke-width":"4"}),t("path",{class:"opacity-75",fill:"currentColor",d:`M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0
+                  12h4zm2 5.291A7.962 7.962 0 014 12H0c0
+                  3.042 1.135 5.824 3 7.938l3-2.647z`})],-1),a=t("span",{class:"text-gray-900 font-semibold text-xl"},"Loading...",-1),i=[r,a];function l(_,d){return s(),o("div",n,i)}const f=e(c,[["render",l]]);export{f as L};
