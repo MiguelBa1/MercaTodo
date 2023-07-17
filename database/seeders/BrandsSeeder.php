@@ -12,6 +12,6 @@ class BrandsSeeder extends Seeder
      */
     public function run(): void
     {
-        Brand::factory()->count(5)->create();
+        Brand::factory()->count(config('user.seed.brands'))->create();
     }
 }
