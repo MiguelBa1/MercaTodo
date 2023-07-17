@@ -4,13 +4,14 @@ namespace App\Mail;
 
 use App\Models\Report;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Attachment;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class ReportGenerated extends Mailable
+class ReportGenerated extends Mailable implements ShouldQueue
 {
     use Queueable;
     use SerializesModels;

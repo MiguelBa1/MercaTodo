@@ -49,7 +49,7 @@ class GenerateReport implements ShouldQueue
         $this->report->status = ReportStatusEnum::COMPLETED;
         $this->report->save();
 
-        Mail::to($this->report->user->email)->send(new ReportGenerated($this->report));
+        Mail::to($this->report->user->email)->queue(new ReportGenerated($this->report));
     }
 
     public function failed(Exception $exception): void
